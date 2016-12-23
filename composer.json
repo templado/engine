@@ -1,0 +1,26 @@
+{
+  "name" : "theseer/templado",
+  "description" : "A pragmatic approach to templating for PHP 7.x",
+  "license" : "BSD-3-Clause",
+  "authors" : [
+    {
+      "name" : "Arne Blankerts",
+      "email" : "arne@blankerts.de",
+      "role" : "Developer"
+    }
+  ],
+  "support" : {
+    "issues" : "https://github.com/theseer/templado/issues"
+  },
+  "require" : {
+    "php" : ">=7.0",
+    "ext-dom" : "*"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  },
+  "minimum-stability" : "stable",
+  "prefer-stable" : true
+}
