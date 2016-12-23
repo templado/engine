@@ -27,6 +27,9 @@ class ViewModelRenderer {
         $this->walk($context);
     }
 
+    /**
+     * @param DOMNode $context
+     */
     private function walk(DOMNode $context) {
         if ($context instanceof DOMElement && $context->hasAttribute('property')) {
             $this->addToStack($context);
@@ -44,6 +47,11 @@ class ViewModelRenderer {
         }
     }
 
+    /**
+     * @param DOMElement $context
+     *
+     * @throws ViewModelRendererException
+     */
     private function addToStack(DOMElement $context) {
         $model    = $this->current();
         $property = $context->getAttribute('property');
@@ -68,6 +76,9 @@ class ViewModelRenderer {
         $this->stack[] = $model->{$property}($context->nodeValue);
     }
 
+    /**
+     * @return mixed
+     */
     private function current() {
         return end($this->stack);
     }
@@ -77,6 +88,11 @@ class ViewModelRenderer {
         array_pop($this->stackNames);
     }
 
+    /**
+     * @param DOMElement $context
+     *
+     * @throws ViewModelRendererException
+     */
     private function applyCurrent(DOMElement $context) {
         $model = $this->current();
         switch (gettype($model)) {
