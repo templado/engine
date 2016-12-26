@@ -1,5 +1,4 @@
 <?php declare(strict_types = 1);
-
 namespace TheSeer\Templado;
 
 use DOMElement;
@@ -30,7 +29,7 @@ class AssetRenderer {
             if ($node->hasAttribute('id')) {
                 $id = $node->getAttribute('id');
 
-                if (!$this->assetCollection->hasAssetsFor($id)) {
+                if (!$this->assetCollection->hasAssetForId($id)) {
                     continue;
                 }
                 $asset = $this->assetCollection->getAssetForId($id);

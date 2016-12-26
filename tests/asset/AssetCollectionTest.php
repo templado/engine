@@ -16,7 +16,7 @@ class AssetCollectionTest extends TestCase {
 
     public function testReturnsFalseWhenNoAssetWithGivenIdExists() {
         $this->assertFalse(
-            $this->collection->hasAssetsFor('abc')
+            $this->collection->hasAssetForId('abc')
         );
     }
 
@@ -25,7 +25,7 @@ class AssetCollectionTest extends TestCase {
         $asset = $this->createMock(Asset::class);
         $this->collection->addAsset('abc', $asset);
         $this->assertTrue(
-            $this->collection->hasAssetsFor('abc')
+            $this->collection->hasAssetForId('abc')
         );
     }
 

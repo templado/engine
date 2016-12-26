@@ -82,7 +82,7 @@ class FormDataRenderer {
     private function findFormElement(DOMElement $context, string $identifier): DOMElement {
         $xp     = new DOMXPath($context->ownerDocument);
         $result = $xp->query(
-            sprintf('.//*:form[@id = "%$1s" or @name = "%$1s"]', $identifier),
+            sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
             $context
         );
         switch ($result->length) {

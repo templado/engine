@@ -10,12 +10,12 @@ class AssetCollection {
         $this->assets[$id] = $asset;
     }
 
-    public function hasAssetsFor(string $id): bool {
+    public function hasAssetForId(string $id): bool {
         return isset($this->assets[$id]);
     }
 
     public function getAssetForId(string $id): Asset {
-        if (!$this->hasAssetsFor($id)) {
+        if (!$this->hasAssetForId($id)) {
             throw new AssetCollectionException(
                 sprintf("No Asset for Id '%s' in collection", $id)
             );
