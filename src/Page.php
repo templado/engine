@@ -16,7 +16,7 @@ class Page {
      *
      * @param DOMDocument $dom
      */
-    private function __construct(DOMDocument $dom) {
+    protected function __construct(DOMDocument $dom) {
         $this->dom = $dom;
     }
 
