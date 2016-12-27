@@ -33,19 +33,19 @@ class FormDataRenderer {
     private function setInputValue(DOMElement $input, string $value) {
         $type = $input->getAttribute('type');
         switch ($type) {
-            case 'file' :
+            case 'file':
                 return;
-            case 'password' :
+            case 'password':
                 return;
-            case 'radio' :
+            case 'radio':
                 $this->toggleInput($input, $value);
 
                 return;
-            case 'checkbox' :
+            case 'checkbox':
                 $this->toggleInput($input, $value);
 
                 return;
-            default :
+            default:
                 $input->setAttribute('value', $value);
         }
     }
