@@ -3,6 +3,7 @@ namespace TheSeer\Templado;
 
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject;
 
 class FormDataRendererTest extends TestCase {
 
@@ -42,4 +43,47 @@ class FormDataRendererTest extends TestCase {
 
         return $result;
     }
+
+    public function testNoFormByGivenNameThrowsException() {
+        $contextDOM = new DOMDocument();
+        $contextDOM->load( __DIR__ . '/../_data/formdata/text/form.html');
+
+        $formdata = new FormData('does-not-exist', []);
+        $renderer = new FormDataRenderer();
+
+        $this->expectException(FormDataRendererException::class);
+        $renderer->render($contextDOM->documentElement, $formdata);
+    }
+
+    public function testMultipleFormsByGivenNameThrowsException() {
+        $contextDOM = new DOMDocument();
+        $contextDOM->load( __DIR__ . '/../_data/formdata/text/form.html');
+
+        $form = $contextDOM->getElementsByTagName('form')->item(0);
+        $form->parentNode->insertBefore($form->cloneNode(TRUE), $form);
+
+        $formdata = new FormData('test', []);
+        $renderer = new FormDataRenderer();
+
+        $this->expectException(FormDataRendererException::class);
+        $renderer->render($contextDOM->documentElement, $formdata);
+    }
+
+    public function testFormDataExceptionsGetsPassedOnAsFormDataRendererException() {
+        $contextDOM = new DOMDocument();
+        $contextDOM->load( __DIR__ . '/../_data/formdata/text/form.html');
+
+        /** @var PHPUnit_Framework_MockObject_MockObject|FormData $formData */
+        $formData = $this->createMock(FormData::class);
+        $formData->method('getIdentifier')->willReturn('test');
+        $formData->method('hasKey')->willReturn(true);
+        $formData->method('getValue')->willThrowException(new FormDataException);
+
+        $renderer = new FormDataRenderer();
+
+        $this->expectException(FormDataRendererException::class);
+        $renderer->render($contextDOM->documentElement, $formData);
+    }
+
+
 }
