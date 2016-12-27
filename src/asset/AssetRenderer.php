@@ -25,30 +25,35 @@ class AssetRenderer {
             if (!$node instanceof DOMElement) {
                 continue;
             }
-
-            if ($node->hasAttribute('id')) {
-                $id = $node->getAttribute('id');
-
-                if (!$this->assetCollection->hasAssetForId($id)) {
-                    continue;
-                }
-                $asset = $this->assetCollection->getAssetForId($id);
-                if ($asset->hasId() && $asset->getId() === $id) {
-                    $node->parentNode->replaceChild(
-                        $node->ownerDocument->importNode($asset->getNode(), true),
-                        $node
-                    );
-                    continue;
-                }
-                $node->appendChild(
-                    $node->ownerDocument->importNode($asset->getNode(), true)
-                );
-            }
-
-            if ($node->hasChildNodes()) {
-                $this->render($node);
-            }
+            $this->processNode($node);
         }
+    }
+
+    private function processNode(DOMElement $node) {
+        if ($node->hasAttribute('id')) {
+            $id = $node->getAttribute('id');
+
+            if (!$this->assetCollection->hasAssetForId($id)) {
+                return;
+            }
+
+            $asset = $this->assetCollection->getAssetForId($id);
+            if ($asset->hasId() && $asset->getId() === $id) {
+                $node->parentNode->replaceChild(
+                    $node->ownerDocument->importNode($asset->getNode(), true),
+                    $node
+                );
+                return;
+            }
+            $node->appendChild(
+                $node->ownerDocument->importNode($asset->getNode(), true)
+            );
+        }
+
+        if ($node->hasChildNodes()) {
+            $this->render($node);
+        }
+
     }
 
 }
