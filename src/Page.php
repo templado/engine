@@ -16,50 +16,41 @@ class Page {
      *
      * @param DOMDocument $dom
      */
-    protected function __construct(DOMDocument $dom) {
+    public function __construct(DOMDocument $dom) {
         $this->dom = $dom;
     }
 
-    public static function fromFile(FileName $fileName): Page {
-        libxml_use_internal_errors(true);
-        $dom = new DOMDocument();
-        $tmp = $dom->load($fileName->asString());
-        if (!$tmp || libxml_get_last_error()) {
-            throw new PageDomException(
-                sprintf("Loading file '%s' failed.", $fileName->asString())
-            );
-        }
-
-        return new Page($dom);
-    }
-
-    public static function fromString(string $string): Page {
-        libxml_use_internal_errors(true);
-        $dom = new DOMDocument();
-        $tmp = $dom->loadXML($string);
-        if (!$tmp || libxml_get_last_error()) {
-            throw new PageDomException('Parsing string failed.');
-        }
-
-        return new Page($dom);
-    }
-
+    /**
+     * @param AssetCollection $assetCollection
+     */
     public function applyAssets(AssetCollection $assetCollection) {
         (new AssetRenderer($assetCollection))->render($this->dom->documentElement);
     }
 
+    /**
+     * @param object $model
+     */
     public function applyViewModel($model) {
         (new ViewModelRenderer())->render($this->dom->documentElement, $model);
     }
 
+    /**
+     * @param FormData $formData
+     */
     public function applyFormData(FormData $formData) {
         (new FormDataRenderer())->render($this->dom->documentElement, $formData);
     }
 
+    /**
+     * @param CSRFProtection $protection
+     */
     public function applyCSRFProtection(CSRFProtection $protection) {
         (new CSRFProtectionRenderer())->render($this->dom->documentElement, $protection);
     }
 
+    /**
+     * @return string
+     */
     public function asString(): string {
         return $this->clearNamespaceDefinitions(
             $this->fixEmptyElements(

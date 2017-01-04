@@ -5,7 +5,7 @@ namespace TheSeer\Templado;
 require __DIR__ . '/../src/autoload.php';
 
 try {
-    $page = Page::fromFile(
+    $page = Templado::loadFile(
         new FileName(__DIR__ . '/html/basic.xhtml')
     );
 
@@ -28,7 +28,7 @@ try {
 
     echo $page->asString();
 
-} catch (PageDomException $e) {
+} catch (TempladoException $e) {
     foreach($e->getErrorList() as $error) {
         echo (string)$error;
     }
