@@ -79,6 +79,13 @@ class FormDataRenderer {
         }
     }
 
+    /**
+     * @param DOMElement $context
+     * @param string     $identifier
+     *
+     * @return DOMElement
+     * @throws FormDataRendererException
+     */
     private function findFormElement(DOMElement $context, string $identifier): DOMElement {
         $xp     = new DOMXPath($context->ownerDocument);
         $result = $xp->query(

@@ -129,9 +129,9 @@ class ViewModelRenderer {
 
     /**
      * @param DOMElement $context
-     * @param            $model
+     * @param bool       $model
      */
-    private function processBoolean(DOMElement $context, $model) {
+    private function processBoolean(DOMElement $context, bool $model) {
         if ($model === false) {
             while ($context->hasChildNodes()) {
                 $context->removeChild($context->lastChild);
@@ -142,15 +142,15 @@ class ViewModelRenderer {
 
     /**
      * @param DOMElement $context
-     * @param            $model
+     * @param string     $model
      */
-    private function processString(DOMElement $context, $model) {
+    private function processString(DOMElement $context, string $model) {
         $context->nodeValue = $model;
     }
 
     /**
      * @param DOMElement $context
-     * @param            $model
+     * @param object     $model
      *
      * @throws ViewModelRendererException
      */
