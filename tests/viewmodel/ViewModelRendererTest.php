@@ -8,8 +8,6 @@ use TheSeer\Templado\Example\ViewModel;
 class ViewModelRendererTest extends TestCase {
 
     public function testViewModelGetsAppliedAsExcepted() {
-        require __DIR__ . '/../_data/viewmodel/viewmodel.php';
-
         $viewModel = new ViewModel();
         $dom = new DOMDocument();
         $dom->load(__DIR__ . '/../_data/viewmodel/source.html');
