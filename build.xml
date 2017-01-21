@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Templado" default="build" basedir=".">
     <property name="source" value="src"/>
+    <property name="tools" value="${basedir}/tools" />
 
     <target name="clean" description="Clean up and create artifact directories">
         <delete dir="${basedir}/build/docs"/>
@@ -36,7 +37,7 @@
     </target>
 
     <target name="phpunit" description="Run unit tests using PHPUnit">
-        <exec executable="phpunit" failonerror="true"/>
+        <exec executable="${tools}/phpunit" failonerror="true"/>
     </target>
 
     <target name="parallelTasks"
