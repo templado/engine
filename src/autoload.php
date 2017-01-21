@@ -21,10 +21,15 @@ spl_autoload_register(
                 'theseer\\templado\\formdatarenderer' => '/formdata/FormDataRenderer.php',
                 'theseer\\templado\\formdatarendererexception' => '/formdata/FormDataRendererException.php',
                 'theseer\\templado\\page' => '/Page.php',
+                'theseer\\templado\\selection' => '/transformation/Selection.php',
+                'theseer\\templado\\selector' => '/transformation/selectors/Selector.php',
                 'theseer\\templado\\templado' => '/Templado.php',
                 'theseer\\templado\\templadoexception' => '/TempladoException.php',
+                'theseer\\templado\\transformation' => '/transformation/Transformation.php',
+                'theseer\\templado\\transformationprocessor' => '/transformation/TransformationProcessor.php',
                 'theseer\\templado\\viewmodelrenderer' => '/viewmodel/ViewModelRenderer.php',
-                'theseer\\templado\\viewmodelrendererexception' => '/viewmodel/ViewModelRendererException.php'
+                'theseer\\templado\\viewmodelrendererexception' => '/viewmodel/ViewModelRendererException.php',
+                'theseer\\templado\\xpathselector' => '/transformation/selectors/XPathSelector.php'
             );
         }
         $cn = strtolower($class);

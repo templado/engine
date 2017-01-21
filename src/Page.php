@@ -48,6 +48,10 @@ class Page {
         (new CSRFProtectionRenderer())->render($this->dom->documentElement, $protection);
     }
 
+    public function applyTransformation(Transformation $transformation) {
+        (new TransformationProcessor())->process($this->dom->documentElement, $transformation);
+    }
+
     /**
      * @return string
      */
