@@ -12,8 +12,6 @@ class Page {
     private $dom;
 
     /**
-     * Page constructor.
-     *
      * @param DOMDocument $dom
      */
     public function __construct(DOMDocument $dom) {
@@ -56,48 +54,20 @@ class Page {
     }
 
     /**
+     * @param Filter $filter
+     *
      * @return string
      */
-    public function asString(): string {
-        return $this->clearNamespaceDefinitions(
-            $this->fixEmptyElements(
-                $this->serializeDomDocument()
-            )
-        );
-    }
+    public function asString(Filter $filter = null): string {
+        $content = $this->serializeDomDocument();
+        $content = (new EmptyElementsFilter())->apply($content);
+        $content = (new ClearNamespaceDefinitionsFilter())->apply($content);
 
-    /**
-     * @param $xmlString
-     *
-     * @return mixed
-     */
-    private function fixEmptyElements($xmlString): string {
-        $tagList = [
-            'base', 'br', 'meta', 'link', 'img', 'input', 'button', 'hr', 'embed',
-            'param', 'source', 'track', 'area', 'keygen',
-        ];
-
-        foreach($tagList as $tag) {
-            $xmlString = preg_replace(
-                "=<{$tag}(.*[^>])></{$tag}>=U",
-                "<{$tag}\$1/>",
-                $xmlString
-            );
+        if ($filter === null) {
+            return $content;
         }
 
-        return $xmlString;
-    }
-
-    /**
-     * @param $xmlString
-     *
-     * @return mixed
-     */
-    private function clearNamespaceDefinitions($xmlString): string {
-        $xmlString = preg_replace('/ xmlns=".*[^"]"/U', '', $xmlString);
-        $xmlString = str_replace('<html', '<html xmlns="http://www.w3.org/1999/xhtml"', $xmlString);
-
-        return $xmlString;
+        return $filter->apply($content);
     }
 
     /**

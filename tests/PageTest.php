@@ -6,8 +6,14 @@ use DOMElement;
 use PHPUnit\Framework\TestCase;
 use TheSeer\Templado\Example\ViewModel;
 
+/**
+ * @covers \TheSeer\Templado\Page
+ */
 class PageTest extends TestCase {
 
+    /**
+     * @uses \TheSeer\Templado\AssetRenderer
+     */
     public function testAssetsCanBeApplied() {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
@@ -35,8 +41,10 @@ class PageTest extends TestCase {
         );
     }
 
+    /**
+     * @uses \TheSeer\Templado\ViewModelRenderer
+     */
     public function testViewModelCanBeApplied() {
-
         $viewModel = new ViewModel();
         $dom       = new DOMDocument();
         $dom->load(__DIR__ . '/_data/viewmodel/source.html');
@@ -53,12 +61,15 @@ class PageTest extends TestCase {
         );
     }
 
+    /**
+     * @uses \TheSeer\Templado\TransformationProcessor
+     */
     public function testTransformationCanBeApplied() {
-
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
 
-        $selection = new Selection($dom->documentElement->childNodes);
+        $selection = $this->createMock(Selection::class);
+        $selection->method('getIterator')->willReturn($dom->documentElement->childNodes);
 
         $selector = $this->createMock(Selector::class);
         $selector->method('select')->willReturn($selection);
@@ -72,6 +83,10 @@ class PageTest extends TestCase {
 
     }
 
+    /**
+     * @uses \TheSeer\Templado\FormData
+     * @uses \TheSeer\Templado\FormDataRenderer
+     */
     public function testFormDataCanBeApplied() {
         $path = __DIR__ . '/_data/formdata/text';
 
@@ -92,6 +107,9 @@ class PageTest extends TestCase {
         );
     }
 
+    /**
+     * @uses \TheSeer\Templado\CSRFProtectionRenderer
+     */
     public function testCSRFProtectionCanBeApplied() {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html><body><form></form></body></html>');
@@ -115,6 +133,10 @@ class PageTest extends TestCase {
         );
     }
 
+    /**
+     * @uses \TheSeer\Templado\ClearNamespaceDefinitionsFilter
+     * @uses \TheSeer\Templado\EmptyElementsFilter
+     */
     public function testCanBeConvertedToString() {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html><head><link rel="stylesheet"></link></head><body><p>test</p></body></html>');
@@ -122,7 +144,7 @@ class PageTest extends TestCase {
         $expected = [
             '<html xmlns="http://www.w3.org/1999/xhtml">',
             '  <head>',
-            '    <link rel="stylesheet"/>',
+            '    <link rel="stylesheet" />',
             '  </head>',
             '  <body>',
             '    <p>test</p>',
@@ -137,6 +159,10 @@ class PageTest extends TestCase {
         );
     }
 
+    /**
+     * @uses \TheSeer\Templado\ClearNamespaceDefinitionsFilter
+     * @uses \TheSeer\Templado\EmptyElementsFilter
+     */
     public function testCanBeConvertedToStringWithDoctype() {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><!DOCTYPE html><html><head><link rel="stylesheet"></link></head><body><p>test</p></body></html>');
@@ -145,7 +171,7 @@ class PageTest extends TestCase {
             '<!DOCTYPE html>',
             '<html xmlns="http://www.w3.org/1999/xhtml">',
             '  <head>',
-            '    <link rel="stylesheet"/>',
+            '    <link rel="stylesheet" />',
             '  </head>',
             '  <body>',
             '    <p>test</p>',
@@ -158,6 +184,22 @@ class PageTest extends TestCase {
             implode("\n", $expected),
             $page->asString()
         );
+    }
+
+    /**
+     * @uses \TheSeer\Templado\ClearNamespaceDefinitionsFilter
+     * @uses \TheSeer\Templado\EmptyElementsFilter
+     */
+    public function testPassedFilterGetsCalledAfterSerializing() {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root />');
+        $page = new Page($dom);
+
+        $filter = $this->createMock(Filter::class);
+        $filter->expects($this->once())->method('apply')->with('<root></root>');
+
+        $page->asString($filter);
+
     }
 
 }
