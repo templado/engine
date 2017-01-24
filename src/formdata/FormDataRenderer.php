@@ -34,13 +34,9 @@ class FormDataRenderer {
         $type = $input->getAttribute('type');
         switch ($type) {
             case 'file':
-                return;
             case 'password':
                 return;
             case 'radio':
-                $this->toggleInput($input, $value);
-
-                return;
             case 'checkbox':
                 $this->toggleInput($input, $value);
 
