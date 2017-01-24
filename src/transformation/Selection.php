@@ -3,7 +3,6 @@ namespace TheSeer\Templado;
 
 use DOMNodeList;
 use IteratorAggregate;
-use Traversable;
 
 class Selection implements IteratorAggregate {
 
