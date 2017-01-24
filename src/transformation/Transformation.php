@@ -6,6 +6,7 @@ use DOMNode;
 interface Transformation {
 
     public function getSelector(): Selector;
+
     public function apply(DOMNode $context);
 
 }

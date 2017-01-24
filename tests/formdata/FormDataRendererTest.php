@@ -26,13 +26,13 @@ class FormDataRendererTest extends TestCase {
     public function formdataProvider(): array {
         $result = [];
 
-        foreach( glob(__DIR__ . '/../_data/formdata/*') as $entry) {
-            $data = include $entry . '/formdata.php';
+        foreach(glob(__DIR__ . '/../_data/formdata/*') as $entry) {
+            $data       = include $entry . '/formdata.php';
             $contextDOM = new DOMDocument();
-            $contextDOM->load( $entry . '/form.html');
+            $contextDOM->load($entry . '/form.html');
 
             $expectedDOM = new DOMDocument();
-            $expectedDOM->load( $entry . '/expected.html');
+            $expectedDOM->load($entry . '/expected.html');
 
             $result[basename($entry)] = [
                 $data,
@@ -46,7 +46,7 @@ class FormDataRendererTest extends TestCase {
 
     public function testNoFormByGivenNameThrowsException() {
         $contextDOM = new DOMDocument();
-        $contextDOM->load( __DIR__ . '/../_data/formdata/text/form.html');
+        $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
 
         $formdata = new FormData('does-not-exist', []);
         $renderer = new FormDataRenderer();
@@ -57,10 +57,10 @@ class FormDataRendererTest extends TestCase {
 
     public function testMultipleFormsByGivenNameThrowsException() {
         $contextDOM = new DOMDocument();
-        $contextDOM->load( __DIR__ . '/../_data/formdata/text/form.html');
+        $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
 
         $form = $contextDOM->getElementsByTagName('form')->item(0);
-        $form->parentNode->insertBefore($form->cloneNode(TRUE), $form);
+        $form->parentNode->insertBefore($form->cloneNode(true), $form);
 
         $formdata = new FormData('test', []);
         $renderer = new FormDataRenderer();
@@ -71,7 +71,7 @@ class FormDataRendererTest extends TestCase {
 
     public function testFormDataExceptionsGetsPassedOnAsFormDataRendererException() {
         $contextDOM = new DOMDocument();
-        $contextDOM->load( __DIR__ . '/../_data/formdata/text/form.html');
+        $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
 
         /** @var PHPUnit_Framework_MockObject_MockObject|FormData $formData */
         $formData = $this->createMock(FormData::class);
@@ -84,6 +84,5 @@ class FormDataRendererTest extends TestCase {
         $this->expectException(FormDataRendererException::class);
         $renderer->render($contextDOM->documentElement, $formData);
     }
-
 
 }

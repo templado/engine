@@ -36,9 +36,9 @@ class AssetRendererTest extends TestCase {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
-        $dom2 = new \DOMDocument();
+        $dom2    = new \DOMDocument();
         $element = $dom2->createElement('test');
-        $element->setAttribute('id','a');
+        $element->setAttribute('id', 'a');
 
         $asset = $this->createMock(Asset::class);
         $asset->method('getNode')->willReturn(

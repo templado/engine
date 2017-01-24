@@ -8,6 +8,7 @@ class FormDataTest extends TestCase {
 
     /**
      * @param array $data
+     *
      * @dataProvider validDataProvider
      */
     public function testCanBeInstantiatedWithUsableData(array $data) {
@@ -18,13 +19,13 @@ class FormDataTest extends TestCase {
     public function validDataProvider(): array {
         return [
             'string' => [['a' => 'a']],
-            'array'  => [['a' => ['a','b']]]
+            'array'  => [['a' => ['a', 'b']]]
         ];
     }
 
-
     /**
      * @param array $data
+     *
      * @dataProvider invalidDataProvider
      */
     public function testCanNotBeInstantiatedWithUnusableDataTypes(array $data) {

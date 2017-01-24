@@ -10,7 +10,7 @@ class XPathSelectorTest extends TestCase {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
 
-        $selector = new XPathSelector('//child');
+        $selector  = new XPathSelector('//child');
         $selection = $selector->select($dom->documentElement);
 
         $this->assertInstanceOf(Selection::class, $selection);

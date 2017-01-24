@@ -9,7 +9,7 @@ class ViewModelRendererTest extends TestCase {
 
     public function testViewModelGetsAppliedAsExcepted() {
         $viewModel = new ViewModel();
-        $dom = new DOMDocument();
+        $dom       = new DOMDocument();
         $dom->load(__DIR__ . '/../_data/viewmodel/source.html');
 
         $renderer = new ViewModelRenderer();
@@ -41,7 +41,8 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
-        $renderer->render($dom->documentElement, new class {});
+        $renderer->render($dom->documentElement, new class {
+        });
     }
 
     public function testUnsupportedVariableTypeThrowsException() {

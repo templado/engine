@@ -43,6 +43,7 @@ class AssetRenderer {
                     $node->ownerDocument->importNode($asset->getNode(), true),
                     $node
                 );
+
                 return;
             }
             $node->appendChild(

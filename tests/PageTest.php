@@ -38,7 +38,7 @@ class PageTest extends TestCase {
     public function testViewModelCanBeApplied() {
 
         $viewModel = new ViewModel();
-        $dom = new DOMDocument();
+        $dom       = new DOMDocument();
         $dom->load(__DIR__ . '/_data/viewmodel/source.html');
 
         $page = new Page($dom);
@@ -69,7 +69,7 @@ class PageTest extends TestCase {
 
         $page = new Page($dom);
         $page->applyTransformation($transformation);
-        
+
     }
 
     public function testFormDataCanBeApplied() {
@@ -78,10 +78,10 @@ class PageTest extends TestCase {
         $formdata = include $path . '/formdata.php';
 
         $dom = new DOMDocument();
-        $dom->load( $path . '/form.html');
+        $dom->load($path . '/form.html');
 
         $expected = new DOMDocument();
-        $expected->load( $path . '/expected.html');
+        $expected->load($path . '/expected.html');
 
         $page = new Page($dom);
         $page->applyFormData($formdata);

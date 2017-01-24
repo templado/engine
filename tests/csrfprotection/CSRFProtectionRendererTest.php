@@ -27,7 +27,7 @@ class CSRFProtectionRendererTest extends TestCase {
         $protection->method('getTokenValue')->willReturn('secure');
 
         $this->protection = $protection;
-        $this->renderer = new CSRFProtectionRenderer();
+        $this->renderer   = new CSRFProtectionRenderer();
 
         $this->expected = new DOMDocument();
         $this->expected->loadXML(
@@ -78,6 +78,5 @@ class CSRFProtectionRendererTest extends TestCase {
         $this->assertEquals('a:b', $input->namespaceURI);
 
     }
-
 
 }
