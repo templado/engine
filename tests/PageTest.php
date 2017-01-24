@@ -19,7 +19,7 @@ class PageTest extends TestCase {
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
         $asset = $this->createMock(Asset::class);
-        $asset->method('getNode')->willReturn(
+        $asset->method('getContent')->willReturn(
             new DOMElement('test')
         );
 

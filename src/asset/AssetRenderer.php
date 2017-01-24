@@ -40,14 +40,14 @@ class AssetRenderer {
             $asset = $this->assetCollection->getAssetForId($id);
             if ($asset->hasId() && $asset->getId() === $id) {
                 $node->parentNode->replaceChild(
-                    $node->ownerDocument->importNode($asset->getNode(), true),
+                    $node->ownerDocument->importNode($asset->getContent(), true),
                     $node
                 );
 
                 return;
             }
             $node->appendChild(
-                $node->ownerDocument->importNode($asset->getNode(), true)
+                $node->ownerDocument->importNode($asset->getContent(), true)
             );
         }
 

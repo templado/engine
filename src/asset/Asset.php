@@ -16,7 +16,7 @@ class Asset {
         $this->node = $node;
     }
 
-    public function getNode() {
+    public function getContent() {
         return $this->node;
     }
 

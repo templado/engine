@@ -21,7 +21,7 @@ class AssetTest extends TestCase {
 
     public function testNodeCanBeRetrieved() {
         $asset = new Asset($this->domNode);
-        $this->assertSame($this->domNode, $asset->getNode());
+        $this->assertSame($this->domNode, $asset->getContent());
     }
 
     public function testIdCheckReturnsFalseForDomNode() {
