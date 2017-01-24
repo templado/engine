@@ -3,6 +3,9 @@ namespace TheSeer\Templado;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \TheSeer\Templado\CSRFProtection
+ */
 class CSRFProtectionTest extends TestCase {
 
     /**

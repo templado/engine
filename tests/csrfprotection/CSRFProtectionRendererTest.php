@@ -4,6 +4,9 @@ namespace TheSeer\Templado;
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \TheSeer\Templado\CSRFProtectionRenderer
+ */
 class CSRFProtectionRendererTest extends TestCase {
 
     /**

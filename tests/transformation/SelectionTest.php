@@ -4,6 +4,9 @@ namespace TheSeer\Templado;
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \TheSeer\Templado\Selection
+ */
 class SelectionTest extends TestCase {
 
     public function testIsEmptyReturnsTrueOnEmptySelection() {

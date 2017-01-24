@@ -5,6 +5,9 @@ use DOMElement;
 use DOMNode;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \TheSeer\Templado\Asset
+ */
 class AssetTest extends TestCase {
 
     /** @var  DOMNode */

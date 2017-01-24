@@ -4,13 +4,17 @@ namespace TheSeer\Templado;
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \TheSeer\Templado\TransformationProcessor
+ */
 class TransformationProcessorTest extends TestCase {
 
     public function testProcessCallsTransformation() {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
 
-        $selection = new Selection($dom->documentElement->childNodes);
+        $selection = $this->createMock(Selection::class);
+        $selection->method('getIterator')->willReturn($dom->documentElement->childNodes);
 
         $selector = $this->createMock(Selector::class);
         $selector->method('select')->willReturn($selection);
@@ -25,7 +29,8 @@ class TransformationProcessorTest extends TestCase {
     }
 
     public function testEmptySelectionDoesNotCallTransformation() {
-        $selection = new Selection(new \DOMNodeList());
+        $selection = $this->createMock(Selection::class);
+        $selection->method('isEmpty')->willReturn(true);
 
         $selector = $this->createMock(Selector::class);
         $selector->method('select')->willReturn($selection);

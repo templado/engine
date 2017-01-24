@@ -4,6 +4,9 @@ namespace TheSeer\Templado;
 use DOMElement;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \TheSeer\Templado\AssetRenderer
+ */
 class AssetRendererTest extends TestCase {
 
     public function testSimpleElementGetsAdded() {

@@ -3,6 +3,9 @@ namespace TheSeer\Templado;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \TheSeer\Templado\FileName
+ */
 class FileNameTest extends TestCase {
 
     public function testFileNameCanBeRetrievedAsString() {

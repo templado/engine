@@ -4,6 +4,9 @@ namespace TheSeer\Templado;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
+/**
+ * @covers \TheSeer\Templado\FormData
+ */
 class FormDataTest extends TestCase {
 
     /**

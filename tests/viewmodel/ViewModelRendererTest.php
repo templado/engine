@@ -5,6 +5,9 @@ use DOMDocument;
 use PHPUnit\Framework\TestCase;
 use TheSeer\Templado\Example\ViewModel;
 
+/**
+ * @covers \TheSeer\Templado\ViewModelRenderer
+ */
 class ViewModelRendererTest extends TestCase {
 
     public function testViewModelGetsAppliedAsExcepted() {

@@ -5,6 +5,10 @@ use DOMDocument;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 
+/**
+ * @covers \TheSeer\Templado\FormDataRenderer
+ * @uses \TheSeer\Templado\FormData
+ */
 class FormDataRendererTest extends TestCase {
 
     /**
