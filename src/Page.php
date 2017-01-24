@@ -48,6 +48,9 @@ class Page {
         (new CSRFProtectionRenderer())->render($this->dom->documentElement, $protection);
     }
 
+    /**
+     * @param Transformation $transformation
+     */
     public function applyTransformation(Transformation $transformation) {
         (new TransformationProcessor())->process($this->dom->documentElement, $transformation);
     }

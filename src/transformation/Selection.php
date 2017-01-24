@@ -25,7 +25,7 @@ class Selection implements IteratorAggregate {
         return $this->nodeList->length === 0;
     }
 
-    public function getIterator(): Traversable {
+    public function getIterator(): DOMNodeList {
         return $this->nodeList;
     }
 

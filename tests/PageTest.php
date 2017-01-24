@@ -53,6 +53,25 @@ class PageTest extends TestCase {
         );
     }
 
+    public function testTransformationCanBeApplied() {
+
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
+
+        $selection = new Selection($dom->documentElement->childNodes);
+
+        $selector = $this->createMock(Selector::class);
+        $selector->method('select')->willReturn($selection);
+
+        $transformation = $this->createMock(Transformation::class);
+        $transformation->expects($this->once())->method('getSelector')->willReturn($selector);
+        $transformation->expects($this->once())->method('apply')->with($dom->documentElement->firstChild);
+
+        $page = new Page($dom);
+        $page->applyTransformation($transformation);
+        
+    }
+
     public function testFormDataCanBeApplied() {
         $path = __DIR__ . '/_data/formdata/text';
 
