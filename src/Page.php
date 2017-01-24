@@ -82,20 +82,23 @@ class Page {
         );
 
         if ($this->dom->doctype instanceof DOMDocumentType) {
-            $xmlString = implode(
-                "\n",
-                [
-                    $this->dom->saveXML($this->dom->doctype),
-                    $this->dom->saveXML($this->dom->documentElement, LIBXML_NOEMPTYTAG)
-                ]
-            );
-
-            return $xmlString;
-        } else {
-            $xmlString = $this->dom->saveXML($this->dom->documentElement, LIBXML_NOEMPTYTAG);
-
-            return $xmlString;
+            return $this->serializeWithoutXMLHeader();
         }
+
+        return $this->dom->saveXML($this->dom->documentElement, LIBXML_NOEMPTYTAG);
+    }
+
+    /**
+     * @return string
+     */
+    private function serializeWithoutXMLHeader(): string {
+        return implode(
+            "\n",
+            [
+                $this->dom->saveXML($this->dom->doctype),
+                $this->dom->saveXML($this->dom->documentElement, LIBXML_NOEMPTYTAG)
+            ]
+        );
     }
 
 }
