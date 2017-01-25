@@ -23,10 +23,15 @@ class PageTest extends TestCase {
             new DOMElement('test')
         );
 
-        /** @var AssetCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
-        $collection = $this->createMock(AssetCollection::class);
-        $collection->method('hasAssetForId')->willReturn(true);
-        $collection->method('getAssetForId')->willReturn($asset);
+
+        $assetList = $this->createMock(AssetList::class);
+        $assetList->method('current')->willReturn($asset);
+        $assetList->method('valid')->willReturn(true, false);
+
+        /** @var AssetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        $collection = $this->createMock(AssetListCollection::class);
+        $collection->method('hasAssetsForId')->willReturn(true);
+        $collection->method('getAssetsForId')->willReturn($assetList);
 
         $page = new Page($dom);
 

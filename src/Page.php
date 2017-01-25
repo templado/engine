@@ -19,9 +19,9 @@ class Page {
     }
 
     /**
-     * @param AssetCollection $assetCollection
+     * @param AssetListCollection $assetCollection
      */
-    public function applyAssets(AssetCollection $assetCollection) {
+    public function applyAssets(AssetListCollection $assetCollection) {
         (new AssetRenderer($assetCollection))->render($this->dom->documentElement);
     }
 

@@ -18,10 +18,14 @@ class AssetRendererTest extends TestCase {
             new DOMElement('test')
         );
 
-        /** @var AssetCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
-        $collection = $this->createMock(AssetCollection::class);
-        $collection->method('hasAssetForId')->willReturn(true);
-        $collection->method('getAssetForId')->willReturn($asset);
+        $assetList = $this->createMock(AssetList::class);
+        $assetList->method('valid')->willReturn(true, false);
+        $assetList->method('current')->willReturn($asset);
+
+        /** @var AssetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        $collection = $this->createMock(AssetListCollection::class);
+        $collection->method('hasAssetsForId')->willReturn(true);
+        $collection->method('getAssetsForId')->willReturn($assetList);
 
         $renderer = new AssetRenderer($collection);
         $renderer->render($dom->documentElement);
@@ -47,13 +51,17 @@ class AssetRendererTest extends TestCase {
         $asset->method('getContent')->willReturn(
             $element
         );
-        $asset->method('hasId')->willReturn('true');
-        $asset->method('getId')->willReturn('a');
+        $asset->method('hasContentWithId')->willReturn('true');
+        $asset->method('getContentId')->willReturn('a');
 
-        /** @var AssetCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
-        $collection = $this->createMock(AssetCollection::class);
-        $collection->method('hasAssetForId')->willReturn(true);
-        $collection->method('getAssetForId')->willReturn($asset);
+        $assetList = $this->createMock(AssetList::class);
+        $assetList->method('valid')->willReturn(true, false);
+        $assetList->method('current')->willReturn($asset);
+
+        /** @var AssetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        $collection = $this->createMock(AssetListCollection::class);
+        $collection->method('hasAssetsForId')->willReturn(true);
+        $collection->method('getAssetsForId')->willReturn($assetList);
 
         $renderer = new AssetRenderer($collection);
         $renderer->render($dom->documentElement);
@@ -71,9 +79,9 @@ class AssetRendererTest extends TestCase {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
-        /** @var AssetCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
-        $collection = $this->createMock(AssetCollection::class);
-        $collection->method('hasAssetForId')->willReturn(false);
+        /** @var AssetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        $collection = $this->createMock(AssetListCollection::class);
+        $collection->method('hasAssetsForId')->willReturn(false);
 
         $renderer = new AssetRenderer($collection);
         $renderer->render($dom->documentElement);
@@ -91,9 +99,9 @@ class AssetRendererTest extends TestCase {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><!-- comment --></root>');
 
-        /** @var AssetCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
-        $collection = $this->createMock(AssetCollection::class);
-        $collection->method('hasAssetForId')->willReturn(false);
+        /** @var AssetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        $collection = $this->createMock(AssetListCollection::class);
+        $collection->method('hasAssetsForId')->willReturn(false);
 
         $renderer = new AssetRenderer($collection);
         $renderer->render($dom->documentElement);

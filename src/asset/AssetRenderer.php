@@ -7,16 +7,16 @@ use DOMNode;
 class AssetRenderer {
 
     /**
-     * @var AssetCollection
+     * @var AssetListCollection
      */
     private $assetCollection;
 
     /**
      * AssetRenderer constructor.
      *
-     * @param AssetCollection $assetCollection
+     * @param AssetListCollection $assetCollection
      */
-    public function __construct(AssetCollection $assetCollection) {
+    public function __construct(AssetListCollection $assetCollection) {
         $this->assetCollection = $assetCollection;
     }
 
@@ -33,28 +33,36 @@ class AssetRenderer {
         if ($node->hasAttribute('id')) {
             $id = $node->getAttribute('id');
 
-            if (!$this->assetCollection->hasAssetForId($id)) {
-                return;
+            if ($this->assetCollection->hasAssetsForId($id)) {
+                $this->applyAssetsToNode($id, $node);
             }
-
-            $asset = $this->assetCollection->getAssetForId($id);
-            if ($asset->hasId() && $asset->getId() === $id) {
-                $node->parentNode->replaceChild(
-                    $node->ownerDocument->importNode($asset->getContent(), true),
-                    $node
-                );
-
-                return;
-            }
-            $node->appendChild(
-                $node->ownerDocument->importNode($asset->getContent(), true)
-            );
         }
 
         if ($node->hasChildNodes()) {
             $this->render($node);
         }
 
+    }
+
+    /**
+     * @param string     $id
+     * @param DOMElement $node
+     */
+    private function applyAssetsToNode($id, DOMElement $node) {
+        $assets = $this->assetCollection->getAssetsForId($id);
+        foreach($assets as $asset) {
+            if ($asset->hasContentWithId() && $asset->getContentId() === $id) {
+                $node->parentNode->replaceChild(
+                    $node->ownerDocument->importNode($asset->getContent(), true),
+                    $node
+                );
+
+                continue;
+            }
+            $node->appendChild(
+                $node->ownerDocument->importNode($asset->getContent(), true)
+            );
+        }
     }
 
 }

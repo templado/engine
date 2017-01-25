@@ -4,44 +4,54 @@ namespace TheSeer\Templado;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \TheSeer\Templado\AssetCollection
+ * @covers \TheSeer\Templado\AssetListCollection
  */
-class AssetCollectionTest extends TestCase {
+class AssetListCollectionTest extends TestCase {
 
     /**
-     * @var AssetCollection
+     * @var AssetListCollection
      */
     private $collection;
 
     protected function setUp() {
-        $this->collection = new AssetCollection();
+        $this->collection = new AssetListCollection();
     }
 
     public function testReturnsFalseWhenNoAssetWithGivenIdExists() {
         $this->assertFalse(
-            $this->collection->hasAssetForId('abc')
+            $this->collection->hasAssetsForId('abc')
         );
     }
 
+    /**
+     * @uses \TheSeer\Templado\AssetList
+     */
     public function testReturnsTrueForExistingAsset() {
         /** @var \PHPUnit_Framework_MockObject_MockObject|Asset $asset */
         $asset = $this->createMock(Asset::class);
-        $this->collection->addAsset('abc', $asset);
+        $asset->method('getTargetId')->willReturn('abc');
+        $this->collection->addAsset($asset);
         $this->assertTrue(
-            $this->collection->hasAssetForId('abc')
+            $this->collection->hasAssetsForId('abc')
         );
     }
 
     public function testThrowsExceptionWhenTryingToRetrieveNonExistingAsset() {
         $this->expectException(AssetCollectionException::class);
-        $this->collection->getAssetForId('abc');
+        $this->collection->getAssetsForId('abc');
     }
 
+    /**
+     * @uses \TheSeer\Templado\AssetList
+     */
     public function testExistingAssetCanBeRetrieved() {
         /** @var \PHPUnit_Framework_MockObject_MockObject|Asset $asset */
         $asset = $this->createMock(Asset::class);
-        $this->collection->addAsset('abc', $asset);
-        $this->assertSame($asset, $this->collection->getAssetForId('abc'));
+        $asset->method('getTargetId')->willReturn('abc');
+        $this->collection->addAsset($asset);
+        $result = $this->collection->getAssetsForId('abc');
+        $this->assertInstanceOf(AssetList::class, $result);
+        $this->assertCount(1, $result);
     }
 
 }

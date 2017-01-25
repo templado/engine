@@ -7,32 +7,73 @@ use DOMNode;
 class Asset {
 
     /** @var DOMNode */
-    private $node;
+    private $content;
 
     /**
-     * @param DOMNode $node
+     * @var string
      */
-    public function __construct(DOMNode $node) {
-        $this->node = $node;
+    private $targetId;
+
+    /**
+     * @var Selector
+     */
+    private $relation;
+
+    /**
+     * @param string   $targetId
+     * @param DOMNode  $content
+     * @param Selector $relation
+     */
+    public function __construct(string $targetId, DOMNode $content, Selector $relation = null) {
+        $this->content  = $content;
+        $this->targetId = $targetId;
+        $this->relation = $relation;
     }
 
+    /**
+     * @return string
+     */
+    public function getTargetId(): string {
+        return $this->targetId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasRelation(): bool {
+        return $this->relation instanceof Selector;
+    }
+
+    /**
+     * @return Selector
+     */
+    public function getRelation(): Selector {
+        return $this->relation;
+    }
+
+    /**
+     * @return DOMNode
+     */
     public function getContent() {
-        return $this->node;
+        return $this->content;
     }
 
-    public function hasId() {
-        if (!$this->node instanceof DOMElement) {
+    /**
+     * @return bool
+     */
+    public function hasContentWithId(): bool {
+        if (!$this->content instanceof DOMElement) {
             return false;
         }
 
-        return $this->node->hasAttribute('id');
+        return $this->content->hasAttribute('id');
     }
 
-    public function getId() {
-        if (!$this->hasId()) {
-            throw new AssetException('No ID set');
+    public function getContentId(): string {
+        if (!$this->hasContentWithId()) {
+            throw new AssetException('No Content ID set');
         }
-        $node = $this->node;
+        $node = $this->content;
 
         /** @var DOMElement $node */
         return $node->getAttribute('id');
