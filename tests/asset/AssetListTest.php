@@ -10,7 +10,7 @@ class AssetListTest extends TestCase {
             $this->createMock(Asset::class),
             $this->createMock(Asset::class)
         ];
-        $list = new AssetList();
+        $list     = new AssetList();
         $list->addAsset($expected[0]);
         $list->addAsset($expected[1]);
 

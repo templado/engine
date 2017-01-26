@@ -52,7 +52,7 @@ class AssetTest extends TestCase {
 
     public function testRelationSelectorCanBeRetrieved() {
         $selector = $this->createMock(Selector::class);
-        $asset = new Asset('foo',
+        $asset    = new Asset('foo',
             new DOMNode(),
             $selector
         );
@@ -68,12 +68,12 @@ class AssetTest extends TestCase {
     }
 
     public function testHasRelationReturnsFalseIfNoSelectorWasSet() {
-        $asset = new Asset('foo',new DOMNode());
+        $asset = new Asset('foo', new DOMNode());
         $this->assertFalse($asset->hasRelation());
     }
 
     public function testTargetIdCanBeRetrieved() {
-        $asset = new Asset('foo',new DOMNode());
+        $asset = new Asset('foo', new DOMNode());
         $this->assertEquals('foo', $asset->getTargetId());
     }
 

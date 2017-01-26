@@ -22,5 +22,4 @@ class ClearNamespaceDefinitionFilterTest extends TestCase {
         );
     }
 
-
 }

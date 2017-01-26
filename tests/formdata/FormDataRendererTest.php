@@ -7,7 +7,7 @@ use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * @covers \TheSeer\Templado\FormDataRenderer
- * @uses \TheSeer\Templado\FormData
+ * @uses   \TheSeer\Templado\FormData
  */
 class FormDataRendererTest extends TestCase {
 

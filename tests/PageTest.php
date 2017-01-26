@@ -23,7 +23,6 @@ class PageTest extends TestCase {
             new DOMElement('test')
         );
 
-
         $assetList = $this->createMock(AssetList::class);
         $assetList->method('current')->willReturn($asset);
         $assetList->method('valid')->willReturn(true, false);
