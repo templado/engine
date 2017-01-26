@@ -239,7 +239,9 @@ class ViewModelRenderer {
 
             $value = $model->{$method}($attribute->value);
             if ($value === false || $value === null) {
-                $attribute->parentNode->removeAttribute($attribute->name);
+                /** @var $parent DOMElement */
+                $parent = $attribute->parentNode;
+                $parent->removeAttribute($attribute->name);
 
                 return;
             }
