@@ -74,7 +74,7 @@ class User {
 
 class ViewModel {
 
-    public function headline() {
+    public function getHeadline() {
         return new Headline();
     }
 
