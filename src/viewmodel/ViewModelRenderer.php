@@ -68,12 +68,17 @@ class ViewModelRenderer {
         }
         $this->stackNames[] = $property;
 
-        if (!method_exists($model, $property)) {
-            throw new ViewModelRendererException(
-                sprintf('Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
-            );
+        foreach([$property, 'get' . ucfirst($property)] as $method) {
+            if (method_exists($model, $method)) {
+                $this->stack[] = $model->{$method}($context->nodeValue);
+                return;
+            }
         }
-        $this->stack[] = $model->{$property}($context->nodeValue);
+
+        throw new ViewModelRendererException(
+            sprintf('Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
+        );
+
     }
 
     /**
@@ -226,24 +231,28 @@ class ViewModelRenderer {
      * @throws \TheSeer\Templado\ViewModelRendererException
      */
     private function processAttribute(DOMAttr $attribute, $model) {
-        if (!method_exists($model, $attribute->name)) {
+        foreach([$attribute->name, 'get' . ucfirst($attribute->name)] as $method) {
+
+            if (!method_exists($model, $method)) {
+                continue;
+            }
+
+            $value = $model->{$method}($attribute->value);
+            if ($value === false || $value === null) {
+                $attribute->parentNode->removeAttribute($attribute->name);
+
+                return;
+            }
+
+            if (!is_string($value)) {
+                throw new ViewModelRendererException(
+                    sprintf('Attribute value must be string or boolean false - type %s received', gettype($value))
+                );
+            }
+
+            $attribute->value = $value;
             return;
         }
-
-        $value = $model->{$attribute->name}($attribute->value);
-        if ($value === false || $value === null) {
-            $attribute->parentNode->removeAttribute($attribute->name);
-
-            return;
-        }
-
-        if (!is_string($value)) {
-            throw new ViewModelRendererException(
-                sprintf('Attribute value must be string or boolean false - type %s received', gettype($value))
-            );
-        }
-
-        $attribute->value = $value;
     }
 
 }
