@@ -160,23 +160,7 @@ class ViewModelRenderer {
         }
 
         foreach($context->attributes as $attribute) {
-            /** @var $attribute DOMAttr */
-            if (!method_exists($model, $attribute->name)) {
-                continue;
-            }
-
-            $value = $model->{$attribute->name}($attribute->value);
-            if ($value === false || $value === null) {
-                $context->removeAttribute($attribute->name);
-                continue;
-            }
-
-            if (!is_string($value)) {
-                throw new ViewModelRendererException(
-                    sprintf('Attribute value must be string or boolean false - type %s received', gettype($value))
-                );
-            }
-            $attribute->value = $value;
+            $this->processAttribute($attribute, $model);
         }
     }
 
@@ -233,6 +217,33 @@ class ViewModelRenderer {
         foreach($remove as $node) {
             $parent->removeChild($node);
         }
+    }
+
+    /**
+     * @param DOMAttr $attribute
+     * @param object  $model
+     *
+     * @throws \TheSeer\Templado\ViewModelRendererException
+     */
+    private function processAttribute(DOMAttr $attribute, $model) {
+        if (!method_exists($model, $attribute->name)) {
+            return;
+        }
+
+        $value = $model->{$attribute->name}($attribute->value);
+        if ($value === false || $value === null) {
+            $attribute->parentNode->removeAttribute($attribute->name);
+
+            return;
+        }
+
+        if (!is_string($value)) {
+            throw new ViewModelRendererException(
+                sprintf('Attribute value must be string or boolean false - type %s received', gettype($value))
+            );
+        }
+
+        $attribute->value = $value;
     }
 
 }
