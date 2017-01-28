@@ -56,21 +56,14 @@ class ViewModelRenderer {
         $model    = $this->current();
         $property = $context->getAttribute('property');
 
-        if (!is_object($model)) {
-            throw new ViewModelRendererException(
-                sprintf(
-                    'Trying to add "%s" failed - Non object (%s) on stack: $%s',
-                    $property,
-                    gettype($model),
-                    implode('()->', $this->stackNames) . '() '
-                )
-            );
-        }
+        $this->ensureIsObject($model, $property);
+
         $this->stackNames[] = $property;
 
         foreach([$property, 'get' . ucfirst($property)] as $method) {
             if (method_exists($model, $method)) {
                 $this->stack[] = $model->{$method}($context->nodeValue);
+
                 return;
             }
         }
@@ -78,7 +71,6 @@ class ViewModelRenderer {
         throw new ViewModelRendererException(
             sprintf('Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
         );
-
     }
 
     /**
@@ -228,7 +220,7 @@ class ViewModelRenderer {
      * @param DOMAttr $attribute
      * @param object  $model
      *
-     * @throws \TheSeer\Templado\ViewModelRendererException
+     * @throws ViewModelRendererException
      */
     private function processAttribute(DOMAttr $attribute, $model) {
         foreach([$attribute->name, 'get' . ucfirst($attribute->name)] as $method) {
@@ -253,7 +245,27 @@ class ViewModelRenderer {
             }
 
             $attribute->value = $value;
+
             return;
+        }
+    }
+
+    /**
+     * @param mixed  $model
+     * @param string $property
+     *
+     * @throws ViewModelRendererException
+     */
+    private function ensureIsObject($model, $property) {
+        if (!is_object($model)) {
+            throw new ViewModelRendererException(
+                sprintf(
+                    'Trying to add "%s" failed - Non object (%s) on stack: $%s',
+                    $property,
+                    gettype($model),
+                    implode('()->', $this->stackNames) . '() '
+                )
+            );
         }
     }
 
