@@ -3,6 +3,9 @@ namespace TheSeer\Templado;
 
 class FileName {
 
+    /**
+     * @var string
+     */
     private $path;
 
     /**
@@ -19,6 +22,27 @@ class FileName {
      */
     public function asString(): string {
         return $this->path;
+    }
+
+    /**
+     * @return bool
+     */
+    public function exists(): bool {
+        return file_exists($this->path);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFile(): bool {
+        return is_file(realpath($this->path));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReadable(): bool {
+        return is_readable($this->path);
     }
 
 }
