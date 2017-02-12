@@ -13,7 +13,7 @@ class AssetRendererTest extends TestCase {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
-        $asset = $this->createMock(Asset::class);
+        $asset = $this->createMock(SimpleAsset::class);
         $asset->method('getContent')->willReturn(
             new DOMElement('test')
         );
@@ -39,7 +39,7 @@ class AssetRendererTest extends TestCase {
         );
     }
 
-    public function testElemenGetsReplacedIfAssetHasId() {
+    public function testElemenGetsReplacedIfConfiguredToDoSo() {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
@@ -47,12 +47,11 @@ class AssetRendererTest extends TestCase {
         $element = $dom2->createElement('test');
         $element->setAttribute('id', 'a');
 
-        $asset = $this->createMock(Asset::class);
+        $asset = $this->createMock(SimpleAsset::class);
         $asset->method('getContent')->willReturn(
             $element
         );
-        $asset->method('hasContentWithId')->willReturn('true');
-        $asset->method('getContentId')->willReturn('a');
+        $asset->method('replaceCurrent')->willReturn('true');
 
         $assetList = $this->createMock(AssetList::class);
         $assetList->method('valid')->willReturn(true, false);

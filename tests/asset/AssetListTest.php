@@ -7,8 +7,8 @@ class AssetListTest extends TestCase {
 
     public function testCanBeUsedAsIterator() {
         $expected = [
-            $this->createMock(Asset::class),
-            $this->createMock(Asset::class)
+            $this->createMock(SimpleAsset::class),
+            $this->createMock(SimpleAsset::class)
         ];
         $list     = new AssetList();
         $list->addAsset($expected[0]);
@@ -25,7 +25,7 @@ class AssetListTest extends TestCase {
 
     public function testReturnsCorrectCountForNonEmptyList() {
         $list = new AssetList();
-        $list->addAsset($this->createMock(Asset::class));
+        $list->addAsset($this->createMock(SimpleAsset::class));
         $this->assertCount(1, $list);
     }
 

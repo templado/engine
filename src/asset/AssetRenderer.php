@@ -29,6 +29,9 @@ class AssetRenderer {
         }
     }
 
+    /**
+     * @param DOMElement $node
+     */
     private function processNode(DOMElement $node) {
         if ($node->hasAttribute('id')) {
             $id = $node->getAttribute('id');
@@ -41,27 +44,25 @@ class AssetRenderer {
         if ($node->hasChildNodes()) {
             $this->render($node);
         }
-
     }
 
     /**
      * @param string     $id
      * @param DOMElement $node
+     *
+     * @throws \TheSeer\Templado\AssetCollectionException
      */
     private function applyAssetsToNode($id, DOMElement $node) {
         $assets = $this->assetCollection->getAssetsForId($id);
         foreach($assets as $asset) {
-            if ($asset->hasContentWithId() && $asset->getContentId() === $id) {
-                $node->parentNode->replaceChild(
-                    $node->ownerDocument->importNode($asset->getContent(), true),
-                    $node
-                );
+            $content = $node->ownerDocument->importNode($asset->getContent(), true);
 
+            if ($asset->replaceCurrent()) {
+                $node->parentNode->replaceChild($content, $node);
                 continue;
             }
-            $node->appendChild(
-                $node->ownerDocument->importNode($asset->getContent(), true)
-            );
+
+            $node->appendChild($content);
         }
     }
 

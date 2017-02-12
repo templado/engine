@@ -28,7 +28,7 @@ class AssetListCollectionTest extends TestCase {
      */
     public function testReturnsTrueForExistingAsset() {
         /** @var \PHPUnit_Framework_MockObject_MockObject|Asset $asset */
-        $asset = $this->createMock(Asset::class);
+        $asset = $this->createMock(SimpleAsset::class);
         $asset->method('getTargetId')->willReturn('abc');
         $this->collection->addAsset($asset);
         $this->assertTrue(
@@ -46,7 +46,7 @@ class AssetListCollectionTest extends TestCase {
      */
     public function testExistingAssetCanBeRetrieved() {
         /** @var \PHPUnit_Framework_MockObject_MockObject|Asset $asset */
-        $asset = $this->createMock(Asset::class);
+        $asset = $this->createMock(SimpleAsset::class);
         $asset->method('getTargetId')->willReturn('abc');
         $this->collection->addAsset($asset);
         $result = $this->collection->getAssetsForId('abc');

@@ -16,11 +16,11 @@ try {
     $fragment->appendXML('This is a first test: <span id="nested" />');
 
     $assetCollection->addAsset(
-        new Asset('test', $fragment)
+        new SimpleAsset('test', $fragment)
     );
 
     $assetCollection->addAsset(
-        new Asset('nested', new \DOMText('Hello world'))
+        new SimpleAsset('nested', new \DOMText('Hello world'))
     );
     $page->applyAssets(
         $assetCollection
