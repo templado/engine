@@ -18,11 +18,10 @@ class PageTest extends TestCase {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
-        $asset = $this->createMock(SimpleAsset::class);
-        $asset->method('getContent')->willReturn(
-            new DOMElement('test')
-        );
+        $reference = $dom->documentElement->firstChild;
 
+        $asset = $this->createMock(SimpleAsset::class);
+        $asset->expects($this->once())->method('applyTo')->with($reference);
         $assetList = $this->createMock(AssetList::class);
         $assetList->method('current')->willReturn($asset);
         $assetList->method('valid')->willReturn(true, false);
@@ -36,13 +35,7 @@ class PageTest extends TestCase {
 
         $page->applyAssets($collection);
 
-        $expected = new \DOMDocument();
-        $expected->loadXML('<?xml version="1.0" ?><root><child id="a"><test/></child></root>');
 
-        $this->assertEqualXMLStructure(
-            $expected->documentElement,
-            $dom->documentElement
-        );
     }
 
     /**

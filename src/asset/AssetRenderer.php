@@ -55,14 +55,7 @@ class AssetRenderer {
     private function applyAssetsToNode($id, DOMElement $node) {
         $assets = $this->assetCollection->getAssetsForId($id);
         foreach($assets as $asset) {
-            $content = $node->ownerDocument->importNode($asset->getContent(), true);
-
-            if ($asset->replaceCurrent()) {
-                $node->parentNode->replaceChild($content, $node);
-                continue;
-            }
-
-            $node->appendChild($content);
+            $asset->applyTo($node);
         }
     }
 

@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 namespace TheSeer\Templado;
 
+use DOMElement;
 use DOMNode;
 
 class SimpleAsset implements Asset {
@@ -14,20 +15,14 @@ class SimpleAsset implements Asset {
     private $targetId;
 
     /**
-     * @var bool
-     */
-    private $replace;
-
-    /**
      * @param string  $targetId
      * @param DOMNode $content
-     * @param bool    $replace
      *
+     * @internal param bool $replace
      */
-    public function __construct(string $targetId, DOMNode $content, bool $replace = false) {
-        $this->content  = $content;
+    public function __construct(string $targetId, DOMNode $content) {
         $this->targetId = $targetId;
-        $this->replace = $replace;
+        $this->content  = $content;
     }
 
     /**
@@ -38,17 +33,35 @@ class SimpleAsset implements Asset {
     }
 
     /**
-     * @return DOMNode
+     * @param DOMElement $node
      */
-    public function getContent(): DOMNode {
-        return $this->content;
+    public function applyTo(DOMElement $node) {
+        $content = $node->ownerDocument->importNode($this->content, true);
+
+        if ($this->shouldReplace($node, $content)) {
+            $node->parentNode->replaceChild($content, $node);
+            return;
+        }
+
+        $node->appendChild($content);
     }
 
     /**
+     * @param DOMElement $node
+     * @param DOMNode    $content
+     *
      * @return bool
      */
-    public function replaceCurrent(): bool {
-        return $this->replace;
+    private function shouldReplace(DOMElement $node, DOMNode $content):bool {
+        if (!$content instanceof DOMElement) {
+            return false;
+        }
+
+        if (!$node->hasAttribute('id') || !$content->hasAttribute('id')) {
+            return false;
+        }
+
+        return $node->getAttribute('id') === $content->getAttribute('id');
     }
 
 }

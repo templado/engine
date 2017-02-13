@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 namespace TheSeer\Templado;
 
-use DOMNode;
+use DOMElement;
 
 interface Asset {
 
@@ -11,13 +11,8 @@ interface Asset {
     public function getTargetId(): string;
 
     /**
-     * @return DOMNode
+     * @param DOMElement $node
      */
-    public function getContent(): DOMNode;
-
-    /**
-     * @return bool
-     */
-    public function replaceCurrent(): bool;
+    public function applyTo(DOMElement $node);
 
 }

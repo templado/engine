@@ -3,6 +3,9 @@ namespace TheSeer\Templado;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \TheSeer\Templado\AssetList
+ */
 class AssetListTest extends TestCase {
 
     public function testCanBeUsedAsIterator() {
