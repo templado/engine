@@ -120,7 +120,7 @@ class AssetLoader {
     private function parseAsHTML(DOMDocument $dom): Asset {
         $id = $dom->documentElement->getAttribute('id');
         if ($id === '') {
-            $id = pathinfo($dom->documentURI, PATHINFO_FILENAME );
+            $id = pathinfo($dom->documentURI, PATHINFO_FILENAME);
         }
 
         return new SimpleAsset($id, $dom->documentElement);
