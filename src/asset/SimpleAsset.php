@@ -40,6 +40,7 @@ class SimpleAsset implements Asset {
 
         if ($this->shouldReplace($node, $content)) {
             $node->parentNode->replaceChild($content, $node);
+
             return;
         }
 
@@ -52,7 +53,7 @@ class SimpleAsset implements Asset {
      *
      * @return bool
      */
-    private function shouldReplace(DOMElement $node, DOMNode $content):bool {
+    private function shouldReplace(DOMElement $node, DOMNode $content): bool {
         if (!$content instanceof DOMElement) {
             return false;
         }

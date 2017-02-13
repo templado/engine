@@ -2,7 +2,6 @@
 namespace TheSeer\Templado;
 
 use DOMDocument;
-use DOMElement;
 use PHPUnit\Framework\TestCase;
 use TheSeer\Templado\Example\ViewModel;
 
@@ -34,7 +33,6 @@ class PageTest extends TestCase {
         $page = new Page($dom);
 
         $page->applyAssets($collection);
-
 
     }
 

@@ -55,6 +55,7 @@ class AssetLoader {
      */
     private function isAssetDocument(DOMDocument $dom): bool {
         $root = $dom->documentElement;
+
         return (
             $root->namespaceURI === 'https://templado.io/assets/1.0' &&
             $root->localName === 'asset' &&
@@ -69,6 +70,7 @@ class AssetLoader {
      */
     private function isHtmlDocument(DOMDocument $dom): bool {
         $root = $dom->documentElement;
+
         return (
             $root->namespaceURI === 'http://www.w3.org/1999/xhtml' ||
             (string)$root->namespaceURI === ''
@@ -115,7 +117,7 @@ class AssetLoader {
         return new SimpleAsset($dom->documentElement->getAttribute('id'), $fragment);
     }
 
-    private function parseAsHTML(DOMDocument $dom):Asset {
+    private function parseAsHTML(DOMDocument $dom): Asset {
         $id = $dom->documentElement->getAttribute('id');
         if ($id === '') {
             $id = pathinfo($dom->documentURI, PATHINFO_FILENAME );

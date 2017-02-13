@@ -1,7 +1,6 @@
 <?php declare(strict_types = 1);
 namespace TheSeer\Templado;
 
-use DOMElement;
 use PHPUnit\Framework\TestCase;
 
 /**

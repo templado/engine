@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 namespace TheSeer\Templado;
 
 use PHPUnit\Framework\TestCase;
@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 class AssetLoaderTest extends TestCase {
 
     public function testAttemptingToLoadNonExistingFileThrowsException() {
-        $loader = new AssetLoader();
+        $loader   = new AssetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(false);
 
@@ -18,7 +18,7 @@ class AssetLoaderTest extends TestCase {
     }
 
     public function testAttemptingToLoadSomethingThatIsNotAFileThrowsException() {
-        $loader = new AssetLoader();
+        $loader   = new AssetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(false);
@@ -28,7 +28,7 @@ class AssetLoaderTest extends TestCase {
     }
 
     public function testAttemptingToLoadANotReadableFileThrowsException() {
-        $loader = new AssetLoader();
+        $loader   = new AssetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(true);
@@ -39,7 +39,7 @@ class AssetLoaderTest extends TestCase {
     }
 
     public function testAttemptingToLoadAnInvalidFileThrowsException() {
-        $loader = new AssetLoader();
+        $loader   = new AssetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(true);
@@ -51,7 +51,7 @@ class AssetLoaderTest extends TestCase {
     }
 
     public function testAttemptingToLoadAnUnknownFileTypeThrowsException() {
-        $loader = new AssetLoader();
+        $loader   = new AssetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(true);
@@ -66,7 +66,7 @@ class AssetLoaderTest extends TestCase {
      * @uses \TheSeer\Templado\SimpleAsset
      */
     public function testLoadingPlainHtmlReturnsValidAsset() {
-        $loader = new AssetLoader();
+        $loader   = new AssetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(true);
@@ -82,7 +82,7 @@ class AssetLoaderTest extends TestCase {
      * @uses \TheSeer\Templado\SimpleAsset
      */
     public function testLoadingHtmlWithoutIdUsesFilename() {
-        $loader = new AssetLoader();
+        $loader   = new AssetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(true);
@@ -98,7 +98,7 @@ class AssetLoaderTest extends TestCase {
      * @uses \TheSeer\Templado\SimpleAsset
      */
     public function testLoadingAssetFileReturnsValidAsset() {
-        $loader = new AssetLoader();
+        $loader   = new AssetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(true);
