@@ -9,11 +9,11 @@ spl_autoload_register(
             $classes = array(
                 'theseer\\templado\\asset' => '/asset/Asset.php',
                 'theseer\\templado\\assetcollectionexception' => '/asset/AssetCollectionException.php',
-                'theseer\\templado\\asseteloaderexception' => '/asset/AsseteLoaderException.php',
                 'theseer\\templado\\assetexception' => '/asset/AssetException.php',
                 'theseer\\templado\\assetlist' => '/asset/AssetList.php',
                 'theseer\\templado\\assetlistcollection' => '/asset/AssetListCollection.php',
                 'theseer\\templado\\assetloader' => '/asset/AssetLoader.php',
+                'theseer\\templado\\assetloaderexception' => '/asset/AssetLoaderException.php',
                 'theseer\\templado\\assetrenderer' => '/asset/AssetRenderer.php',
                 'theseer\\templado\\clearnamespacedefinitionsfilter' => '/filters/ClearNamespaceDefinitionsFilter.php',
                 'theseer\\templado\\csrfprotection' => '/csrfprotection/CSRFProtection.php',

@@ -13,7 +13,7 @@ class AssetLoaderTest extends TestCase {
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(false);
 
-        $this->expectException(AsseteLoaderException::class);
+        $this->expectException(AssetLoaderException::class);
         $loader->load($filename);
     }
 
@@ -23,7 +23,7 @@ class AssetLoaderTest extends TestCase {
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(false);
 
-        $this->expectException(AsseteLoaderException::class);
+        $this->expectException(AssetLoaderException::class);
         $loader->load($filename);
     }
 
@@ -34,7 +34,7 @@ class AssetLoaderTest extends TestCase {
         $filename->method('isFile')->willReturn(true);
         $filename->method('isReadable')->willReturn(false);
 
-        $this->expectException(AsseteLoaderException::class);
+        $this->expectException(AssetLoaderException::class);
         $loader->load($filename);
     }
 
@@ -46,7 +46,7 @@ class AssetLoaderTest extends TestCase {
         $filename->method('isReadable')->willReturn(true);
         $filename->method('asString')->willReturn(__DIR__ . '/../_data/broken.txt');
 
-        $this->expectException(AsseteLoaderException::class);
+        $this->expectException(AssetLoaderException::class);
         $loader->load($filename);
     }
 
@@ -58,7 +58,7 @@ class AssetLoaderTest extends TestCase {
         $filename->method('isReadable')->willReturn(true);
         $filename->method('asString')->willReturn(__DIR__ . '/../_data/assets/undefined.xml');
 
-        $this->expectException(AsseteLoaderException::class);
+        $this->expectException(AssetLoaderException::class);
         $loader->load($filename);
     }
 

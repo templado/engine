@@ -19,14 +19,14 @@ class AssetLoader {
             return $this->parseAsHTML($dom);
         }
 
-        throw new AsseteLoaderException('Document does not seem to be a valid HtmlAsset or (X)HTML file.');
+        throw new AssetLoaderException('Document does not seem to be a valid HtmlAsset or (X)HTML file.');
     }
 
     /**
      * @param FileName $fileName
      *
      * @return DOMDocument
-     * @throws AsseteLoaderException
+     * @throws AssetLoaderException
      */
     private function loadFile(FileName $fileName): DOMDocument {
         libxml_use_internal_errors(true);
@@ -36,10 +36,10 @@ class AssetLoader {
         $tmp = $dom->load($fileName->asString());
         if (!$tmp || libxml_get_last_error()) {
             $error = libxml_get_errors()[0];
-            throw new AsseteLoaderException(
+            throw new AssetLoaderException(
                 sprintf("Loading file '%s' failed: %s (line %d)",
                     $fileName->asString(),
-                    $error->message,
+                    trim($error->message),
                     $error->line
                 )
             );
@@ -80,11 +80,11 @@ class AssetLoader {
     /**
      * @param FileName $fileName
      *
-     * @throws AsseteLoaderException
+     * @throws AssetLoaderException
      */
     private function ensureFileExists(FileName $fileName) {
         if (!$fileName->exists()) {
-            throw new AsseteLoaderException(
+            throw new AssetLoaderException(
                 sprintf('File "%s" not found.', $fileName->asString())
             );
         }
@@ -93,16 +93,16 @@ class AssetLoader {
     /**
      * @param FileName $fileName
      *
-     * @throws AsseteLoaderException
+     * @throws AssetLoaderException
      */
     private function ensureIsReadableFile(FileName $fileName) {
         if (!$fileName->isFile()) {
-            throw new AsseteLoaderException(
+            throw new AssetLoaderException(
                 sprintf('File "%s" not a file.', $fileName->asString())
             );
         }
         if (!$fileName->isReadable()) {
-            throw new AsseteLoaderException(
+            throw new AssetLoaderException(
                 sprintf('File "%s" can not be read.', $fileName->asString())
             );
         }
