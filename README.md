@@ -31,7 +31,7 @@ you can have an always up-to-date set of HTML pages without ever writing a block
 To make form handling even more easy, Templado comes with explicit HTML Form support. Based on supplied Input data,
 Templado will repopulate the HTML form and even include your CSRF protection code.
 
-### Custom transformtions and Filters
+### Custom transformations and Filters
 
 Templado allows for custom transformations, like adding a class to every ```a``` tag and string based replacements upon
 serialization.
