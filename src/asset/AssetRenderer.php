@@ -21,7 +21,9 @@ class AssetRenderer {
     }
 
     public function render(DOMNode $context) {
-        foreach($context->childNodes as $node) {
+        $children = $context->childNodes;
+        for($i=0; $i<$children->length; $i++) {
+            $node = $children->item($i);
             if (!$node instanceof DOMElement) {
                 continue;
             }
