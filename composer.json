@@ -10,7 +10,7 @@
     }
   ],
   "support" : {
-    "issues" : "https://github.com/theseer/templado/issues"
+    "issues" : "https://github.com/templado/engine/issues"
   },
   "require" : {
     "php" : "^7.0",
