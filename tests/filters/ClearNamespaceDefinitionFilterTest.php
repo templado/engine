@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \TheSeer\Templado\ClearNamespaceDefinitionsFilter
+ * @covers \Templado\Engine\ClearNamespaceDefinitionsFilter
  */
 class ClearNamespaceDefinitionFilterTest extends TestCase {
 

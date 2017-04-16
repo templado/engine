@@ -1,12 +1,12 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
-use TheSeer\Templado\Example\ViewModel;
+use Templado\Engine\Example\ViewModel;
 
 /**
- * @covers \TheSeer\Templado\ViewModelRenderer
+ * @covers \Templado\Engine\ViewModelRenderer
  */
 class ViewModelRendererTest extends TestCase {
 

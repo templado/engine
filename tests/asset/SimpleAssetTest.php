@@ -1,12 +1,12 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use DOMElement;
 use DOMNode;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \TheSeer\Templado\SimpleAsset
+ * @covers \Templado\Engine\SimpleAsset
  */
 class SimpleAssetTest extends TestCase {
 

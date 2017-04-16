@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \TheSeer\Templado\AssetLoader
+ * @covers \Templado\Engine\AssetLoader
  */
 class AssetLoaderTest extends TestCase {
 
@@ -63,7 +63,7 @@ class AssetLoaderTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\SimpleAsset
+     * @uses \Templado\Engine\SimpleAsset
      */
     public function testLoadingPlainHtmlReturnsValidAsset() {
         $loader   = new AssetLoader();
@@ -79,7 +79,7 @@ class AssetLoaderTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\SimpleAsset
+     * @uses \Templado\Engine\SimpleAsset
      */
     public function testLoadingHtmlWithoutIdUsesFilename() {
         $loader   = new AssetLoader();
@@ -95,7 +95,7 @@ class AssetLoaderTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\SimpleAsset
+     * @uses \Templado\Engine\SimpleAsset
      */
     public function testLoadingAssetFileReturnsValidAsset() {
         $loader   = new AssetLoader();

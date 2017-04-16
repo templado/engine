@@ -1,5 +1,5 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use DOMNodeList;
 use IteratorAggregate;

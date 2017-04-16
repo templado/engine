@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
- * @covers \TheSeer\Templado\FormData
+ * @covers \Templado\Engine\FormData
  */
 class FormDataTest extends TestCase {
 

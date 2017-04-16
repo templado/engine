@@ -1,5 +1,5 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use DOMElement;
 use DOMNode;
@@ -50,7 +50,7 @@ class AssetRenderer {
      * @param string     $id
      * @param DOMElement $node
      *
-     * @throws \TheSeer\Templado\AssetCollectionException
+     * @throws \Templado\Engine\AssetCollectionException
      */
     private function applyAssetsToNode($id, DOMElement $node) {
         $assets = $this->assetCollection->getAssetsForId($id);

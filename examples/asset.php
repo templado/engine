@@ -1,6 +1,5 @@
 <?php declare(strict_types = 1);
-
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 require __DIR__ . '/../src/autoload.php';
 

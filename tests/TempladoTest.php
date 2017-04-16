@@ -1,15 +1,15 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \TheSeer\Templado\Templado
+ * @covers \Templado\Engine\Templado
  */
 class TempladoTest extends TestCase {
 
     /**
-     * @uses \TheSeer\Templado\Page
+     * @uses \Templado\Engine\Page
      */
     public function testCanBeConstructedFromString() {
         $this->assertInstanceOf(
@@ -19,7 +19,7 @@ class TempladoTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\TempladoException
+     * @uses \Templado\Engine\TempladoException
      */
     public function testTryingToParseInvalidMarkupStringThrowsException() {
         $this->expectException(TempladoException::class);
@@ -27,8 +27,8 @@ class TempladoTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\TempladoException
-     * @uses \TheSeer\Templado\FileName
+     * @uses \Templado\Engine\TempladoException
+     * @uses \Templado\Engine\FileName
      */
     public function testTryingToLoadBrokenFileThrowsException() {
         $this->expectException(TempladoException::class);
@@ -36,8 +36,8 @@ class TempladoTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\FileName
-     * @uses \TheSeer\Templado\Page
+     * @uses \Templado\Engine\FileName
+     * @uses \Templado\Engine\Page
      */
     public function testCanBeConstructedFromFile() {
         $this->assertInstanceOf(

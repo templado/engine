@@ -1,17 +1,17 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
-use TheSeer\Templado\Example\ViewModel;
+use Templado\Engine\Example\ViewModel;
 
 /**
- * @covers \TheSeer\Templado\Page
+ * @covers \Templado\Engine\Page
  */
 class PageTest extends TestCase {
 
     /**
-     * @uses \TheSeer\Templado\AssetRenderer
+     * @uses \Templado\Engine\AssetRenderer
      */
     public function testAssetsCanBeApplied() {
         $dom = new \DOMDocument();
@@ -37,7 +37,7 @@ class PageTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\ViewModelRenderer
+     * @uses \Templado\Engine\ViewModelRenderer
      */
     public function testViewModelCanBeApplied() {
         $viewModel = new ViewModel();
@@ -57,7 +57,7 @@ class PageTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\TransformationProcessor
+     * @uses \Templado\Engine\TransformationProcessor
      */
     public function testTransformationCanBeApplied() {
         $dom = new DOMDocument();
@@ -79,8 +79,8 @@ class PageTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\FormData
-     * @uses \TheSeer\Templado\FormDataRenderer
+     * @uses \Templado\Engine\FormData
+     * @uses \Templado\Engine\FormDataRenderer
      */
     public function testFormDataCanBeApplied() {
         $path = __DIR__ . '/_data/formdata/text';
@@ -103,7 +103,7 @@ class PageTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\CSRFProtectionRenderer
+     * @uses \Templado\Engine\CSRFProtectionRenderer
      */
     public function testCSRFProtectionCanBeApplied() {
         $dom = new DOMDocument();
@@ -129,8 +129,8 @@ class PageTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\ClearNamespaceDefinitionsFilter
-     * @uses \TheSeer\Templado\EmptyElementsFilter
+     * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
+     * @uses \Templado\Engine\EmptyElementsFilter
      */
     public function testCanBeConvertedToString() {
         $dom = new DOMDocument();
@@ -155,8 +155,8 @@ class PageTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\ClearNamespaceDefinitionsFilter
-     * @uses \TheSeer\Templado\EmptyElementsFilter
+     * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
+     * @uses \Templado\Engine\EmptyElementsFilter
      */
     public function testCanBeConvertedToStringWithDoctype() {
         $dom = new DOMDocument();
@@ -182,8 +182,8 @@ class PageTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\ClearNamespaceDefinitionsFilter
-     * @uses \TheSeer\Templado\EmptyElementsFilter
+     * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
+     * @uses \Templado\Engine\EmptyElementsFilter
      */
     public function testPassedFilterGetsCalledAfterSerializing() {
         $dom = new \DOMDocument();

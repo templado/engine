@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado\Example;
+namespace Templado\Engine\Example;
 
 use DOMNode;
-use TheSeer\Templado\Selector;
-use TheSeer\Templado\Transformation;
-use TheSeer\Templado\XPathSelector;
+use Templado\Engine\Selector;
+use Templado\Engine\Transformation;
+use Templado\Engine\XPathSelector;
 
 class SampleTransformation implements Transformation {
 

@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \TheSeer\Templado\CSRFProtectionRenderer
+ * @covers \Templado\Engine\CSRFProtectionRenderer
  */
 class CSRFProtectionRendererTest extends TestCase {
 

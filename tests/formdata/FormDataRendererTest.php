@@ -1,13 +1,13 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 
 /**
- * @covers \TheSeer\Templado\FormDataRenderer
- * @uses   \TheSeer\Templado\FormData
+ * @covers \Templado\Engine\FormDataRenderer
+ * @uses   \Templado\Engine\FormData
  */
 class FormDataRendererTest extends TestCase {
 

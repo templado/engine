@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \TheSeer\Templado\Selection
+ * @covers \Templado\Engine\Selection
  */
 class SelectionTest extends TestCase {
 

@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
-namespace TheSeer\Templado;
+namespace Templado\Engine;
 
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \TheSeer\Templado\AssetListCollection
+ * @covers \Templado\Engine\AssetListCollection
  */
 class AssetListCollectionTest extends TestCase {
 
@@ -24,7 +24,7 @@ class AssetListCollectionTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\AssetList
+     * @uses \Templado\Engine\AssetList
      */
     public function testReturnsTrueForExistingAsset() {
         /** @var \PHPUnit_Framework_MockObject_MockObject|Asset $asset */
@@ -42,7 +42,7 @@ class AssetListCollectionTest extends TestCase {
     }
 
     /**
-     * @uses \TheSeer\Templado\AssetList
+     * @uses \Templado\Engine\AssetList
      */
     public function testExistingAssetCanBeRetrieved() {
         /** @var \PHPUnit_Framework_MockObject_MockObject|Asset $asset */

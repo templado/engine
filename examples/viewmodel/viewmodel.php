@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace TheSeer\Templado\Example;
+namespace Templado\Engine\Example;
 
 class Headline {
     public function asString() {
