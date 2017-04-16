@@ -1,5 +1,5 @@
 {
-  "name" : "theseer/templado",
+  "name" : "templado/engine",
   "description" : "A pragmatic approach to templating for PHP 7.x",
   "license" : "BSD-3-Clause",
   "authors" : [
