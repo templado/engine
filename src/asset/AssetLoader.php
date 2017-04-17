@@ -14,6 +14,7 @@ class AssetLoader {
             case 'text/x-php':
             case 'text/plain': return $this->loadAsText($fileName);
 
+            case 'application/xml':
             case 'text/xml':
             case 'text/html': return $this->loadAsAsset($fileName);
         }
