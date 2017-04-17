@@ -32,6 +32,7 @@ spl_autoload_register(
                 'templado\\engine\\simpleasset' => '/asset/SimpleAsset.php',
                 'templado\\engine\\templado' => '/Templado.php',
                 'templado\\engine\\templadoexception' => '/TempladoException.php',
+                'templado\\engine\\textasset' => '/asset/TextAsset.php',
                 'templado\\engine\\transformation' => '/transformation/Transformation.php',
                 'templado\\engine\\transformationprocessor' => '/transformation/TransformationProcessor.php',
                 'templado\\engine\\viewmodelrenderer' => '/viewmodel/ViewModelRenderer.php',
