@@ -23,14 +23,14 @@ class AssetLoader {
         );
     }
 
-    private function loadAsText(FileName $fileName): Asset {
-        return new SimpleAsset(
+    private function loadAsText(FileName $fileName): TextAsset {
+        return new TextAsset(
             $fileName->getName(),
             (new DOMDocument())->createTextNode(file_get_contents($fileName->asString()))
         );
     }
 
-    private function loadAsAsset(FileName $fileName): Asset {
+    private function loadAsAsset(FileName $fileName): SimpleAsset {
         $dom = $this->loadFile($fileName);
 
         if ($this->isAssetDocument($dom)) {
@@ -130,7 +130,7 @@ class AssetLoader {
         }
     }
 
-    private function parseAsAsset(DOMDocument $dom): Asset {
+    private function parseAsAsset(DOMDocument $dom): SimpleAsset {
         $fragment = $dom->createDocumentFragment();
         foreach($dom->documentElement->childNodes as $child) {
             $fragment->appendChild($child);
@@ -139,7 +139,7 @@ class AssetLoader {
         return new SimpleAsset($dom->documentElement->getAttribute('id'), $fragment);
     }
 
-    private function parseAsHTML(DOMDocument $dom): Asset {
+    private function parseAsHTML(DOMDocument $dom): SimpleAsset {
         $id = $dom->documentElement->getAttribute('id');
         if ($id === '') {
             $id = pathinfo($dom->documentURI, PATHINFO_FILENAME);

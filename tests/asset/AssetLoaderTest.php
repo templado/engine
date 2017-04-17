@@ -98,6 +98,7 @@ class AssetLoaderTest extends TestCase {
     }
 
     /**
+     * @uses \Templado\Engine\TextAsset
      * @uses \Templado\Engine\SimpleAsset
      * @dataProvider textFileFilenameProvider
      */
@@ -108,13 +109,8 @@ class AssetLoaderTest extends TestCase {
 
         $asset = $loader->load($filename);
 
-        $this->assertInstanceOf(SimpleAsset::class, $asset);
+        $this->assertInstanceOf(TextAsset::class, $asset);
         $this->assertEquals('simple', $asset->getTargetId());
-
-        $node = (new \DOMDocument())->createElement('container');
-        $asset->applyTo($node);
-
-        $this->assertInstanceOf(\DOMText::class, $node->firstChild);
     }
 
     public function textFileFilenameProvider(): array {
