@@ -25,6 +25,20 @@ class FileName {
     }
 
     /**
+     * @return string
+     */
+    public function getMimeType(): string {;
+        return mime_content_type($this->path);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string {
+        return pathinfo($this->path, PATHINFO_FILENAME);
+    }
+
+    /**
      * @return bool
      */
     public function exists(): bool {

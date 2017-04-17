@@ -37,4 +37,11 @@ class FileNameTest extends TestCase {
         $this->assertTrue((new FileName(__FILE__))->isReadable());
     }
 
+    public function testGetMimeTypeReturnsExpectedMimeType() {
+        $this->assertEquals('text/x-php', (new FileName(__FILE__))->getMimeType());
+    }
+
+    public function testGetNameReturnsBaseFileNameWithoutExtension() {
+        $this->assertEquals('FileNameTest', (new FileName(__FILE__))->getName());
+    }
 }

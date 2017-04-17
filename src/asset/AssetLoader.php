@@ -9,6 +9,28 @@ class AssetLoader {
         $this->ensureFileExists($fileName);
         $this->ensureIsReadableFile($fileName);
 
+        $mimeType = $fileName->getMimeType();
+        switch($mimeType) {
+            case 'text/x-php':
+            case 'text/plain': return $this->loadAsText($fileName);
+
+            case 'text/xml':
+            case 'text/html': return $this->loadAsAsset($fileName);
+        }
+
+        throw new AssetLoaderException(
+            sprintf('Unsupported mime-type "%s"', $mimeType)
+        );
+    }
+
+    private function loadAsText(FileName $fileName): Asset {
+        return new SimpleAsset(
+            $fileName->getName(),
+            (new DOMDocument())->createTextNode(file_get_contents($fileName->asString()))
+        );
+    }
+
+    private function loadAsAsset(FileName $fileName): Asset {
         $dom = $this->loadFile($fileName);
 
         if ($this->isAssetDocument($dom)) {
