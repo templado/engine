@@ -1,10 +1,14 @@
 # Templado
 A pragmatic approach to templating for PHP 7.x
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/theseer/templado/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/theseer/templado/?branch=master)
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/120c85ad-0c88-45ff-b7af-0fb6c4a85a4f/mini.png)](https://insight.sensiolabs.com/projects/120c85ad-0c88-45ff-b7af-0fb6c4a85a4f)
-[![Build Status](https://travis-ci.org/theseer/templado.svg?branch=master)](https://travis-ci.org/theseer/templado)
-[![Code Coverage](https://scrutinizer-ci.com/g/theseer/templado/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/theseer/templado/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/templado/engine/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/templado/engine/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/templado/engine/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/templado/engine/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/templado/engine/badges/build.png?b=master)](https://scrutinizer-ci.com/g/templado/engine/build-status/master)
+
+[![Build Status](https://travis-ci.org/templado/engine.svg?branch=master)](https://travis-ci.org/templado/engine)
+
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f5b424bf-2a00-4df8-8070-db7f0d03e4e9/mini.png)](https://insight.sensiolabs.com/projects/f5b424bf-2a00-4df8-8070-db7f0d03e4e9)
+
 
 ### Motivation
 
