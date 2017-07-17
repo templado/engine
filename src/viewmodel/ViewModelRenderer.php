@@ -23,7 +23,7 @@ class ViewModelRenderer {
      */
     public function render(DOMNode $context, $model) {
         $this->stack      = [$model];
-        $this->stackNames = ['model'];
+        $this->stackNames = [];
         $this->walk($context);
     }
 
@@ -254,7 +254,10 @@ class ViewModelRenderer {
 
             if (!is_string($value)) {
                 throw new ViewModelRendererException(
-                    sprintf('Attribute value must be string or boolean false - type %s received', gettype($value))
+                    sprintf('Attribute value must be string or boolean false - type %s received from $model->%s',
+                        gettype($value),
+                        implode('()->', $this->stackNames) . '()'
+                    )
                 );
             }
 
