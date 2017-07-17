@@ -68,6 +68,12 @@ class ViewModelRenderer {
             }
         }
 
+        if (method_exists($model, '__call')) {
+            $this->stack[] = $model->{$property}($context->nodeValue);
+
+            return;
+        }
+
         throw new ViewModelRendererException(
             sprintf('Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
         );
@@ -152,8 +158,12 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processObject(DOMElement $context, $model) {
-        if (method_exists($model, 'asString')) {
-            $context->nodeValue = $model->asString();
+        if (method_exists($model, 'asString') ||
+            method_exists($model, '__call')) {
+            $value = $model->asString();
+            if ($value !== null) {
+                $context->nodeValue = $value;
+            }
         }
 
         foreach($context->attributes as $attribute) {
@@ -223,10 +233,14 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processAttribute(DOMAttr $attribute, $model) {
-        foreach([$attribute->name, 'get' . ucfirst($attribute->name)] as $method) {
+        foreach([$attribute->name, 'get' . ucfirst($attribute->name), '__call'] as $method) {
 
             if (!method_exists($model, $method)) {
                 continue;
+            }
+
+            if ($method === '__call') {
+                $method = $attribute->name;
             }
 
             $value = $model->{$method}($attribute->value);
