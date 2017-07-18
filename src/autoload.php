@@ -26,6 +26,8 @@ spl_autoload_register(
                 'templado\\engine\\formdataexception' => '/formdata/FormDataException.php',
                 'templado\\engine\\formdatarenderer' => '/formdata/FormDataRenderer.php',
                 'templado\\engine\\formdatarendererexception' => '/formdata/FormDataRendererException.php',
+                'templado\\engine\\genericviewmodel' => '/viewmodel/GenericViewModel.php',
+                'templado\\engine\\jsonmapper' => '/viewmodel/JsonMapper.php',
                 'templado\\engine\\page' => '/Page.php',
                 'templado\\engine\\selection' => '/transformation/Selection.php',
                 'templado\\engine\\selector' => '/selectors/Selector.php',
