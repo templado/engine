@@ -12,7 +12,7 @@ class JsonMapper {
     public function fromString(string $json, int $options = 0) {
         $data = json_decode($json, false, 512, $options);
         if (json_last_error() !== 0) {
-            throw new \RuntimeException(json_last_error_msg(), json_last_error());
+            throw new JsonMapperException(json_last_error_msg(), json_last_error());
         }
 
         return $this->parseObject($data);
