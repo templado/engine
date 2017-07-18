@@ -39,7 +39,7 @@ class AssetList implements \Iterator, \Countable {
     /**
      * @return bool
      */
-    public function valid() {
+    public function valid(): bool {
         return key($this->assets) !== null;
     }
 

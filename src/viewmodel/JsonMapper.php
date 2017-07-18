@@ -8,8 +8,9 @@ class JsonMapper {
      * @param int    $options
      *
      * @return GenericViewModel
+     * @throws JsonMapperException
      */
-    public function fromString(string $json, int $options = 0) {
+    public function fromString(string $json, int $options = 0): GenericViewModel {
         $data = json_decode($json, false, 512, $options);
         if (json_last_error() !== 0) {
             throw new JsonMapperException(json_last_error_msg(), json_last_error());
@@ -23,7 +24,7 @@ class JsonMapper {
      *
      * @return GenericViewModel
      */
-    private function parseObject(\StdClass $data) {
+    private function parseObject(\StdClass $data): GenericViewModel {
         $properties = [];
         foreach (get_object_vars($data) as $name => $value) {
             switch (true) {
@@ -52,7 +53,7 @@ class JsonMapper {
      *
      * @return array
      */
-    private function parseArray(array $value) {
+    private function parseArray(array $value): array {
         $result = [];
         foreach ($value as $item) {
             switch (true) {
