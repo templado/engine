@@ -20,6 +20,8 @@ class ViewModelRenderer {
     /**
      * @param DOMNode $context
      * @param object  $model
+     *
+     * @throws ViewModelRendererException
      */
     public function render(DOMNode $context, $model) {
         $this->stack      = [$model];
@@ -29,6 +31,8 @@ class ViewModelRenderer {
 
     /**
      * @param DOMNode $context
+     *
+     * @throws ViewModelRendererException
      */
     private function walk(DOMNode $context) {
         if ($context instanceof DOMElement && $context->hasAttribute('property')) {
@@ -174,6 +178,8 @@ class ViewModelRenderer {
     /**
      * @param DOMElement $context
      * @param array      $model
+     *
+     * @throws ViewModelRendererException
      */
     private function processArray(DOMElement $context, array $model) {
         foreach($model as $pos => $entry) {
@@ -186,6 +192,8 @@ class ViewModelRenderer {
      * @param DOMElement $context
      * @param            $entry
      * @param int        $pos
+     *
+     * @throws ViewModelRendererException
      */
     private function processArrayEntry(DOMElement $context, $entry, $pos) {
         /** @var DOMElement $clone */

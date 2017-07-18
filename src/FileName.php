@@ -27,7 +27,7 @@ class FileName {
     /**
      * @return string
      */
-    public function getMimeType(): string {;
+    public function getMimeType(): string {
         return mime_content_type($this->path);
     }
 

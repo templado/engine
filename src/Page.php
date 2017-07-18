@@ -27,6 +27,8 @@ class Page {
 
     /**
      * @param object $model
+     *
+     * @throws ViewModelRendererException
      */
     public function applyViewModel($model) {
         (new ViewModelRenderer())->render($this->dom->documentElement, $model);
@@ -34,6 +36,8 @@ class Page {
 
     /**
      * @param FormData $formData
+     *
+     * @throws FormDataRendererException
      */
     public function applyFormData(FormData $formData) {
         (new FormDataRenderer())->render($this->dom->documentElement, $formData);

@@ -11,7 +11,7 @@ class FormData {
     /**
      * @var array
      */
-    private $values = [];
+    private $values;
 
     /**
      * FormData constructor.

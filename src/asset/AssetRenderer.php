@@ -33,6 +33,8 @@ class AssetRenderer {
 
     /**
      * @param DOMElement $node
+     *
+     * @throws AssetCollectionException
      */
     private function processNode(DOMElement $node) {
         if ($node->hasAttribute('id')) {
