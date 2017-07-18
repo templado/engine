@@ -4,7 +4,7 @@ namespace Templado\Engine\Example;
 
 class Headline {
     public function asString() {
-        return 'Hallo welt!';
+        return 'Hallo Welt!';
     }
 
     public function class($original) {
