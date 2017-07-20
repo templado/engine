@@ -27,6 +27,54 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
+    public function testMagicCallMethodGetsCalledWhenDefinedAndNoExplicitMethodFits() {
+        $dom       = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" /></body></html>');
+
+        $viewModel = new class {
+            public function __call($name, $args) {
+                return 'text';
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0"?><html><body><p property="a">text</p></body></html>');
+
+        $this->assertEquals(
+            $expected->documentElement,
+            $dom->documentElement
+        );
+    }
+
+    public function testMagicCallMethodGetsCalledForAttributesWhenDefinedAndNoExplicitMethodFits() {
+        $dom       = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" attr="b" /></body></html>');
+
+        $viewModel = new class {
+            public function __call($name, $args) {
+                switch ($name) {
+                    case 'a': return $this;
+                    case 'property': return null;
+                    default: return 'text';
+                }
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0"?><html><body><p property="a" attr="text">text</p></body></html>');
+
+        $this->assertEquals(
+            $expected->documentElement,
+            $dom->documentElement
+        );
+    }
+
     public function testUseOfNonObjectModelThrowsException() {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');

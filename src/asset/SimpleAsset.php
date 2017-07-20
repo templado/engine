@@ -34,17 +34,20 @@ class SimpleAsset implements Asset {
 
     /**
      * @param DOMElement $node
+     *
+     * @return DOMNode
      */
-    public function applyTo(DOMElement $node) {
+    public function applyTo(DOMElement $node): DOMNode {
         $content = $node->ownerDocument->importNode($this->content, true);
 
         if ($this->shouldReplace($node, $content)) {
             $node->parentNode->replaceChild($content, $node);
 
-            return;
+            return $content;
         }
 
         $node->appendChild($content);
+        return $node;
     }
 
     /**

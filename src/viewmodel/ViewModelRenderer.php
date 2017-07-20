@@ -252,6 +252,10 @@ class ViewModelRenderer {
             }
 
             $value = $model->{$method}($attribute->value);
+            if ($value === null) {
+                return;
+            }
+
             if ($value === false) {
                 /** @var $parent DOMElement */
                 $parent = $attribute->parentNode;

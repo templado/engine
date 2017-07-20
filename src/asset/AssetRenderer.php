@@ -12,6 +12,11 @@ class AssetRenderer {
     private $assetCollection;
 
     /**
+     * @var DOMElement
+     */
+    private $currentContext;
+
+    /**
      * AssetRenderer constructor.
      *
      * @param AssetListCollection $assetCollection
@@ -20,47 +25,58 @@ class AssetRenderer {
         $this->assetCollection = $assetCollection;
     }
 
-    public function render(DOMNode $context) {
+    public function render(DOMElement $context) {
         $children = $context->childNodes;
         for($i=0; $i<$children->length; $i++) {
             $node = $children->item($i);
             if (!$node instanceof DOMElement) {
                 continue;
             }
-            $this->processNode($node);
+            $this->currentContext = $node;
+            $this->processCurrent();
         }
     }
 
     /**
-     * @param DOMElement $node
-     *
      * @throws AssetCollectionException
      */
-    private function processNode(DOMElement $node) {
-        if ($node->hasAttribute('id')) {
-            $id = $node->getAttribute('id');
+    private function processCurrent() {
+        if ($this->currentContext->hasAttribute('id')) {
+            $id = $this->currentContext->getAttribute('id');
 
             if ($this->assetCollection->hasAssetsForId($id)) {
-                $this->applyAssetsToNode($id, $node);
+                if (!$this->applyAssetsToElement($id)) {
+                    return;
+                }
             }
         }
 
-        if ($node->hasChildNodes()) {
-            $this->render($node);
+        if ($this->currentContext->hasChildNodes()) {
+            $this->render($this->currentContext);
         }
     }
 
     /**
-     * @param string     $id
-     * @param DOMElement $node
+     * @param string $id
+     *
+     * @return bool
      *
      * @throws \Templado\Engine\AssetCollectionException
      */
-    private function applyAssetsToNode($id, DOMElement $node) {
+    private function applyAssetsToElement($id): bool {
         $assets = $this->assetCollection->getAssetsForId($id);
         foreach($assets as $asset) {
-            $asset->applyTo($node);
+            $result = $asset->applyTo($this->currentContext);
+            if (!$this->currentContext->isSameNode($result)) {
+                if (!$result instanceof DOMElement) {
+                    // Context $node was replaced by a non DOMElement,
+                    // so we cannot apply further assets
+                    return false;
+                }
+                /** @var DOMElement $node */
+                $this->currentContext = $result;
+            }
         }
+        return true;
     }
-
 }

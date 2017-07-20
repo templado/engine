@@ -20,7 +20,7 @@ class PageTest extends TestCase {
         $reference = $dom->documentElement->firstChild;
 
         $asset = $this->createMock(SimpleAsset::class);
-        $asset->expects($this->once())->method('applyTo')->with($reference);
+        $asset->expects($this->once())->method('applyTo')->with($reference)->willReturn($reference);
         $assetList = $this->createMock(AssetList::class);
         $assetList->method('current')->willReturn($asset);
         $assetList->method('valid')->willReturn(true, false);
@@ -194,7 +194,6 @@ class PageTest extends TestCase {
         $filter->expects($this->once())->method('apply')->with('<root></root>');
 
         $page->asString($filter);
-
     }
 
 }

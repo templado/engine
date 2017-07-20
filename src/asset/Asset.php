@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMElement;
+use DOMNode;
 
 interface Asset {
 
@@ -12,7 +13,9 @@ interface Asset {
 
     /**
      * @param DOMElement $node
+     *
+     * @return DOMNode
      */
-    public function applyTo(DOMElement $node);
+    public function applyTo(DOMElement $node): DOMNode;
 
 }
