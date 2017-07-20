@@ -22,7 +22,7 @@ class SimpleAsset implements Asset {
      */
     public function __construct(string $targetId, DOMNode $content) {
         $this->targetId = $targetId;
-        $this->content  = $content;
+        $this->content = $content;
     }
 
     /**
@@ -47,6 +47,7 @@ class SimpleAsset implements Asset {
         }
 
         $node->appendChild($content);
+
         return $node;
     }
 

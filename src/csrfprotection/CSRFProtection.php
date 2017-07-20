@@ -14,7 +14,7 @@ class CSRFProtection {
      * @param string $tokenValue
      */
     public function __construct(string $fieldName, string $tokenValue) {
-        $this->fieldName  = $fieldName;
+        $this->fieldName = $fieldName;
         $this->tokenValue = $tokenValue;
     }
 

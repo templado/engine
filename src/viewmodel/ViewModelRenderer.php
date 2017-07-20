@@ -24,7 +24,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     public function render(DOMNode $context, $model) {
-        $this->stack      = [$model];
+        $this->stack = [$model];
         $this->stackNames = [];
         $this->walk($context);
     }
@@ -41,7 +41,7 @@ class ViewModelRenderer {
         }
 
         if ($context->hasChildNodes()) {
-            foreach($context->childNodes as $childNode) {
+            foreach ($context->childNodes as $childNode) {
                 $this->walk($childNode);
             }
         }
@@ -57,14 +57,14 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function addToStack(DOMElement $context) {
-        $model    = $this->current();
+        $model = $this->current();
         $property = $context->getAttribute('property');
 
         $this->ensureIsObject($model, $property);
 
         $this->stackNames[] = $property;
 
-        foreach([$property, 'get' . ucfirst($property)] as $method) {
+        foreach ([$property, 'get' . ucfirst($property)] as $method) {
             if (method_exists($model, $method)) {
                 $this->stack[] = $model->{$method}($context->nodeValue);
 
@@ -163,14 +163,15 @@ class ViewModelRenderer {
      */
     private function processObject(DOMElement $context, $model) {
         if (method_exists($model, 'asString') ||
-            method_exists($model, '__call')) {
+            method_exists($model, '__call')
+        ) {
             $value = $model->asString();
             if ($value !== null) {
                 $context->nodeValue = $value;
             }
         }
 
-        foreach($context->attributes as $attribute) {
+        foreach ($context->attributes as $attribute) {
             $this->processAttribute($attribute, $model);
         }
     }
@@ -182,7 +183,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processArray(DOMElement $context, array $model) {
-        foreach($model as $pos => $entry) {
+        foreach ($model as $pos => $entry) {
             $this->processArrayEntry($context, $entry, $pos);
         }
         $this->cleanupArrayLeftovers($context);
@@ -199,11 +200,11 @@ class ViewModelRenderer {
         /** @var DOMElement $clone */
         $clone = $context->cloneNode(true);
         $context->parentNode->insertBefore($clone, $context);
-        $this->stack[]      = $entry;
+        $this->stack[] = $entry;
         $this->stackNames[] = $pos;
         $this->applyCurrent($clone);
         if ($clone->hasChildNodes()) {
-            foreach($clone->childNodes as $childNode) {
+            foreach ($clone->childNodes as $childNode) {
                 $this->walk($childNode);
             }
         }
@@ -214,7 +215,7 @@ class ViewModelRenderer {
      * @param DOMElement $context
      */
     private function cleanupArrayLeftovers(DOMElement $context) {
-        $next   = $context;
+        $next = $context;
         $remove = [$context];
         while ($next = $next->nextSibling) {
             if (!$next instanceof DOMElement) {
@@ -229,7 +230,7 @@ class ViewModelRenderer {
         while ($context->hasChildNodes()) {
             $context->removeChild($context->lastChild);
         }
-        foreach($remove as $node) {
+        foreach ($remove as $node) {
             $parent->removeChild($node);
         }
     }
@@ -241,7 +242,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processAttribute(DOMAttr $attribute, $model) {
-        foreach([$attribute->name, 'get' . ucfirst($attribute->name), '__call'] as $method) {
+        foreach ([$attribute->name, 'get' . ucfirst($attribute->name), '__call'] as $method) {
 
             if (!method_exists($model, $method)) {
                 continue;

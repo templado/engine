@@ -48,7 +48,7 @@ class XPathSelector implements Selector {
             $this->prefixMap['html'] = 'http://www.w3.org/1999/xhtml';
         }
 
-        foreach($this->prefixMap as $prefix => $uri) {
+        foreach ($this->prefixMap as $prefix => $uri) {
             $xp->registerNamespace($prefix, $uri);
         }
 

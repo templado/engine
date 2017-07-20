@@ -78,7 +78,7 @@ class Page {
      * @return string
      */
     private function serializeDomDocument(): string {
-        $this->dom->formatOutput       = true;
+        $this->dom->formatOutput = true;
         $this->dom->preserveWhiteSpace = false;
 
         $this->dom->loadXML(

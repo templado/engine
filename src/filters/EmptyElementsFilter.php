@@ -9,7 +9,7 @@ class EmptyElementsFilter implements Filter {
             'param', 'source', 'track', 'area', 'keygen',
         ];
 
-        foreach($tagList as $tag) {
+        foreach ($tagList as $tag) {
             $content = preg_replace(
                 "=<{$tag}(.*[^>]?)></{$tag}>=U",
                 "<{$tag}\$1 />",

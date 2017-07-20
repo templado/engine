@@ -23,7 +23,7 @@ class FormData {
      */
     public function __construct(string $identifier, array $values) {
         $this->identifier = $identifier;
-        $this->values     = $this->initValuesFromArray($values);
+        $this->values = $this->initValuesFromArray($values);
     }
 
     public function getIdentifier(): string {
@@ -62,7 +62,7 @@ class FormData {
      */
     private function initValuesFromArray(array $values, bool $recursion = false): array {
         $result = [];
-        foreach($values as $key => $value) {
+        foreach ($values as $key => $value) {
             if (is_string($value)) {
                 $result[$key] = $value;
                 continue;

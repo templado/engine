@@ -12,7 +12,7 @@ class TransformationProcessor {
             return;
         }
 
-        foreach($selection as $node) {
+        foreach ($selection as $node) {
             $transformation->apply($node);
         }
     }

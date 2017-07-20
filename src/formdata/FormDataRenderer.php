@@ -65,7 +65,7 @@ class FormDataRenderer {
      * @param string     $value
      */
     private function setSelectValue(DOMElement $select, string $value) {
-        foreach($select->getElementsByTagName('option') as $option) {
+        foreach ($select->getElementsByTagName('option') as $option) {
             /** @var DOMElement $option */
             if ($option->getAttribute('value') === $value) {
                 $option->setAttribute('selected', 'selected');
@@ -83,7 +83,7 @@ class FormDataRenderer {
      * @throws FormDataRendererException
      */
     private function findFormElement(DOMElement $context, string $identifier): DOMElement {
-        $xp     = new DOMXPath($context->ownerDocument);
+        $xp = new DOMXPath($context->ownerDocument);
         $result = $xp->query(
             sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
             $context
@@ -113,7 +113,7 @@ class FormDataRenderer {
      * @throws FormDataException
      */
     private function processInputElements(FormData $form, DOMElement $formElement) {
-        foreach($formElement->getElementsByTagName('input') as $input) {
+        foreach ($formElement->getElementsByTagName('input') as $input) {
             /** @var DOMElement $input */
 
             $name = $input->getAttribute('name');
@@ -136,7 +136,7 @@ class FormDataRenderer {
      * @throws FormDataException
      */
     private function processSelectElements(FormData $form, DOMElement $formElement) {
-        foreach($formElement->getElementsByTagName('select') as $select) {
+        foreach ($formElement->getElementsByTagName('select') as $select) {
             /** @var DOMElement $select */
             $name = $select->getAttribute('name');
             if (!$form->hasKey($name)) {
@@ -158,7 +158,7 @@ class FormDataRenderer {
      * @throws FormDataException
      */
     private function processTextareaElement(FormData $form, DOMElement $formElement) {
-        foreach($formElement->getElementsByTagName('textarea') as $textarea) {
+        foreach ($formElement->getElementsByTagName('textarea') as $textarea) {
             /** @var DOMElement $textarea */
             $name = $textarea->getAttribute('name');
             if (!$form->hasKey($name)) {

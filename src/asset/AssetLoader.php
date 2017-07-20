@@ -10,13 +10,15 @@ class AssetLoader {
         $this->ensureIsReadableFile($fileName);
 
         $mimeType = $fileName->getMimeType();
-        switch($mimeType) {
+        switch ($mimeType) {
             case 'text/x-php':
-            case 'text/plain': return $this->loadAsText($fileName);
+            case 'text/plain':
+                return $this->loadAsText($fileName);
 
             case 'application/xml':
             case 'text/xml':
-            case 'text/html': return $this->loadAsAsset($fileName);
+            case 'text/html':
+                return $this->loadAsAsset($fileName);
         }
 
         throw new AssetLoaderException(
@@ -133,7 +135,7 @@ class AssetLoader {
 
     private function parseAsAsset(DOMDocument $dom): SimpleAsset {
         $fragment = $dom->createDocumentFragment();
-        foreach($dom->documentElement->childNodes as $child) {
+        foreach ($dom->documentElement->childNodes as $child) {
             $fragment->appendChild($child);
         }
 
