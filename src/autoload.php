@@ -44,6 +44,7 @@ spl_autoload_register(
         }
         $cn = strtolower($class);
         if (isset($classes[$cn])) {
+            /** @noinspection PhpIncludeInspection */
             require __DIR__ . $classes[$cn];
         }
     },

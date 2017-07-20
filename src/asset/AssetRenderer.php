@@ -2,7 +2,6 @@
 namespace Templado\Engine;
 
 use DOMElement;
-use DOMNode;
 
 class AssetRenderer {
 
@@ -44,10 +43,8 @@ class AssetRenderer {
         if ($this->currentContext->hasAttribute('id')) {
             $id = $this->currentContext->getAttribute('id');
 
-            if ($this->assetCollection->hasAssetsForId($id)) {
-                if (!$this->applyAssetsToElement($id)) {
-                    return;
-                }
+            if ($this->assetCollection->hasAssetsForId($id) && !$this->applyAssetsToElement($id)) {
+                return;
             }
         }
 
