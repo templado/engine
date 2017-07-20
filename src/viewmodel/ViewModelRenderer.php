@@ -41,7 +41,7 @@ class ViewModelRenderer {
         }
 
         if ($context->hasChildNodes()) {
-            foreach ($context->childNodes as $childNode) {
+            foreach($context->childNodes as $childNode) {
                 $this->walk($childNode);
             }
         }
@@ -64,7 +64,7 @@ class ViewModelRenderer {
 
         $this->stackNames[] = $property;
 
-        foreach ([$property, 'get' . ucfirst($property)] as $method) {
+        foreach([$property, 'get' . ucfirst($property)] as $method) {
             if (method_exists($model, $method)) {
                 $this->stack[] = $model->{$method}($context->nodeValue);
 
@@ -171,7 +171,7 @@ class ViewModelRenderer {
             }
         }
 
-        foreach ($context->attributes as $attribute) {
+        foreach($context->attributes as $attribute) {
             $this->processAttribute($attribute, $model);
         }
     }
@@ -183,7 +183,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processArray(DOMElement $context, array $model) {
-        foreach ($model as $pos => $entry) {
+        foreach($model as $pos => $entry) {
             $this->processArrayEntry($context, $entry, $pos);
         }
         $this->cleanupArrayLeftovers($context);
@@ -204,7 +204,7 @@ class ViewModelRenderer {
         $this->stackNames[] = $pos;
         $this->applyCurrent($clone);
         if ($clone->hasChildNodes()) {
-            foreach ($clone->childNodes as $childNode) {
+            foreach($clone->childNodes as $childNode) {
                 $this->walk($childNode);
             }
         }
@@ -230,7 +230,7 @@ class ViewModelRenderer {
         while ($context->hasChildNodes()) {
             $context->removeChild($context->lastChild);
         }
-        foreach ($remove as $node) {
+        foreach($remove as $node) {
             $parent->removeChild($node);
         }
     }
@@ -242,7 +242,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processAttribute(DOMAttr $attribute, $model) {
-        foreach ([$attribute->name, 'get' . ucfirst($attribute->name), '__call'] as $method) {
+        foreach([$attribute->name, 'get' . ucfirst($attribute->name), '__call'] as $method) {
 
             if (!method_exists($model, $method)) {
                 continue;

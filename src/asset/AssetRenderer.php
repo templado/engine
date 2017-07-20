@@ -26,7 +26,7 @@ class AssetRenderer {
 
     public function render(DOMElement $context) {
         $children = $context->childNodes;
-        for ($i = 0; $i < $children->length; $i++) {
+        for($i = 0; $i < $children->length; $i++) {
             $node = $children->item($i);
             if (!$node instanceof DOMElement) {
                 continue;
@@ -62,7 +62,7 @@ class AssetRenderer {
      */
     private function applyAssetsToElement($id): bool {
         $assets = $this->assetCollection->getAssetsForId($id);
-        foreach ($assets as $asset) {
+        foreach($assets as $asset) {
             $result = $asset->applyTo($this->currentContext);
             if (!$this->currentContext->isSameNode($result)) {
                 if (!$result instanceof DOMElement) {

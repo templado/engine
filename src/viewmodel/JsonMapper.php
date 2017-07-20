@@ -26,7 +26,7 @@ class JsonMapper {
      */
     private function parseObject(\StdClass $data): GenericViewModel {
         $properties = [];
-        foreach (get_object_vars($data) as $name => $value) {
+        foreach(get_object_vars($data) as $name => $value) {
             switch (true) {
                 case is_scalar($value): {
                     $properties[$name] = $value;
@@ -55,7 +55,7 @@ class JsonMapper {
      */
     private function parseArray(array $value): array {
         $result = [];
-        foreach ($value as $item) {
+        foreach($value as $item) {
             switch (true) {
                 case is_scalar($item): {
                     $result[] = $item;

@@ -62,7 +62,7 @@ class FormData {
      */
     private function initValuesFromArray(array $values, bool $recursion = false): array {
         $result = [];
-        foreach ($values as $key => $value) {
+        foreach($values as $key => $value) {
             if (is_string($value)) {
                 $result[$key] = $value;
                 continue;

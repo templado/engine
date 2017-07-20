@@ -135,7 +135,7 @@ class AssetLoader {
 
     private function parseAsAsset(DOMDocument $dom): SimpleAsset {
         $fragment = $dom->createDocumentFragment();
-        foreach ($dom->documentElement->childNodes as $child) {
+        foreach($dom->documentElement->childNodes as $child) {
             $fragment->appendChild($child);
         }
 

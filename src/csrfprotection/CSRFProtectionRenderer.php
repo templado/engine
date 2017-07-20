@@ -23,7 +23,7 @@ class CSRFProtectionRenderer {
     public function render(DOMElement $context, CSRFProtection $protection) {
         $this->protection = $protection;
 
-        foreach ($context->getElementsByTagName('form') as $form) {
+        foreach($context->getElementsByTagName('form') as $form) {
             $this->getCSRFField($form)->setAttribute(
                 'value',
                 $protection->getTokenValue()
