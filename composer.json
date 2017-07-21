@@ -14,7 +14,8 @@
   },
   "require" : {
     "php" : "^7.0",
-    "ext-dom" : "*"
+    "ext-dom" : "*",
+    "ext-libxml": "*"
   },
   "autoload": {
     "classmap": [
