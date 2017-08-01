@@ -4,25 +4,25 @@ namespace Templado\Engine;
 require __DIR__ . '/../src/autoload.php';
 
 try {
-    $page = Templado::loadFile(
+    $page = Templado::loadHtmlFile(
         new FileName(__DIR__ . '/html/basic.xhtml')
     );
 
-    $assetCollection = new AssetListCollection();
+    $snippetListCollection = new SnippetListCollection();
 
     $sample   = new \DOMDocument();
     $fragment = $sample->createDocumentFragment();
     $fragment->appendXML('This is a first test: <span id="nested" />');
 
-    $assetCollection->addAsset(
-        new SimpleAsset('test', $fragment)
+    $snippetListCollection->addAsset(
+        new SimpleSnippet('test', $fragment)
     );
 
-    $assetCollection->addAsset(
-        new SimpleAsset('nested', new \DOMText('Hello world'))
+    $snippetListCollection->addAsset(
+        new SimpleSnippet('nested', new \DOMText('Hello world'))
     );
-    $page->applyAssets(
-        $assetCollection
+    $page->applySnippets(
+        $snippetListCollection
     );
 
     echo $page->asString();

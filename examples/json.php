@@ -4,7 +4,7 @@ namespace Templado\Engine;
 require __DIR__ . '/../src/autoload.php';
 
 try {
-    $page = Templado::loadFile(
+    $page = Templado::loadHtmlFile(
         new FileName(__DIR__ . '/html/viewmodel.xhtml')
     );
 

@@ -3,7 +3,7 @@ namespace Templado\Engine;
 
 use DOMText;
 
-class TextAsset extends SimpleAsset {
+class TextSnippet extends SimpleSnippet {
 
     public function __construct($targetId, DOMText $content) {
         parent::__construct($targetId, $content);

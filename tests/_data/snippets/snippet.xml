@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<templado:asset id="header" xmlns:templado="https://templado.io/assets/1.0" xmlns="http://www.w3.org/1999/xhtml">
+<templado:snippet id="header" xmlns:templado="https://templado.io/snippets/1.0" xmlns="http://www.w3.org/1999/xhtml">
     <h1>Hello world</h1>
     <div>
         <h2>Sub headline</h2>
         <p>This is an asset with more than one root node. It is thus wrapped in a custom tag.</p>
     </div>
     <span>Isn't that nice?</span>
-</templado:asset>
+</templado:snippet>

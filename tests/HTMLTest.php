@@ -6,33 +6,33 @@ use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
 
 /**
- * @covers \Templado\Engine\Page
+ * @covers \Templado\Engine\Html
  */
-class PageTest extends TestCase {
+class HTMLTest extends TestCase {
 
     /**
-     * @uses \Templado\Engine\AssetRenderer
+     * @uses \Templado\Engine\SnippetRenderer
      */
-    public function testAssetsCanBeApplied() {
+    public function testSnippetsCanBeApplied() {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
         $reference = $dom->documentElement->firstChild;
 
-        $asset = $this->createMock(SimpleAsset::class);
-        $asset->expects($this->once())->method('applyTo')->with($reference)->willReturn($reference);
-        $assetList = $this->createMock(AssetList::class);
-        $assetList->method('current')->willReturn($asset);
-        $assetList->method('valid')->willReturn(true, false);
+        $snippet = $this->createMock(SimpleSnippet::class);
+        $snippet->expects($this->once())->method('applyTo')->with($reference)->willReturn($reference);
+        $snippetList = $this->createMock(SnippetList::class);
+        $snippetList->method('current')->willReturn($snippet);
+        $snippetList->method('valid')->willReturn(true, false);
 
-        /** @var AssetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
-        $collection = $this->createMock(AssetListCollection::class);
-        $collection->method('hasAssetsForId')->willReturn(true);
-        $collection->method('getAssetsForId')->willReturn($assetList);
+        /** @var SnippetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        $collection = $this->createMock(SnippetListCollection::class);
+        $collection->method('hasSnippetsForId')->willReturn(true);
+        $collection->method('getSnippetsForId')->willReturn($snippetList);
 
-        $page = new Page($dom);
+        $page = new Html($dom);
 
-        $page->applyAssets($collection);
+        $page->applySnippets($collection);
 
     }
 
@@ -44,7 +44,7 @@ class PageTest extends TestCase {
         $dom       = new DOMDocument();
         $dom->load(__DIR__ . '/_data/viewmodel/source.html');
 
-        $page = new Page($dom);
+        $page = new Html($dom);
         $page->applyViewModel($viewModel);
 
         $expected = new DOMDocument();
@@ -73,7 +73,7 @@ class PageTest extends TestCase {
         $transformation->expects($this->once())->method('getSelector')->willReturn($selector);
         $transformation->expects($this->once())->method('apply')->with($dom->documentElement->firstChild);
 
-        $page = new Page($dom);
+        $page = new Html($dom);
         $page->applyTransformation($transformation);
 
     }
@@ -93,7 +93,7 @@ class PageTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load($path . '/expected.html');
 
-        $page = new Page($dom);
+        $page = new Html($dom);
         $page->applyFormData($formdata);
 
         $this->assertEqualXMLStructure(
@@ -119,7 +119,7 @@ class PageTest extends TestCase {
             <html><body><form><input type="hidden" name="csrf" value="secure"/></form></body></html>'
         );
 
-        $page = new Page($dom);
+        $page = new Html($dom);
         $page->applyCSRFProtection($protection);
 
         $this->assertEqualXMLStructure(
@@ -147,7 +147,7 @@ class PageTest extends TestCase {
             '</html>'
         ];
 
-        $page = new Page($dom);
+        $page = new Html($dom);
         $this->assertEquals(
             implode("\n", $expected),
             $page->asString()
@@ -174,7 +174,7 @@ class PageTest extends TestCase {
             '</html>'
         ];
 
-        $page = new Page($dom);
+        $page = new Html($dom);
         $this->assertEquals(
             implode("\n", $expected),
             $page->asString()
@@ -188,7 +188,7 @@ class PageTest extends TestCase {
     public function testPassedFilterGetsCalledAfterSerializing() {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root />');
-        $page = new Page($dom);
+        $page = new Html($dom);
 
         $filter = $this->createMock(Filter::class);
         $filter->expects($this->once())->method('apply')->with('<root></root>');

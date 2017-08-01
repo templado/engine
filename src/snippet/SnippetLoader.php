@@ -3,9 +3,9 @@ namespace Templado\Engine;
 
 use DOMDocument;
 
-class AssetLoader {
+class SnippetLoader {
 
-    public function load(FileName $fileName): Asset {
+    public function load(FileName $fileName): Snippet {
         $this->ensureFileExists($fileName);
         $this->ensureIsReadableFile($fileName);
 
@@ -18,40 +18,40 @@ class AssetLoader {
             case 'application/xml':
             case 'text/xml':
             case 'text/html':
-                return $this->loadAsAsset($fileName);
+                return $this->loadAsSnippet($fileName);
         }
 
-        throw new AssetLoaderException(
+        throw new SnippetLoaderException(
             sprintf('Unsupported mime-type "%s"', $mimeType)
         );
     }
 
-    private function loadAsText(FileName $fileName): TextAsset {
-        return new TextAsset(
+    private function loadAsText(FileName $fileName): TextSnippet {
+        return new TextSnippet(
             $fileName->getName(),
             (new DOMDocument())->createTextNode(file_get_contents($fileName->asString()))
         );
     }
 
-    private function loadAsAsset(FileName $fileName): SimpleAsset {
+    private function loadAsSnippet(FileName $fileName): SimpleSnippet {
         $dom = $this->loadFile($fileName);
 
-        if ($this->isAssetDocument($dom)) {
-            return $this->parseAsAsset($dom);
+        if ($this->isSnippetDocument($dom)) {
+            return $this->parseAsSnippet($dom);
         }
 
         if ($this->isHtmlDocument($dom)) {
             return $this->parseAsHTML($dom);
         }
 
-        throw new AssetLoaderException('Document does not seem to be a valid HtmlAsset or (X)HTML file.');
+        throw new SnippetLoaderException('Document does not seem to be a valid HtmlSnippet or (X)HTML file.');
     }
 
     /**
      * @param FileName $fileName
      *
      * @return DOMDocument
-     * @throws AssetLoaderException
+     * @throws SnippetLoaderException
      */
     private function loadFile(FileName $fileName): DOMDocument {
         libxml_use_internal_errors(true);
@@ -61,7 +61,7 @@ class AssetLoader {
         $tmp = $dom->load($fileName->asString());
         if (!$tmp || libxml_get_last_error()) {
             $error = libxml_get_errors()[0];
-            throw new AssetLoaderException(
+            throw new SnippetLoaderException(
                 sprintf("Loading file '%s' failed: %s (line %d)",
                     $fileName->asString(),
                     trim($error->message),
@@ -78,12 +78,12 @@ class AssetLoader {
      *
      * @return bool
      */
-    private function isAssetDocument(DOMDocument $dom): bool {
+    private function isSnippetDocument(DOMDocument $dom): bool {
         $root = $dom->documentElement;
 
         return (
-            $root->namespaceURI === 'https://templado.io/assets/1.0' &&
-            $root->localName === 'asset' &&
+            $root->namespaceURI === 'https://templado.io/snippets/1.0' &&
+            $root->localName === 'snippet' &&
             $root->hasChildNodes()
         );
     }
@@ -105,11 +105,11 @@ class AssetLoader {
     /**
      * @param FileName $fileName
      *
-     * @throws AssetLoaderException
+     * @throws SnippetLoaderException
      */
     private function ensureFileExists(FileName $fileName) {
         if (!$fileName->exists()) {
-            throw new AssetLoaderException(
+            throw new SnippetLoaderException(
                 sprintf('File "%s" not found.', $fileName->asString())
             );
         }
@@ -118,37 +118,37 @@ class AssetLoader {
     /**
      * @param FileName $fileName
      *
-     * @throws AssetLoaderException
+     * @throws SnippetLoaderException
      */
     private function ensureIsReadableFile(FileName $fileName) {
         if (!$fileName->isFile()) {
-            throw new AssetLoaderException(
+            throw new SnippetLoaderException(
                 sprintf('File "%s" not a file.', $fileName->asString())
             );
         }
         if (!$fileName->isReadable()) {
-            throw new AssetLoaderException(
+            throw new SnippetLoaderException(
                 sprintf('File "%s" can not be read.', $fileName->asString())
             );
         }
     }
 
-    private function parseAsAsset(DOMDocument $dom): SimpleAsset {
+    private function parseAsSnippet(DOMDocument $dom): SimpleSnippet {
         $fragment = $dom->createDocumentFragment();
         foreach($dom->documentElement->childNodes as $child) {
             $fragment->appendChild($child);
         }
 
-        return new SimpleAsset($dom->documentElement->getAttribute('id'), $fragment);
+        return new SimpleSnippet($dom->documentElement->getAttribute('id'), $fragment);
     }
 
-    private function parseAsHTML(DOMDocument $dom): SimpleAsset {
+    private function parseAsHTML(DOMDocument $dom): SimpleSnippet {
         $id = $dom->documentElement->getAttribute('id');
         if ($id === '') {
             $id = pathinfo($dom->documentURI, PATHINFO_FILENAME);
         }
 
-        return new SimpleAsset($id, $dom->documentElement);
+        return new SimpleSnippet($id, $dom->documentElement);
     }
 
 }

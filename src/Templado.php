@@ -5,7 +5,7 @@ use DOMDocument;
 
 class Templado {
 
-    public static function loadFile(FileName $fileName): Page {
+    public static function loadHtmlFile(FileName $fileName): Html {
         libxml_use_internal_errors(true);
         $dom = new DOMDocument();
         $tmp = $dom->load($fileName->asString());
@@ -15,10 +15,10 @@ class Templado {
             );
         }
 
-        return new Page($dom);
+        return new Html($dom);
     }
 
-    public static function parseString(string $string): Page {
+    public static function parseHtmlString(string $string): Html {
         libxml_use_internal_errors(true);
         $dom = new DOMDocument();
         $tmp = $dom->loadXML($string);
@@ -26,7 +26,7 @@ class Templado {
             throw new TempladoException('Parsing string failed.');
         }
 
-        return new Page($dom);
+        return new Html($dom);
     }
 
 }

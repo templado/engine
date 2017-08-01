@@ -4,7 +4,7 @@ namespace Templado\Engine;
 use DOMDocument;
 use DOMDocumentType;
 
-class Page {
+class Html {
 
     /**
      * @var DOMDocument
@@ -19,10 +19,10 @@ class Page {
     }
 
     /**
-     * @param AssetListCollection $assetCollection
+     * @param SnippetListCollection $snippetListCollection
      */
-    public function applyAssets(AssetListCollection $assetCollection) {
-        (new AssetRenderer($assetCollection))->render($this->dom->documentElement);
+    public function applySnippets(SnippetListCollection $snippetListCollection) {
+        (new SnippetRenderer($snippetListCollection))->render($this->dom->documentElement);
     }
 
     /**

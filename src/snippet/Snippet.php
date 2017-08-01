@@ -4,7 +4,7 @@ namespace Templado\Engine;
 use DOMElement;
 use DOMNode;
 
-interface Asset {
+interface Snippet {
 
     /**
      * @return string

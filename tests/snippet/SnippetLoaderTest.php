@@ -4,113 +4,113 @@ namespace Templado\Engine;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Templado\Engine\AssetLoader
+ * @covers \Templado\Engine\SnippetLoader
  */
-class AssetLoaderTest extends TestCase {
+class SnippetLoaderTest extends TestCase {
 
     public function testAttemptingToLoadNonExistingFileThrowsException() {
-        $loader   = new AssetLoader();
+        $loader   = new SnippetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(false);
 
-        $this->expectException(AssetLoaderException::class);
+        $this->expectException(SnippetLoaderException::class);
         $loader->load($filename);
     }
 
     public function testAttemptingToLoadSomethingThatIsNotAFileThrowsException() {
-        $loader   = new AssetLoader();
+        $loader   = new SnippetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(false);
 
-        $this->expectException(AssetLoaderException::class);
+        $this->expectException(SnippetLoaderException::class);
         $loader->load($filename);
     }
 
     public function testAttemptingToLoadANotReadableFileThrowsException() {
-        $loader   = new AssetLoader();
+        $loader   = new SnippetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(true);
         $filename->method('isReadable')->willReturn(false);
 
-        $this->expectException(AssetLoaderException::class);
+        $this->expectException(SnippetLoaderException::class);
         $loader->load($filename);
     }
 
     public function testAttemptingToLoadAnInvalidFileThrowsException() {
-        $loader   = new AssetLoader();
+        $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('broken.txt');
 
-        $this->expectException(AssetLoaderException::class);
+        $this->expectException(SnippetLoaderException::class);
         $loader->load($filename);
     }
 
     public function testAttemptingToLoadAnUnknownFileTypeThrowsException() {
-        $loader   = new AssetLoader();
+        $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('undefined.xml');
 
-        $this->expectException(AssetLoaderException::class);
+        $this->expectException(SnippetLoaderException::class);
         $loader->load($filename);
     }
 
     /**
-     * @uses \Templado\Engine\SimpleAsset
+     * @uses \Templado\Engine\SimpleSnippet
      */
-    public function testLoadingPlainHtmlReturnsValidAsset() {
-        $loader   = new AssetLoader();
+    public function testLoadingPlainHtmlReturnsValidSnippet() {
+        $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('simple.xhtml');
-        $asset = $loader->load($filename);
+        $snippet = $loader->load($filename);
 
-        $this->assertInstanceOf(SimpleAsset::class, $asset);
-        $this->assertEquals('abc', $asset->getTargetId());
+        $this->assertInstanceOf(SimpleSnippet::class, $snippet);
+        $this->assertEquals('abc', $snippet->getTargetId());
     }
 
     /**
-     * @uses \Templado\Engine\SimpleAsset
+     * @uses \Templado\Engine\SimpleSnippet
      */
     public function testLoadingHtmlWithoutIdUsesFilename() {
-        $loader   = new AssetLoader();
+        $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('noid.xhtml');
-        $asset = $loader->load($filename);
+        $snippet = $loader->load($filename);
 
-        $this->assertInstanceOf(SimpleAsset::class, $asset);
-        $this->assertEquals('noid', $asset->getTargetId());
+        $this->assertInstanceOf(SimpleSnippet::class, $snippet);
+        $this->assertEquals('noid', $snippet->getTargetId());
     }
 
     /**
-     * @uses \Templado\Engine\SimpleAsset
+     * @uses \Templado\Engine\SimpleSnippet
      */
-    public function testLoadingAssetFileReturnsValidAsset() {
-        $loader   = new AssetLoader();
-        $filename = $this->createMockFilename('asset.xml');
-        $asset = $loader->load($filename);
+    public function testLoadingSnippetFileReturnsValidSnippet() {
+        $loader   = new SnippetLoader();
+        $filename = $this->createMockFilename('snippet.xml');
+        $snippet = $loader->load($filename);
 
-        $this->assertInstanceOf(SimpleAsset::class, $asset);
-        $this->assertEquals('header', $asset->getTargetId());
+        $this->assertInstanceOf(SimpleSnippet::class, $snippet);
+        $this->assertEquals('header', $snippet->getTargetId());
     }
 
     public function testLoadingFileWithUnsupportedMimeTypeThrowsException() {
-        $loader   = new AssetLoader();
+        $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('', 'unknown/binary');
-        $this->expectException(AssetLoaderException::class);
-        $asset = $loader->load($filename);
+        $this->expectException(SnippetLoaderException::class);
+        $snippet = $loader->load($filename);
     }
 
     /**
-     * @uses \Templado\Engine\TextAsset
-     * @uses \Templado\Engine\SimpleAsset
+     * @uses \Templado\Engine\TextSnippet
+     * @uses \Templado\Engine\SimpleSnippet
      * @dataProvider textFileFilenameProvider
      */
-    public function testLoadingATextFileCreatesATextnodeAsset($name, $mimetype) {
-        $loader   = new AssetLoader();
+    public function testLoadingATextFileCreatesATextnodeSnippet($name, $mimetype) {
+        $loader   = new SnippetLoader();
         $filename = $this->createMockFilename($name, $mimetype);
         $filename->method('getName')->willReturn('simple');
 
-        $asset = $loader->load($filename);
+        $snippet = $loader->load($filename);
 
-        $this->assertInstanceOf(TextAsset::class, $asset);
-        $this->assertEquals('simple', $asset->getTargetId());
+        $this->assertInstanceOf(TextSnippet::class, $snippet);
+        $this->assertEquals('simple', $snippet->getTargetId());
     }
 
     public function textFileFilenameProvider(): array {
@@ -132,7 +132,7 @@ class AssetLoaderTest extends TestCase {
         $filename->method('isReadable')->willReturn(true);
         $filename->method('getMimeType')->willReturn($mimetype);
         $filename->method('asString')->willReturn(
-            __DIR__ . '/../_data/assets/' . $name
+            __DIR__ . '/../_data/snippets/' . $name
         );
 
         return $filename;

@@ -7,17 +7,10 @@ spl_autoload_register(
         static $classes = null;
         if ($classes === null) {
             $classes = array(
-                'templado\\engine\\asset' => '/asset/Asset.php',
-                'templado\\engine\\assetcollectionexception' => '/asset/AssetCollectionException.php',
-                'templado\\engine\\assetexception' => '/asset/AssetException.php',
-                'templado\\engine\\assetlist' => '/asset/AssetList.php',
-                'templado\\engine\\assetlistcollection' => '/asset/AssetListCollection.php',
-                'templado\\engine\\assetloader' => '/asset/AssetLoader.php',
-                'templado\\engine\\assetloaderexception' => '/asset/AssetLoaderException.php',
-                'templado\\engine\\assetrenderer' => '/asset/AssetRenderer.php',
                 'templado\\engine\\clearnamespacedefinitionsfilter' => '/filters/ClearNamespaceDefinitionsFilter.php',
                 'templado\\engine\\csrfprotection' => '/csrfprotection/CSRFProtection.php',
                 'templado\\engine\\csrfprotectionrenderer' => '/csrfprotection/CSRFProtectionRenderer.php',
+                'templado\\engine\\domdocumentmapper' => '/viewmodel/DomDocumentMapper.php',
                 'templado\\engine\\emptyelementsfilter' => '/filters/EmptyElementsFilter.php',
                 'templado\\engine\\exception' => '/Exception.php',
                 'templado\\engine\\filename' => '/FileName.php',
@@ -27,14 +20,23 @@ spl_autoload_register(
                 'templado\\engine\\formdatarenderer' => '/formdata/FormDataRenderer.php',
                 'templado\\engine\\formdatarendererexception' => '/formdata/FormDataRendererException.php',
                 'templado\\engine\\genericviewmodel' => '/viewmodel/GenericViewModel.php',
+                'templado\\engine\\html' => '/Html.php',
                 'templado\\engine\\jsonmapper' => '/viewmodel/JsonMapper.php',
-                'templado\\engine\\page' => '/Page.php',
+                'templado\\engine\\jsonmapperexception' => '/viewmodel/JsonMapperException.php',
                 'templado\\engine\\selection' => '/transformation/Selection.php',
                 'templado\\engine\\selector' => '/selectors/Selector.php',
-                'templado\\engine\\simpleasset' => '/asset/SimpleAsset.php',
+                'templado\\engine\\simplesnippet' => '/snippet/SimpleSnippet.php',
+                'templado\\engine\\snippet' => '/snippet/Snippet.php',
+                'templado\\engine\\snippetcollectionexception' => '/snippet/SnippetCollectionException.php',
+                'templado\\engine\\snippetexception' => '/snippet/SnippetException.php',
+                'templado\\engine\\snippetlist' => '/snippet/SnippetList.php',
+                'templado\\engine\\snippetlistcollection' => '/snippet/SnippetListCollection.php',
+                'templado\\engine\\snippetloader' => '/snippet/SnippetLoader.php',
+                'templado\\engine\\snippetloaderexception' => '/snippet/SnippetLoaderException.php',
+                'templado\\engine\\snippetrenderer' => '/snippet/SnippetRenderer.php',
                 'templado\\engine\\templado' => '/Templado.php',
                 'templado\\engine\\templadoexception' => '/TempladoException.php',
-                'templado\\engine\\textasset' => '/asset/TextAsset.php',
+                'templado\\engine\\textsnippet' => '/snippet/TextSnippet.php',
                 'templado\\engine\\transformation' => '/transformation/Transformation.php',
                 'templado\\engine\\transformationprocessor' => '/transformation/TransformationProcessor.php',
                 'templado\\engine\\viewmodelrenderer' => '/viewmodel/ViewModelRenderer.php',
@@ -44,7 +46,6 @@ spl_autoload_register(
         }
         $cn = strtolower($class);
         if (isset($classes[$cn])) {
-            /** @noinspection PhpIncludeInspection */
             require __DIR__ . $classes[$cn];
         }
     },

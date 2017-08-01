@@ -9,12 +9,12 @@ use PHPUnit\Framework\TestCase;
 class TempladoTest extends TestCase {
 
     /**
-     * @uses \Templado\Engine\Page
+     * @uses \Templado\Engine\Html
      */
     public function testCanBeConstructedFromString() {
         $this->assertInstanceOf(
-            Page::class,
-            Templado::parseString('<?xml version="1.0" ?><root />')
+            Html::class,
+            Templado::parseHtmlString('<?xml version="1.0" ?><root />')
         );
     }
 
@@ -23,7 +23,7 @@ class TempladoTest extends TestCase {
      */
     public function testTryingToParseInvalidMarkupStringThrowsException() {
         $this->expectException(TempladoException::class);
-        Templado::parseString('<?xml version="1.0" ?><root>');
+        Templado::parseHtmlString('<?xml version="1.0" ?><root>');
     }
 
     /**
@@ -32,17 +32,17 @@ class TempladoTest extends TestCase {
      */
     public function testTryingToLoadBrokenFileThrowsException() {
         $this->expectException(TempladoException::class);
-        Templado::loadFile(new FileName(__DIR__ . '/_data/broken.txt'));
+        Templado::loadHtmlFile(new FileName(__DIR__ . '/_data/broken.txt'));
     }
 
     /**
      * @uses \Templado\Engine\FileName
-     * @uses \Templado\Engine\Page
+     * @uses \Templado\Engine\Html
      */
     public function testCanBeConstructedFromFile() {
         $this->assertInstanceOf(
-            Page::class,
-            Templado::loadFile(new FileName(__DIR__ . '/_data/viewmodel/source.html'))
+            Html::class,
+            Templado::loadHtmlFile(new FileName(__DIR__ . '/_data/viewmodel/source.html'))
         );
     }
 

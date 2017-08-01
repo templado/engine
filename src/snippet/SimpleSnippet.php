@@ -4,7 +4,7 @@ namespace Templado\Engine;
 use DOMElement;
 use DOMNode;
 
-class SimpleAsset implements Asset {
+class SimpleSnippet implements Snippet {
 
     /** @var DOMNode */
     private $content;

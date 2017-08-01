@@ -3,12 +3,12 @@ namespace Templado\Engine;
 
 use PHPUnit\Framework\TestCase;
 
-class TextAssetTest extends TestCase {
+class TextSnippetTest extends TestCase {
 
     public function testCanBeConstructedWithTextNode() {
         $this->assertInstanceOf(
-            TextAsset::class,
-            new TextAsset('id', new \DOMText('test'))
+            TextSnippet::class,
+            new TextSnippet('id', new \DOMText('test'))
         );
     }
 

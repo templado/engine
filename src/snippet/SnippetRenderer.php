@@ -3,12 +3,12 @@ namespace Templado\Engine;
 
 use DOMElement;
 
-class AssetRenderer {
+class SnippetRenderer {
 
     /**
-     * @var AssetListCollection
+     * @var SnippetListCollection
      */
-    private $assetCollection;
+    private $snippetListCollection;
 
     /**
      * @var DOMElement
@@ -16,12 +16,12 @@ class AssetRenderer {
     private $currentContext;
 
     /**
-     * AssetRenderer constructor.
+     * SnippetRenderer constructor.
      *
-     * @param AssetListCollection $assetCollection
+     * @param SnippetListCollection $snippetListCollection
      */
-    public function __construct(AssetListCollection $assetCollection) {
-        $this->assetCollection = $assetCollection;
+    public function __construct(SnippetListCollection $snippetListCollection) {
+        $this->snippetListCollection = $snippetListCollection;
     }
 
     public function render(DOMElement $context) {
@@ -37,13 +37,13 @@ class AssetRenderer {
     }
 
     /**
-     * @throws AssetCollectionException
+     * @throws SnippetCollectionException
      */
     private function processCurrent() {
         if ($this->currentContext->hasAttribute('id')) {
             $id = $this->currentContext->getAttribute('id');
 
-            if ($this->assetCollection->hasAssetsForId($id) && !$this->applyAssetsToElement($id)) {
+            if ($this->snippetListCollection->hasSnippetsForId($id) && !$this->applySnippetsToElement($id)) {
                 return;
             }
         }
@@ -58,16 +58,16 @@ class AssetRenderer {
      *
      * @return bool
      *
-     * @throws \Templado\Engine\AssetCollectionException
+     * @throws \Templado\Engine\SnippetCollectionException
      */
-    private function applyAssetsToElement($id): bool {
-        $assets = $this->assetCollection->getAssetsForId($id);
-        foreach($assets as $asset) {
-            $result = $asset->applyTo($this->currentContext);
+    private function applySnippetsToElement($id): bool {
+        $snippets = $this->snippetListCollection->getSnippetsForId($id);
+        foreach($snippets as $snippet) {
+            $result = $snippet->applyTo($this->currentContext);
             if (!$this->currentContext->isSameNode($result)) {
                 if (!$result instanceof DOMElement) {
                     // Context $node was replaced by a non DOMElement,
-                    // so we cannot apply further assets
+                    // so we cannot apply further snippets
                     return false;
                 }
                 /** @var DOMElement $node */
