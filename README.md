@@ -42,4 +42,4 @@ serialization.
 
 ## Examples
 
-Usage examples can be found in the [example section](https://github.com/theseer/templado/tree/master/examples)
+Usage examples can be found in the [example project](https://github.com/templado/examples)
