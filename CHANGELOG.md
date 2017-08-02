@@ -2,7 +2,7 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [2.0.0] - ????-??-??
+## [2.0.0] - 2017-08-02
 ### Changed
 * Renamed Asset to Snippet, as that's what it truely is
 * Renamed Page to HTML
