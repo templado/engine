@@ -2,11 +2,16 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## [2.1.0] - 2017-08-17
+### Added
+* ViewModel: Iterators are now supported as an alternative to array return types 
 
 ### Changed
 * ViewModel: Call to asString() now gets the original nodeValue passed along
-* ViewModel: Iterators are now supported as an alternative to array return types 
+
+### Fixed
+* [#1](https://github.com/templado/engine/issues/1): XPathSelector produces Uncaught TypeError with empty query
+
 
 ## [2.0.0] - 2017-08-02
 ### Changed
