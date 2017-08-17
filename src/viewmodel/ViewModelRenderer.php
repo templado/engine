@@ -162,10 +162,34 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processObject(DOMElement $context, $model) {
+        switch(true) {
+            case $model instanceOf \Iterator: {
+                $this->processObjectAsIterator($context, $model);
+                break;
+            }
+
+            default: {
+                $this->processObjectAsModel($context, $model);
+            }
+        }
+    }
+
+    private function processObjectAsIterator(DOMElement $context, \Iterator $model) {
+        foreach($model as $pos => $entry) {
+            $this->processArrayEntry($context, $entry, $pos);
+        }
+        $this->cleanupArrayLeftovers($context);
+    }
+
+    /**
+     * @param DOMElement $context
+     * @param Object     $model
+     */
+    private function processObjectAsModel(DOMElement $context, $model) {
         if (method_exists($model, 'asString') ||
             method_exists($model, '__call')
         ) {
-            $value = $model->asString();
+            $value = $model->asString($context->nodeValue);
             if ($value !== null) {
                 $context->nodeValue = $value;
             }

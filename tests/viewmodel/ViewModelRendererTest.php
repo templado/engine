@@ -27,6 +27,29 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
+    public function testIteratorReturnValueGetsApplied() {
+        $dom       = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" /></body></html>');
+
+        $viewModel = new class {
+            public function a() {
+                return new \ArrayIterator(['a','b']);
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0"?><html><body><p property="a">a</p><p property="a">b</p></body></html>');
+
+        $this->assertEquals(
+            $expected->documentElement,
+            $dom->documentElement
+        );
+
+    }
+
     public function testMagicCallMethodGetsCalledWhenDefinedAndNoExplicitMethodFits() {
         $dom       = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" /></body></html>');

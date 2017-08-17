@@ -2,6 +2,12 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## Unreleased
+
+### Changed
+* ViewModel: Call to asString() now gets the original nodeValue passed along
+* ViewModel: Iterators are now supported as an alternative to array return types 
+
 ## [2.0.0] - 2017-08-02
 ### Changed
 * Renamed Asset to Snippet, as that's what it truely is
