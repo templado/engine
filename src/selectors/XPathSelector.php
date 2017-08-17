@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMNode;
+use DOMNodeList;
 use DOMXPath;
 
 class XPathSelector implements Selector {
@@ -32,12 +33,25 @@ class XPathSelector implements Selector {
     }
 
     public function select(DOMNode $context): Selection {
-        return new Selection(
-            $this->getXPath($context)->query(
-                $this->queryString,
-                $context
-            )
+        $backup = $this->toggleErrorHandling(true);
+        $result = $this->getXPath($context)->query(
+            $this->queryString,
+            $context
         );
+        if (!$result instanceof DOMNodeList) {
+            $error = libxml_get_last_error();
+            $this->toggleErrorHandling($backup);
+
+            throw new XPathSelectorException(
+                sprintf('%s: "%s"',
+                    trim($error->message),
+                    $this->queryString
+                )
+            );
+        }
+        $this->toggleErrorHandling($backup);
+
+        return new Selection($result);
     }
 
     private function getXPath(DOMNode $node): DOMXPath {
@@ -53,6 +67,16 @@ class XPathSelector implements Selector {
         }
 
         return $xp;
+    }
+
+    /**
+     * @return bool
+     */
+    private function toggleErrorHandling(bool $mode): bool {
+        $backup = libxml_use_internal_errors($mode);
+        libxml_clear_errors();
+
+        return $backup;
     }
 
 }

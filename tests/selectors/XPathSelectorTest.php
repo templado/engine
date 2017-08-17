@@ -41,4 +41,32 @@ class XPathSelectorTest extends TestCase {
         }
 
     }
+
+    /**
+     * @dataProvider invalidXPathQueryStringsProvider
+     */
+    public function testUsingInvalidXPathQueryThrowsException($queryString) {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root xmlns="foo:ns"><child /></root>');
+
+        $selector = new XPathSelector($queryString);
+
+        $this->expectException(XPathSelectorException::class);
+        $this->expectExceptionMessage(
+            sprintf('Invalid expression: "%s"', $queryString)
+        );
+        $selector->select($dom->documentElement);
+    }
+
+    public function invalidXPathQueryStringsProvider(): array {
+        return [
+            'empty' => [''],
+            'syntax-error' => ['//*['],
+            'non-function' => ['foo()'],
+            'non-axis' => ['f::axis'],
+            'slash-crazy' => ['/////'],
+            'dots' => ['....'],
+            'unknown-prefix' => ['//not:known']
+        ];
+    }
 }
