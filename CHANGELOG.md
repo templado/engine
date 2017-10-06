@@ -2,6 +2,11 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.1.2] - 2017-10-06
+### Fixed
+* Regression from 2.1.1
+
+
 ## [2.1.1] - 2017-10-06
 ### Fixed
 * [#2](https://github.com/templado/engine/issues/2): Problems with multiple properties
