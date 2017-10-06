@@ -19,18 +19,6 @@ class ViewModelRenderer {
 
     /**
      * @param DOMNode $context
-     * @param object  $model
-     *
-     * @throws ViewModelRendererException
-     */
-    public function render(DOMNode $context, $model) {
-        $this->stack = [$model];
-        $this->stackNames = [];
-        $this->walk($context);
-    }
-
-    /**
-     * @param DOMNode $context
      *
      * @throws ViewModelRendererException
      */
@@ -42,6 +30,10 @@ class ViewModelRenderer {
 
         if ($context->hasChildNodes()) {
             foreach(new SnapshotDOMNodelist($context->childNodes) as $childNode) {
+                /** @var \DOMNode $childNode */
+                if ($childNode->parentNode === null) {
+                    continue;
+                }
                 $this->walk($childNode);
             }
         }
@@ -49,6 +41,18 @@ class ViewModelRenderer {
         if ($context instanceof DOMElement && $context->hasAttribute('property')) {
             $this->dropFromStack();
         }
+    }
+
+    /**
+     * @param DOMNode $context
+     * @param object  $model
+     *
+     * @throws ViewModelRendererException
+     */
+    public function render(DOMNode $context, $model) {
+        $this->stack = [$model];
+        $this->stackNames = [];
+        $this->walk($context);
     }
 
     /**
@@ -229,7 +233,7 @@ class ViewModelRenderer {
         $this->stackNames[] = $pos;
         $this->applyCurrent($clone);
         if ($clone->hasChildNodes()) {
-            foreach($clone->childNodes as $childNode) {
+            foreach(new SnapshotDOMNodelist($clone->childNodes) as $childNode) {
                 $this->walk($childNode);
             }
         }
