@@ -7,11 +7,12 @@ spl_autoload_register(
         static $classes = null;
         if ($classes === null) {
             $classes = array(
+                'templado\\engine\\SnapshotDOMNodelist'             => '/viewmodel/SnapshotDOMNodelist.php',
                 'templado\\engine\\clearnamespacedefinitionsfilter' => '/filters/ClearNamespaceDefinitionsFilter.php',
-                'templado\\engine\\csrfprotection' => '/csrfprotection/CSRFProtection.php',
-                'templado\\engine\\csrfprotectionrenderer' => '/csrfprotection/CSRFProtectionRenderer.php',
-                'templado\\engine\\emptyelementsfilter' => '/filters/EmptyElementsFilter.php',
-                'templado\\engine\\exception' => '/Exception.php',
+                'templado\\engine\\csrfprotection'                  => '/csrfprotection/CSRFProtection.php',
+                'templado\\engine\\csrfprotectionrenderer'          => '/csrfprotection/CSRFProtectionRenderer.php',
+                'templado\\engine\\emptyelementsfilter'             => '/filters/EmptyElementsFilter.php',
+                'templado\\engine\\exception'                       => '/Exception.php',
                 'templado\\engine\\filename' => '/FileName.php',
                 'templado\\engine\\filter' => '/filters/Filter.php',
                 'templado\\engine\\formdata' => '/formdata/FormData.php',
@@ -37,7 +38,8 @@ spl_autoload_register(
                 'templado\\engine\\transformationprocessor' => '/transformation/TransformationProcessor.php',
                 'templado\\engine\\viewmodelrenderer' => '/viewmodel/ViewModelRenderer.php',
                 'templado\\engine\\viewmodelrendererexception' => '/viewmodel/ViewModelRendererException.php',
-                'templado\\engine\\xpathselector' => '/selectors/XPathSelector.php'
+                'templado\\engine\\xpathselector' => '/selectors/XPathSelector.php',
+                'templado\\engine\\xpathselectorexception' => '/selectors/XPathSelectorException.php'
             );
         }
         $cn = strtolower($class);

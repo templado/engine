@@ -41,7 +41,7 @@ class ViewModelRenderer {
         }
 
         if ($context->hasChildNodes()) {
-            foreach($context->childNodes as $childNode) {
+            foreach(new SnapshotDOMNodelist($context->childNodes) as $childNode) {
                 $this->walk($childNode);
             }
         }
@@ -143,6 +143,7 @@ class ViewModelRenderer {
             while ($context->hasChildNodes()) {
                 $context->removeChild($context->lastChild);
             }
+
             $context->parentNode->removeChild($context);
         }
     }
