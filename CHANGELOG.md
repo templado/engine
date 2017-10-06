@@ -2,6 +2,11 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.1.1] - ????-??-??
+### Fixed
+* [#1](https://github.com/templado/engine/issues/2): Problems with multiple properties
+
+
 ## [2.1.0] - 2017-08-17
 ### Added
 * ViewModel: Iterators are now supported as an alternative to array return types 
