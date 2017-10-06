@@ -7,6 +7,7 @@ use Templado\Engine\Example\ViewModel;
 
 /**
  * @covers \Templado\Engine\ViewModelRenderer
+ * @uses \Templado\Engine\SnapshotDOMNodelist
  */
 class ViewModelRendererTest extends TestCase {
 
