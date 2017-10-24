@@ -194,7 +194,7 @@ class ViewModelRenderer {
         if (method_exists($model, 'asString') ||
             method_exists($model, '__call')
         ) {
-            $value = $model->asString($context->nodeValue);
+            $value = $model->asString();
             if ($value !== null) {
                 $context->nodeValue = $value;
             }
