@@ -99,6 +99,34 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
+    public function testNestedViewModelWithMagicCallsGetsAppliedAsExpected() {
+        $dom       = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><html><body><p property="a"><span property="b">original</span></p></body></html>');
+
+        $viewModel = new class {
+            public function __call($name, $args) {
+                switch ($name) {
+                    case 'a': return $this;
+                    case 'b': return 'text';
+                    case 'property': return null;
+                    default: return ($args[0] ?? null);
+                }
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0"?><html><body><p property="a"><span property="b">text</span></p></body></html>');
+
+        $this->assertEquals(
+            $expected->documentElement,
+            $dom->documentElement,
+            $dom->saveXML()
+        );
+    }
+
     public function testUseOfNonObjectModelThrowsException() {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
