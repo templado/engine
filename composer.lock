@@ -1,0 +1,59 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "ce60272f73420401e969483e7efa66a6",
+    "packages": [
+        {
+            "name": "theseer/css2xpath",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/theseer/css2xpath.git",
+                "reference": "bb6eb9c101ac30dc6b098c82da1856361c4a3203"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/theseer/css2xpath/zipball/bb6eb9c101ac30dc6b098c82da1856361c4a3203",
+                "reference": "bb6eb9c101ac30dc6b098c82da1856361c4a3203",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Arne Blankerts",
+                    "email": "arne@blankerts.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Library to translate CSS selectors into XPath",
+            "time": "2017-10-29T21:10:47+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": true,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^7.0",
+        "ext-dom": "*",
+        "ext-libxml": "*"
+    },
+    "platform-dev": []
+}

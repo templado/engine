@@ -15,7 +15,8 @@
   "require" : {
     "php" : "^7.0",
     "ext-dom" : "*",
-    "ext-libxml": "*"
+    "ext-libxml": "*",
+    "theseer/css2xpath": "^1.0"
   },
   "autoload": {
     "classmap": [
