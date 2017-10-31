@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "theseer/css2xpath",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/css2xpath.git",
-                "reference": "bb6eb9c101ac30dc6b098c82da1856361c4a3203"
+                "reference": "df8df4aa548540dbdd90b6465db825f84628463a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/css2xpath/zipball/bb6eb9c101ac30dc6b098c82da1856361c4a3203",
-                "reference": "bb6eb9c101ac30dc6b098c82da1856361c4a3203",
+                "url": "https://api.github.com/repos/theseer/css2xpath/zipball/df8df4aa548540dbdd90b6465db825f84628463a",
+                "reference": "df8df4aa548540dbdd90b6465db825f84628463a",
                 "shasum": ""
             },
             "require": {
@@ -41,7 +41,7 @@
                 }
             ],
             "description": "PHP Library to translate CSS selectors into XPath",
-            "time": "2017-10-29T21:10:47+00:00"
+            "time": "2017-10-31T15:13:30+00:00"
         }
     ],
     "packages-dev": [],
