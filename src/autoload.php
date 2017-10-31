@@ -7,12 +7,12 @@ spl_autoload_register(
         static $classes = null;
         if ($classes === null) {
             $classes = array(
-                'templado\\engine\\SnapshotDOMNodelist'             => '/viewmodel/SnapshotDOMNodelist.php',
                 'templado\\engine\\clearnamespacedefinitionsfilter' => '/filters/ClearNamespaceDefinitionsFilter.php',
-                'templado\\engine\\csrfprotection'                  => '/csrfprotection/CSRFProtection.php',
-                'templado\\engine\\csrfprotectionrenderer'          => '/csrfprotection/CSRFProtectionRenderer.php',
-                'templado\\engine\\emptyelementsfilter'             => '/filters/EmptyElementsFilter.php',
-                'templado\\engine\\exception'                       => '/Exception.php',
+                'templado\\engine\\csrfprotection' => '/csrfprotection/CSRFProtection.php',
+                'templado\\engine\\csrfprotectionrenderer' => '/csrfprotection/CSRFProtectionRenderer.php',
+                'templado\\engine\\cssselector' => '/selectors/CSSSelector.php',
+                'templado\\engine\\emptyelementsfilter' => '/filters/EmptyElementsFilter.php',
+                'templado\\engine\\exception' => '/Exception.php',
                 'templado\\engine\\filename' => '/FileName.php',
                 'templado\\engine\\filter' => '/filters/Filter.php',
                 'templado\\engine\\formdata' => '/formdata/FormData.php',
@@ -23,6 +23,7 @@ spl_autoload_register(
                 'templado\\engine\\selection' => '/transformation/Selection.php',
                 'templado\\engine\\selector' => '/selectors/Selector.php',
                 'templado\\engine\\simplesnippet' => '/snippet/SimpleSnippet.php',
+                'templado\\engine\\snapshotdomnodelist' => '/viewmodel/SnapshotDOMNodelist.php',
                 'templado\\engine\\snippet' => '/snippet/Snippet.php',
                 'templado\\engine\\snippetcollectionexception' => '/snippet/SnippetCollectionException.php',
                 'templado\\engine\\snippetexception' => '/snippet/SnippetException.php',
