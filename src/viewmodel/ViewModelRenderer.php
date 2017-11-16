@@ -103,6 +103,7 @@ class ViewModelRenderer {
      * @param DOMElement $context
      *
      * @throws ViewModelRendererException
+     * @throws \Templado\Engine\ViewModelRendererException
      */
     private function applyCurrent(DOMElement $context) {
         $model = $this->current();
@@ -167,16 +168,11 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processObject(DOMElement $context, $model) {
-        switch(true) {
-            case $model instanceOf \Iterator: {
-                $this->processObjectAsIterator($context, $model);
-                break;
-            }
-
-            default: {
-                $this->processObjectAsModel($context, $model);
-            }
+        if ($model instanceOf \Iterator) {
+            $this->processObjectAsIterator($context, $model);
+            return;
         }
+        $this->processObjectAsModel($context, $model);
     }
 
     private function processObjectAsIterator(DOMElement $context, \Iterator $model) {
