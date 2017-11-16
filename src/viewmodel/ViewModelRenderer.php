@@ -222,8 +222,9 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processArrayEntry(DOMElement $context, $entry, $pos) {
+        $workContext = $this->selectMatchingWorkContext($context, $entry);
         /** @var DOMElement $clone */
-        $clone = $context->cloneNode(true);
+        $clone = $workContext->cloneNode(true);
         $context->parentNode->insertBefore($clone, $context);
         $this->stack[] = $entry;
         $this->stackNames[] = $pos;
@@ -322,6 +323,44 @@ class ViewModelRenderer {
                 )
             );
         }
+    }
+
+    private function selectMatchingWorkContext(DOMElement $context, $entry): DOMElement {
+        if (!$context->hasAttribute('typeof')) {
+            return $context;
+        }
+
+        if (!method_exists($entry, 'typeOf')){
+            throw new ViewModelRendererException(
+                'No typeOf method'
+            );
+        }
+
+        $requestedTypeOf = $entry->typeOf();
+        if ($context->getAttribute('typeof') === $requestedTypeOf) {
+            return $context;
+        }
+
+        $xp = new \DOMXPath($context->ownerDocument);
+        $newContext = $xp->query(
+            sprintf(
+                '(following-sibling::*)[@property="%s" and @typeof="%s"]',
+                $context->getAttribute('property'),
+                $requestedTypeOf
+            ),
+            $context
+        )->item(0);
+
+        if (!$newContext instanceof DOMElement) {
+            throw new ViewModelRendererException(
+                sprintf(
+                    "Context for type '%s' not found.",
+                    $requestedTypeOf
+                )
+            );
+        }
+
+        return $newContext;
     }
 
 }

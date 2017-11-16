@@ -156,4 +156,38 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, $model);
     }
 
+    public function testTypeOfSelectionPicksCorrectContext() {
+
+        $model = new class {
+            public function getOne() {
+                return [
+                    new class {
+                        public function typeOf() {
+                            return 'B';
+                        }
+
+                        public function getText() {
+                            return 'Replaced text of B';
+                        }
+                    }
+                ];
+            }
+        };
+
+        $source = new DOMDocument();
+        $source->load(__DIR__ . '/../_data/typeof/source.xhtml');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($source->documentElement, $model);
+
+        $expected = new DOMDocument();
+        $expected->load(__DIR__ . '/../_data/typeof/expected.xhtml');
+
+        $this->assertEqualXMLStructure(
+            $expected->documentElement,
+            $source->documentElement
+        );
+
+    }
+
 }
