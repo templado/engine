@@ -52,9 +52,6 @@ class CSSSelectorTest extends TestCase {
         $selector = new XPathSelector($queryString);
 
         $this->expectException(XPathSelectorException::class);
-        $this->expectExceptionMessage(
-            sprintf('Invalid expression: "%s"', $queryString)
-        );
         $selector->select($dom->documentElement);
     }
 
