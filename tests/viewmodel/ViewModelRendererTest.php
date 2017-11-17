@@ -156,7 +156,39 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, $model);
     }
 
-    public function testTypeOfSelectionPicksCorrectContext() {
+    public function testTypeOfSelectionPicksCorrectContextInObjectUse() {
+
+        $model = new class {
+            public function getOne() {
+                return new class {
+                        public function typeOf() {
+                            return 'B';
+                        }
+
+                        public function getText() {
+                            return 'Replaced text of B';
+                        }
+                    };
+            }
+        };
+
+        $source = new DOMDocument();
+        $source->load(__DIR__ . '/../_data/typeof/source.xhtml');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($source->documentElement, $model);
+
+        $expected = new DOMDocument();
+        $expected->load(__DIR__ . '/../_data/typeof/expected-single.xhtml');
+
+        $this->assertEqualXMLStructure(
+            $expected->documentElement,
+            $source->documentElement
+        );
+
+    }
+
+    public function testTypeOfSelectionPicksCorrectContextInLists() {
 
         $model = new class {
             public function getOne() {
@@ -168,6 +200,15 @@ class ViewModelRendererTest extends TestCase {
 
                         public function getText() {
                             return 'Replaced text of B';
+                        }
+                    },
+                    new class {
+                        public function typeOf() {
+                            return 'A';
+                        }
+
+                        public function getText() {
+                            return 'Replaced text of A';
                         }
                     }
                 ];
@@ -181,7 +222,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($source->documentElement, $model);
 
         $expected = new DOMDocument();
-        $expected->load(__DIR__ . '/../_data/typeof/expected.xhtml');
+        $expected->load(__DIR__ . '/../_data/typeof/expected-list.xhtml');
 
         $this->assertEqualXMLStructure(
             $expected->documentElement,
