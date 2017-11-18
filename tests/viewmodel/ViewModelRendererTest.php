@@ -231,4 +231,42 @@ class ViewModelRendererTest extends TestCase {
 
     }
 
+    public function testTypeOfSelectionPicksCorrectContextInCombinedObjectListUse() {
+
+        $model = new class {
+            public function getOne() {
+                return [
+                    new class {
+                        public function getTwo() {
+                            return new class {
+                                public function typeOf() {
+                                    return 'B';
+                                }
+
+                                public function getText() {
+                                    return 'Replaced text of B';
+                                }
+                            };
+                        }
+                    }
+                ];
+            }
+        };
+
+        $source = new DOMDocument();
+        $source->load(__DIR__ . '/../_data/typeof/combined-source.xhtml');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($source->documentElement, $model);
+
+        $expected = new DOMDocument();
+        $expected->load(__DIR__ . '/../_data/typeof/combined-expected.xhtml');
+
+        $this->assertEqualXMLStructure(
+            $expected->documentElement,
+            $source->documentElement
+        );
+
+    }
+
 }

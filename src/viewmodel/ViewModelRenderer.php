@@ -7,15 +7,14 @@ use DOMNode;
 
 class ViewModelRenderer {
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $stack;
 
-    /**
-     * @var array
-     */
+    /** @var string[] */
     private $stackNames;
+
+    /** @var int[] */
+    private $arrayStack;
 
     /**
      * @param DOMNode $context
@@ -52,6 +51,7 @@ class ViewModelRenderer {
     public function render(DOMNode $context, $model) {
         $this->stack = [$model];
         $this->stackNames = [];
+        $this->arrayStack = [];
         $this->walk($context);
     }
 
@@ -187,18 +187,25 @@ class ViewModelRenderer {
      * @param Object     $model
      */
     private function processObjectAsModel(DOMElement $context, $model) {
+        $workContext = $this->selectMatchingWorkContext($context, $model);
+
         if (method_exists($model, 'asString') ||
             method_exists($model, '__call')
         ) {
-            $value = $model->asString($context->nodeValue);
+            $value = $model->asString($workContext->nodeValue);
             if ($value !== null) {
-                $context->nodeValue = $value;
+                $workContext->nodeValue = $value;
             }
         }
 
-        foreach($context->attributes as $attribute) {
+        foreach($workContext->attributes as $attribute) {
             $this->processAttribute($attribute, $model);
         }
+
+        if (!empty($this->arrayStack) && end($this->arrayStack) === count($this->stack) - 1) {
+            return;
+        }
+        $this->cleanupNonMatchingTypeOfContexts($workContext);
     }
 
     /**
@@ -208,10 +215,12 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processArray(DOMElement $context, array $model) {
+        $this->arrayStack[] = count($this->stack);
         foreach($model as $pos => $entry) {
             $this->processArrayEntry($context, $entry, $pos);
         }
         $this->cleanupArrayLeftovers($context);
+        array_pop($this->arrayStack);
     }
 
     /**
@@ -342,14 +351,16 @@ class ViewModelRenderer {
         }
 
         $xp = new \DOMXPath($context->ownerDocument);
-        $newContext = $xp->query(
+        $list = $xp->query(
             sprintf(
                 '(following-sibling::*)[@property="%s" and @typeof="%s"]',
                 $context->getAttribute('property'),
                 $requestedTypeOf
             ),
             $context
-        )->item(0);
+        );
+
+        $newContext = $list->item(0);
 
         if (!$newContext instanceof DOMElement) {
             throw new ViewModelRendererException(
@@ -361,6 +372,25 @@ class ViewModelRenderer {
         }
 
         return $newContext;
+    }
+
+    private function cleanupNonMatchingTypeOfContexts(DOMElement $context) {
+        if (!$context->hasAttribute('typeof')) {
+            return;
+        }
+
+        $xp = new \DOMXPath($context->ownerDocument);
+        $unusedList = $xp->query(
+            sprintf(
+                '*[@property="%s" and not(@typeof="%s")]',
+                $context->getAttribute('property'),
+                $context->getAttribute('typeof')
+            ),
+            $context->parentNode
+        );
+        foreach(new SnapshotDOMNodelist($unusedList) as $item) {
+            $item->parentNode->removeChild($item);
+        }
     }
 
 }
