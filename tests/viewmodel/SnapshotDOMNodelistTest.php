@@ -45,4 +45,36 @@ class SnapshotDOMNodelistTest extends TestCase {
         $this->assertFalse($root->hasChildNodes());
     }
 
+    public function testExistingNodeCanBeRemoved() {
+        $root = $this->dom->documentElement;
+
+        $list = new SnapshotDOMNodelist($root->childNodes);
+        $list->removeNode($root->getElementsByTagName('b')->item(0));
+
+        $count=0;
+        foreach($list as $pos => $item) {
+            $count++;
+        }
+        $this->assertEquals(1, $count);
+    }
+
+    public function testTryingToRemoveNonExistingNodeThrowsException() {
+        $root = $this->dom->documentElement;
+        $list = new SnapshotDOMNodelist($root->childNodes);
+
+        $this->expectException(SnapshotDOMNodelistException::class);
+        $list->removeNode($this->dom->createElement('not-in-list'));
+    }
+
+    public function testTestingForExistenceReturnsFalseOnNonExistingNode() {
+        $list = new SnapshotDOMNodelist(new \DOMNodeList());
+        $this->assertFalse($list->hasNode(new \DOMNode()));
+    }
+
+    public function testTestingForExistenceReturnsTrueOnExistingNode() {
+        $root = $this->dom->documentElement;
+        $list = new SnapshotDOMNodelist($root->childNodes);
+        $this->assertTrue($list->hasNode($root->firstChild));
+    }
+
 }

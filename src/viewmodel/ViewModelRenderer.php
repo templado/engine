@@ -13,34 +13,10 @@ class ViewModelRenderer {
     /** @var string[] */
     private $stackNames;
 
-    /** @var int[] */
-    private $arrayStack;
-
     /**
-     * @param DOMNode $context
-     *
-     * @throws ViewModelRendererException
+     * @var SnapshotDOMNodelist[]
      */
-    private function walk(DOMNode $context) {
-        if ($context instanceof DOMElement && $context->hasAttribute('property')) {
-            $this->addToStack($context);
-            $this->applyCurrent($context);
-        }
-
-        if ($context->hasChildNodes()) {
-            foreach(new SnapshotDOMNodelist($context->childNodes) as $childNode) {
-                /** @var \DOMNode $childNode */
-                if ($childNode->parentNode === null) {
-                    continue;
-                }
-                $this->walk($childNode);
-            }
-        }
-
-        if ($context instanceof DOMElement && $context->hasAttribute('property')) {
-            $this->dropFromStack();
-        }
-    }
+    private $listStack;
 
     /**
      * @param DOMNode $context
@@ -51,8 +27,47 @@ class ViewModelRenderer {
     public function render(DOMNode $context, $model) {
         $this->stack = [$model];
         $this->stackNames = [];
-        $this->arrayStack = [];
+        $this->listStack  = [];
         $this->walk($context);
+    }
+
+    /**
+     * @param DOMNode $context
+     *
+     * @throws ViewModelRendererException
+     */
+    private function walk(DOMNode $context) {
+        // echo "reached walk\n";
+        // echo "Current Context:\n" . $context->ownerDocument->saveXML($context). "\n---------\n";
+        if (!$context instanceof DOMElement) {
+            //echo "not-an-element - leaving\n";
+            return;
+        }
+
+        $stackAdded = false;
+        if ($context->hasAttribute('property')) {
+            $this->addToStack($context);
+            $stackAdded = true;
+            $context = $this->applyCurrent($context);
+            // echo "Back from apply current in walk\n";
+        }
+        if ($context->hasChildNodes()) {
+            $list = new SnapshotDOMNodelist($context->childNodes);
+            $this->listStack[] = $list;
+            foreach($list as $pos => $childNode) {
+                /** @var \DOMNode $childNode */
+                // echo "attempt recursion for $pos\n";
+
+                $this->walk($childNode);
+
+                // echo "Back from walk for $pos\n";
+            }
+            array_pop($this->listStack);
+        }
+
+        if ($stackAdded) {
+            $this->dropFromStack();
+        }
     }
 
     /**
@@ -109,26 +124,20 @@ class ViewModelRenderer {
         $model = $this->current();
         switch (gettype($model)) {
             case 'boolean': {
-                $this->processBoolean($context, $model);
-
-                return;
+                return $this->processBoolean($context, $model);
             }
             case 'string': {
                 $this->processString($context, $model);
 
-                return;
+                return $context;
             }
 
             case 'object': {
-                $this->processObject($context, $model);
-
-                return;
+                return $this->processObject($context, $model);
             }
 
             case 'array': {
-                $this->processArray($context, $model);
-
-                return;
+                return $this->processArray($context, $model);
             }
 
             default: {
@@ -144,13 +153,17 @@ class ViewModelRenderer {
      * @param bool       $model
      */
     private function processBoolean(DOMElement $context, bool $model) {
-        if ($model === false) {
-            while ($context->hasChildNodes()) {
-                $context->removeChild($context->lastChild);
-            }
-
-            $context->parentNode->removeChild($context);
+        if ($model === true) {
+            return $context;
         }
+        while ($context->hasChildNodes()) {
+            $context->removeChild($context->lastChild);
+        }
+
+        $fragment = $context->ownerDocument->createDocumentFragment();
+        $context->parentNode->removeChild($context);
+
+        return $fragment;
     }
 
     /**
@@ -169,25 +182,21 @@ class ViewModelRenderer {
      */
     private function processObject(DOMElement $context, $model) {
         if ($model instanceOf \Iterator) {
-            $this->processObjectAsIterator($context, $model);
-            return;
+            return $this->processArray($context, $model);
         }
-        $this->processObjectAsModel($context, $model);
+        return $this->processObjectAsModel($context, $model);
     }
 
-    private function processObjectAsIterator(DOMElement $context, \Iterator $model) {
-        foreach($model as $pos => $entry) {
-            $this->processArrayEntry($context, $entry, $pos);
-        }
-        $this->cleanupArrayLeftovers($context);
-    }
 
     /**
      * @param DOMElement $context
      * @param Object     $model
+     *
+     * @throws ViewModelRendererException
      */
     private function processObjectAsModel(DOMElement $context, $model) {
-        $workContext = $this->selectMatchingWorkContext($context, $model);
+        $container = $this->moveToContainer($context);
+        $workContext = $this->selectMatchingWorkContext($container->firstChild, $model);
 
         if (method_exists($model, 'asString') ||
             method_exists($model, '__call')
@@ -202,25 +211,38 @@ class ViewModelRenderer {
             $this->processAttribute($attribute, $model);
         }
 
-        if (!empty($this->arrayStack) && end($this->arrayStack) === count($this->stack) - 1) {
-            return;
-        }
-        $this->cleanupNonMatchingTypeOfContexts($workContext);
+        $container->parentNode->insertBefore($workContext, $container);
+        $container->parentNode->removeChild($container);
+        return $workContext;
     }
 
     /**
      * @param DOMElement $context
-     * @param array      $model
+     * @param array|\Iterator $model
      *
      * @throws ViewModelRendererException
      */
-    private function processArray(DOMElement $context, array $model) {
-        $this->arrayStack[] = count($this->stack);
+    private function processArray(DOMElement $context, $model) {
+        $container = $this->moveToContainer($context);
+
         foreach($model as $pos => $entry) {
-            $this->processArrayEntry($context, $entry, $pos);
+            // echo "Array Iteration $pos\n";
+
+            $subcontext = $container->cloneNode(true);
+            $container->parentNode->insertBefore($subcontext, $container);
+
+            $result = $this->processArrayEntry($subcontext->firstChild, $entry, $pos);
+
+            $container->parentNode->insertBefore($result, $subcontext);
+            $container->parentNode->removeChild($subcontext);
+
+            // echo "Added work result of array, cleaned up\n";
         }
-        $this->cleanupArrayLeftovers($context);
-        array_pop($this->arrayStack);
+
+        $fragment = $container->ownerDocument->createDocumentFragment();
+        $container->parentNode->removeChild($container);
+
+        return $fragment;
     }
 
     /**
@@ -228,46 +250,34 @@ class ViewModelRenderer {
      * @param            $entry
      * @param int        $pos
      *
+     * @return DOMElement
      * @throws ViewModelRendererException
      */
-    private function processArrayEntry(DOMElement $context, $entry, $pos) {
+    private function processArrayEntry(DOMElement $context, $entry, $pos): DOMElement {
         $workContext = $this->selectMatchingWorkContext($context, $entry);
         /** @var DOMElement $clone */
-        $clone = $workContext->cloneNode(true);
-        $context->parentNode->insertBefore($clone, $context);
         $this->stack[] = $entry;
         $this->stackNames[] = $pos;
-        $this->applyCurrent($clone);
-        if ($clone->hasChildNodes()) {
-            foreach(new SnapshotDOMNodelist($clone->childNodes) as $childNode) {
+
+        $this->applyCurrent($workContext);
+
+        if ($workContext->hasChildNodes()) {
+            // echo "Work Context:\n" . $workContext->ownerDocument->saveXML($workContext). "\n---------\n";
+
+            $list = new SnapshotDOMNodelist($workContext->childNodes);
+            $this->listStack[] = $list;
+            foreach($list as $cpos => $childNode) {
+                /** @var \DOMNode $childNode */
+                // echo "attempt recursion for $pos\n";
                 $this->walk($childNode);
+                // echo "Back from walk for $pos\n";
             }
+            array_pop($this->listStack);
+
         }
         $this->dropFromStack();
-    }
 
-    /**
-     * @param DOMElement $context
-     */
-    private function cleanupArrayLeftovers(DOMElement $context) {
-        $next = $context;
-        $remove = [$context];
-        while ($next = $next->nextSibling) {
-            if (!$next instanceof DOMElement) {
-                continue;
-            }
-            if ($next->getAttribute('property') === $context->getAttribute('property')) {
-                $remove[] = $next;
-            }
-        }
-
-        $parent = $context->parentNode;
-        while ($context->hasChildNodes()) {
-            $context->removeChild($context->lastChild);
-        }
-        foreach($remove as $node) {
-            $parent->removeChild($node);
-        }
+        return $workContext;
     }
 
     /**
@@ -334,6 +344,14 @@ class ViewModelRenderer {
         }
     }
 
+    /**
+     * @param DOMElement $context
+     * @param            $entry
+     *
+     * @return DOMElement
+     *
+     * @throws ViewModelRendererException
+     */
     private function selectMatchingWorkContext(DOMElement $context, $entry): DOMElement {
         if (!$context->hasAttribute('typeof')) {
             return $context;
@@ -341,7 +359,7 @@ class ViewModelRenderer {
 
         if (!method_exists($entry, 'typeOf')){
             throw new ViewModelRendererException(
-                'No typeOf method'
+                'No typeOf method in model but current context is conditional'
             );
         }
 
@@ -363,6 +381,7 @@ class ViewModelRenderer {
         $newContext = $list->item(0);
 
         if (!$newContext instanceof DOMElement) {
+
             throw new ViewModelRendererException(
                 sprintf(
                     "Context for type '%s' not found.",
@@ -374,23 +393,31 @@ class ViewModelRenderer {
         return $newContext;
     }
 
-    private function cleanupNonMatchingTypeOfContexts(DOMElement $context) {
-        if (!$context->hasAttribute('typeof')) {
-            return;
-        }
 
-        $xp = new \DOMXPath($context->ownerDocument);
-        $unusedList = $xp->query(
-            sprintf(
-                '*[@property="%s" and not(@typeof="%s")]',
-                $context->getAttribute('property'),
-                $context->getAttribute('typeof')
-            ),
+    /**
+     * @param DOMElement $context
+     *
+     * @return DOMElement
+     */
+    private function moveToContainer(DOMElement $context): DOMElement {
+        $container = $context->ownerDocument->createElement('container');
+        $context->parentNode->insertBefore($container, $context);
+
+        $xp = new \DOMXPath($container->ownerDocument);
+        $list = $xp->query(
+            sprintf('*[@property="%s"]', $context->getAttribute('property')),
             $context->parentNode
         );
-        foreach(new SnapshotDOMNodelist($unusedList) as $item) {
-            $item->parentNode->removeChild($item);
+
+        $stackList = end($this->listStack);
+        foreach($list as $node) {
+            $container->appendChild($node);
+            if ($stackList instanceof SnapshotDOMNodelist && $stackList->hasNode($node)) {
+                $stackList->removeNode($node);
+            }
         }
+
+        return $container;
     }
 
 }

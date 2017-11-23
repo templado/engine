@@ -22,6 +22,7 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load(__DIR__ . '/../_data/viewmodel/expected.html');
 
+
         $this->assertEqualXMLStructure(
             $expected->documentElement,
             $dom->documentElement
@@ -99,6 +100,27 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
+    public function testViewModelMethodReturningBooleanTrueKeepsNode() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
+
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement,new class {
+            public function test() {
+                return true;
+        }});
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0" ?><root property="test" />');
+
+        $this->assertEquals(
+            $expected->documentElement,
+            $dom->documentElement
+        );
+
+    }
+
     public function testUseOfNonObjectModelThrowsException() {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
@@ -154,6 +176,38 @@ class ViewModelRendererTest extends TestCase {
 
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, $model);
+    }
+
+    public function testMissingTypeOfMethodOnConditionContextThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root property="test" typeof="A" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new class {
+            public function getTest() {
+                return new class {};
+            }
+        });
+    }
+
+    public function testNoExsitingTypeForRequestedTypeOfMethodOnConditionContextThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root property="test" typeof="A" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new class {
+            public function getTest() {
+                return new class {
+                    public function typeOf() {
+                        return 'B';
+                    }
+                };
+            }
+        });
     }
 
     public function testTypeOfSelectionPicksCorrectContextInObjectUse() {
@@ -269,4 +323,54 @@ class ViewModelRendererTest extends TestCase {
 
     }
 
+    public function testTypeOfSelectionPicksCorrectContextInComplexScenario() {
+
+        $model = new class {
+            public function getOne() {
+                return [
+                    new class {
+                        public function typeOf() {
+                            return 'A';
+                        }
+
+                        public function getText() {
+                            return 'new text for type A';
+                        }
+                    },
+                    new class {
+                        public function typeOf() {
+                            return 'B';
+                        }
+
+                        public function getTwo() {
+                            return new class {
+                                public function typeOf() {
+                                    return 'B.3';
+                                }
+
+                                public function asString() {
+                                    return 'new text two-B.3';
+                                }
+                            };
+                        }
+                    }
+                ];
+            }
+        };
+
+        $source = new DOMDocument();
+        $source->load(__DIR__ . '/../_data/typeof/complex-source.xhtml');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($source->documentElement, $model);
+
+        $expected = new DOMDocument();
+        $expected->load(__DIR__ . '/../_data/typeof/complex-expected.xhtml');
+
+        $this->assertEqualXMLStructure(
+            $expected->documentElement,
+            $source->documentElement
+        );
+
+    }
 }
