@@ -30,6 +30,7 @@ class SnapshotDOMNodelist implements Iterator {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -37,6 +38,7 @@ class SnapshotDOMNodelist implements Iterator {
         foreach($this->items as $pos => $item) {
             if ($item->isSameNode($node)) {
                 array_splice($this->items, $pos, 1);
+
                 return;
             }
         }

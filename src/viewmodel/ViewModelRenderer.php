@@ -25,7 +25,7 @@ class ViewModelRenderer {
     public function render(DOMNode $context, $model) {
         $this->stack = [$model];
         $this->stackNames = [];
-        $this->listStack  = [];
+        $this->listStack = [];
         $this->walk($context);
     }
 
@@ -174,9 +174,9 @@ class ViewModelRenderer {
         if ($model instanceOf \Iterator) {
             return $this->processArray($context, $model);
         }
+
         return $this->processObjectAsModel($context, $model);
     }
-
 
     /**
      * @param DOMElement $context
@@ -203,11 +203,12 @@ class ViewModelRenderer {
 
         $container->parentNode->insertBefore($workContext, $container);
         $container->parentNode->removeChild($container);
+
         return $workContext;
     }
 
     /**
-     * @param DOMElement $context
+     * @param DOMElement      $context
      * @param array|\Iterator $model
      *
      * @throws ViewModelRendererException
@@ -342,7 +343,7 @@ class ViewModelRenderer {
             return $context;
         }
 
-        if (!method_exists($entry, 'typeOf')){
+        if (!method_exists($entry, 'typeOf')) {
             throw new ViewModelRendererException(
                 'No typeOf method in model but current context is conditional'
             );
@@ -377,7 +378,6 @@ class ViewModelRenderer {
 
         return $newContext;
     }
-
 
     /**
      * @param DOMElement $context
