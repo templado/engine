@@ -46,7 +46,8 @@ class XPathSelector implements Selector {
                 sprintf('%s: "%s"',
                     trim($error->message),
                     $this->queryString
-                )
+                ),
+                $error->code
             );
         }
         $this->toggleErrorHandling($backup);

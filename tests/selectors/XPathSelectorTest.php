@@ -45,28 +45,26 @@ class XPathSelectorTest extends TestCase {
     /**
      * @dataProvider invalidXPathQueryStringsProvider
      */
-    public function testUsingInvalidXPathQueryThrowsException(string $queryString, string $errorMessage) {
+    public function testUsingInvalidXPathQueryThrowsException(string $queryString, int $code) {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root xmlns="foo:ns"><child /></root>');
 
         $selector = new XPathSelector($queryString);
 
         $this->expectException(XPathSelectorException::class);
-        $this->expectExceptionMessage(
-            sprintf($errorMessage, $queryString)
-        );
+        $this->expectExceptionCode($code);
         $selector->select($dom->documentElement);
     }
 
     public function invalidXPathQueryStringsProvider(): array {
         return [
-            'empty' => ['', 'Invalid expression: "%s"'],
-            'syntax-error' => ['//*[', 'Invalid expression: "%s"'],
-            'non-function' => ['foo()', 'Unregistered function: "%s"'],
-            'non-axis' => ['f::axis', 'Invalid expression: "%s"'],
-            'slash-crazy' => ['/////', 'Invalid expression: "%s"'],
-            'dots' => ['....', 'Invalid expression: "%s"'],
-            'unknown-prefix' => ['//not:known', 'Undefined namespace prefix: "%s"']
+            'empty' => ['', XPathSelectorException::InvalidExpression],
+            'syntax-error' => ['//*[', XPathSelectorException::InvalidExpression],
+            'non-function' => ['foo()', XPathSelectorException::UnregisteredFunction],
+            'non-axis' => ['f::axis', XPathSelectorException::InvalidExpression],
+            'slash-crazy' => ['/////', XPathSelectorException::InvalidExpression],
+            'dots' => ['....', XPathSelectorException::InvalidExpression],
+            'unknown-prefix' => ['//not:known', XPathSelectorException::UndefinedNamespace]
         ];
     }
 }
