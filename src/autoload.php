@@ -24,6 +24,7 @@ spl_autoload_register(
                 'templado\\engine\\selector' => '/selectors/Selector.php',
                 'templado\\engine\\simplesnippet' => '/snippet/SimpleSnippet.php',
                 'templado\\engine\\snapshotdomnodelist' => '/viewmodel/SnapshotDOMNodelist.php',
+                'templado\\engine\\snapshotdomnodelistexception' => '/viewmodel/SnapshotDOMNodelistException.php',
                 'templado\\engine\\snippet' => '/snippet/Snippet.php',
                 'templado\\engine\\snippetcollectionexception' => '/snippet/SnippetCollectionException.php',
                 'templado\\engine\\snippetexception' => '/snippet/SnippetException.php',
