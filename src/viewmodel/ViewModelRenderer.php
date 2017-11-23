@@ -13,9 +13,7 @@ class ViewModelRenderer {
     /** @var string[] */
     private $stackNames;
 
-    /**
-     * @var SnapshotDOMNodelist[]
-     */
+    /** @var SnapshotDOMNodelist[] */
     private $listStack;
 
     /**
@@ -37,10 +35,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function walk(DOMNode $context) {
-        // echo "reached walk\n";
-        // echo "Current Context:\n" . $context->ownerDocument->saveXML($context). "\n---------\n";
         if (!$context instanceof DOMElement) {
-            //echo "not-an-element - leaving\n";
             return;
         }
 
@@ -49,18 +44,13 @@ class ViewModelRenderer {
             $this->addToStack($context);
             $stackAdded = true;
             $context = $this->applyCurrent($context);
-            // echo "Back from apply current in walk\n";
         }
         if ($context->hasChildNodes()) {
             $list = new SnapshotDOMNodelist($context->childNodes);
             $this->listStack[] = $list;
             foreach($list as $pos => $childNode) {
                 /** @var \DOMNode $childNode */
-                // echo "attempt recursion for $pos\n";
-
                 $this->walk($childNode);
-
-                // echo "Back from walk for $pos\n";
             }
             array_pop($this->listStack);
         }
@@ -226,7 +216,6 @@ class ViewModelRenderer {
         $container = $this->moveToContainer($context);
 
         foreach($model as $pos => $entry) {
-            // echo "Array Iteration $pos\n";
 
             $subcontext = $container->cloneNode(true);
             $container->parentNode->insertBefore($subcontext, $container);
@@ -236,7 +225,6 @@ class ViewModelRenderer {
             $container->parentNode->insertBefore($result, $subcontext);
             $container->parentNode->removeChild($subcontext);
 
-            // echo "Added work result of array, cleaned up\n";
         }
 
         $fragment = $container->ownerDocument->createDocumentFragment();
@@ -262,15 +250,12 @@ class ViewModelRenderer {
         $this->applyCurrent($workContext);
 
         if ($workContext->hasChildNodes()) {
-            // echo "Work Context:\n" . $workContext->ownerDocument->saveXML($workContext). "\n---------\n";
 
             $list = new SnapshotDOMNodelist($workContext->childNodes);
             $this->listStack[] = $list;
             foreach($list as $cpos => $childNode) {
                 /** @var \DOMNode $childNode */
-                // echo "attempt recursion for $pos\n";
                 $this->walk($childNode);
-                // echo "Back from walk for $pos\n";
             }
             array_pop($this->listStack);
 
