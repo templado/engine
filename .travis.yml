@@ -21,7 +21,7 @@ before_install:
 
 before_script:
   - composer install --prefer-source --no-interaction --dev
-  - phive install
+  - phive --no-progress install --trust-gpg-keys 4AA394086372C20A,2A8299CE842DD38C
   - ant phpab
 
 script: ./tools/phpunit
