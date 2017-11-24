@@ -71,6 +71,8 @@ class XPathSelector implements Selector {
     }
 
     /**
+     * @param bool $mode
+     *
      * @return bool
      */
     private function toggleErrorHandling(bool $mode): bool {

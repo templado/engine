@@ -57,7 +57,7 @@ class SnapshotDOMNodelist implements Iterator {
         return $this->pos;
     }
 
-    public function valid() {
+    public function valid(): bool {
         return count($this->items) > $this->pos;
     }
 

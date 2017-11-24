@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMAttr;
+use DOMDocumentFragment;
 use DOMElement;
 use DOMNode;
 
@@ -107,10 +108,12 @@ class ViewModelRenderer {
     /**
      * @param DOMElement $context
      *
+     * @return DOMNode
+     *
      * @throws ViewModelRendererException
      * @throws \Templado\Engine\ViewModelRendererException
      */
-    private function applyCurrent(DOMElement $context) {
+    private function applyCurrent(DOMElement $context): DOMNode {
         $model = $this->current();
         switch (gettype($model)) {
             case 'boolean': {
@@ -141,6 +144,8 @@ class ViewModelRenderer {
     /**
      * @param DOMElement $context
      * @param bool       $model
+     *
+     * @return DOMDocumentFragment|DOMElement
      */
     private function processBoolean(DOMElement $context, bool $model) {
         if ($model === true) {
@@ -168,6 +173,7 @@ class ViewModelRenderer {
      * @param DOMElement $context
      * @param object     $model
      *
+     * @return DOMDocumentFragment|DOMElement
      * @throws ViewModelRendererException
      */
     private function processObject(DOMElement $context, $model) {
@@ -182,9 +188,11 @@ class ViewModelRenderer {
      * @param DOMElement $context
      * @param Object     $model
      *
+     * @return DOMElement
+     *
      * @throws ViewModelRendererException
      */
-    private function processObjectAsModel(DOMElement $context, $model) {
+    private function processObjectAsModel(DOMElement $context, $model): DOMElement {
         $container = $this->moveToContainer($context);
         $workContext = $this->selectMatchingWorkContext($container->firstChild, $model);
 
@@ -211,9 +219,11 @@ class ViewModelRenderer {
      * @param DOMElement      $context
      * @param array|\Iterator $model
      *
+     * @return DOMDocumentFragment
+     *
      * @throws ViewModelRendererException
      */
-    private function processArray(DOMElement $context, $model) {
+    private function processArray(DOMElement $context, $model): DOMDocumentFragment {
         $container = $this->moveToContainer($context);
 
         foreach($model as $pos => $entry) {
@@ -383,6 +393,8 @@ class ViewModelRenderer {
      * @param DOMElement $context
      *
      * @return DOMElement
+     *
+     * @throws SnapshotDOMNodelistException
      */
     private function moveToContainer(DOMElement $context): DOMElement {
         $container = $context->ownerDocument->createElement('container');
