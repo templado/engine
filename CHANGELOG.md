@@ -2,6 +2,10 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.2.0] - 2017-11-24
+* ViewModelRenderer: RDFa Lite attribute 'typeof' now supported for use as conditional selection
+* Minor tweaks to improve performance
+
 ## [2.1.2] - 2017-10-06
 ### Fixed
 * Regression from 2.1.1
