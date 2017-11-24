@@ -252,7 +252,7 @@ class ViewModelRenderer {
      * @return DOMElement
      * @throws ViewModelRendererException
      */
-    private function processArrayEntry(DOMElement $context, $entry, $pos): DOMElement {
+    private function processArrayEntry(DOMElement $context, $entry, int $pos): DOMElement {
         $workContext = $this->selectMatchingWorkContext($context, $entry);
         /** @var DOMElement $clone */
         $this->stack[] = $entry;
@@ -327,7 +327,7 @@ class ViewModelRenderer {
      *
      * @throws ViewModelRendererException
      */
-    private function ensureIsObject($model, $property) {
+    private function ensureIsObject($model, string $property) {
         if (!is_object($model)) {
             throw new ViewModelRendererException(
                 sprintf(
@@ -394,7 +394,6 @@ class ViewModelRenderer {
      *
      * @return DOMElement
      *
-     * @throws SnapshotDOMNodelistException
      */
     private function moveToContainer(DOMElement $context): DOMElement {
         $container = $context->ownerDocument->createElement('container');
@@ -409,7 +408,7 @@ class ViewModelRenderer {
         $stackList = end($this->listStack);
         foreach($list as $node) {
             $container->appendChild($node);
-            if ($stackList instanceof SnapshotDOMNodelist && $stackList->hasNode($node)) {
+            if (($stackList instanceof SnapshotDOMNodelist) && $stackList->hasNode($node)) {
                 $stackList->removeNode($node);
             }
         }
