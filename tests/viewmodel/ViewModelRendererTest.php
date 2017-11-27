@@ -100,6 +100,32 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
+    public function testDashesInAttributeNamesGetTranslatedToCamelCase() {
+        $dom       = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root property="a" attr-with-dash="old"/>');
+
+        $viewModel = new class {
+            public function a() {
+                return new class {
+                    public function getAttrWithDash() {
+                        return 'new';
+                    }
+                };
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0"?><root property="a" attr-with-dash="new"/>');
+
+        $this->assertEquals(
+            $expected->documentElement,
+            $dom->documentElement
+        );
+    }
+
     public function testViewModelMethodReturningBooleanTrueKeepsNode() {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');

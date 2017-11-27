@@ -283,7 +283,16 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processAttribute(DOMAttr $attribute, $model) {
-        foreach([$attribute->name, 'get' . ucfirst($attribute->name), '__call'] as $method) {
+        $attributeName = $attribute->nodeName;
+        if (strpos($attributeName,'-') !== false) {
+            $parts = explode('-', $attributeName);
+            array_walk(
+                $parts,
+                function (&$value, $pos) { $value = ucfirst($value); }
+            );
+            $attributeName = implode('', $parts);
+        }
+        foreach([$attributeName, 'get' . ucfirst($attributeName), '__call'] as $method) {
 
             if (!method_exists($model, $method)) {
                 continue;
