@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class ProblemsWithMultipleProperties extends TestCase {
+class ProblemsWithMultiplePropertiesTest extends TestCase {
 
     public function testIssueIsNoLongerReproduceable() {
         $html = \Templado\Engine\Templado::loadHtmlFile(
