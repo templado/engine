@@ -2,6 +2,10 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.2.2] - 2017-12-04
+### Fixed
+* [#4](https://github.com/templado/engine/issues/4): Snippets and CSRFTokens
+
 ## [2.2.1] - 2017-11-27
 * ViewModelRenderer: Attributes with dashes are now explicitly mapped (e.g. data-foo to getDataFoo) 
 
