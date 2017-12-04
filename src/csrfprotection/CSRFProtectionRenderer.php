@@ -36,7 +36,8 @@ class CSRFProtectionRenderer {
             $this->xp = new DOMXPath($form->ownerDocument);
         }
         $nodeList = $this->xp->query(
-            sprintf('.//input[@name="%s"]', $this->protection->getFieldName())
+            sprintf('.//input[@name="%s"]', $this->protection->getFieldName()),
+            $form
         );
         if ($nodeList->length === 0) {
             return $this->createField($form);
