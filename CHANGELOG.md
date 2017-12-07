@@ -2,6 +2,10 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.2.3] - 2017-12-07
+### Fixed
+* [#5](https://github.com/templado/engine/issues/5): Arguments of content in snippets are not processed the same way as non-snippet content?
+
 ## [2.2.2] - 2017-12-04
 ### Fixed
 * [#4](https://github.com/templado/engine/issues/4): Snippets and CSRFTokens
