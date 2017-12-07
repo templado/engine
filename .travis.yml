@@ -3,12 +3,17 @@ os:
 
 language: php
 
+cache:
+  directories:
+  - $HOME/.phive
+
 php:
   - 7.0
   - 7.1
   - 7.2
   - 7.0snapshot
   - 7.1snapshot
+  - 7.2snapshot
   - master
 
 before_install:
