@@ -11,7 +11,7 @@ use Iterator;
  * takes a snapshot of the list first and then turns that into an
  * iterator.
  */
-class SnapshotDOMNodelist implements Iterator {
+class SnapshotDOMNodelist implements Iterator, \Countable {
 
     /**
      * @var DOMNode[]
@@ -22,6 +22,10 @@ class SnapshotDOMNodelist implements Iterator {
 
     public function __construct(DOMNodeList $list) {
         $this->extractItemsFromNodeList($list);
+    }
+
+    public function count() {
+        return count($this->items);
     }
 
     public function hasNode(DOMNode $node) {
@@ -38,22 +42,24 @@ class SnapshotDOMNodelist implements Iterator {
         foreach($this->items as $pos => $item) {
             if ($item->isSameNode($node)) {
                 array_splice($this->items, $pos, 1);
-
+                if ($pos <= $this->pos) {
+                    $this->pos--;
+                }
                 return;
             }
         }
         throw new SnapshotDOMNodelistException('Node not found in list');
     }
 
-    public function current() {
+    public function current(): DOMNode {
         return $this->items[$this->pos];
     }
 
-    public function next() {
+    public function next(): void {
         $this->pos++;
     }
 
-    public function key() {
+    public function key(): int {
         return $this->pos;
     }
 
@@ -61,7 +67,7 @@ class SnapshotDOMNodelist implements Iterator {
         return count($this->items) > $this->pos;
     }
 
-    public function rewind() {
+    public function rewind(): void {
         $this->pos = 0;
     }
 
@@ -69,5 +75,15 @@ class SnapshotDOMNodelist implements Iterator {
         foreach($list as $item) {
             $this->items[] = $item;
         }
+    }
+
+    public function hasNext(): bool {
+        return $this->pos < count($this->items);
+    }
+
+    public function getNext(): DOMNode {
+        $node = $this->current();
+        $this->next();
+        return $node;
     }
 }

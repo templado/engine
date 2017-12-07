@@ -49,7 +49,9 @@ class ViewModelRenderer {
         if ($context->hasChildNodes()) {
             $list = new SnapshotDOMNodelist($context->childNodes);
             $this->listStack[] = $list;
-            foreach($list as $pos => $childNode) {
+
+            while($list->hasNext()) {
+                $childNode = $list->getNext();
                 /** @var \DOMNode $childNode */
                 $this->walk($childNode);
             }

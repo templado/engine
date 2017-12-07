@@ -8,6 +8,7 @@ class Templado {
     public static function loadHtmlFile(FileName $fileName): Html {
         libxml_use_internal_errors(true);
         $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
         $tmp = $dom->load($fileName->asString());
         if (!$tmp || libxml_get_last_error()) {
             throw new TempladoException(
