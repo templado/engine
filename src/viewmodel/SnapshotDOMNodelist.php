@@ -55,7 +55,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
         return $this->items[$this->pos];
     }
 
-    public function next(): void {
+    public function next() {
         $this->pos++;
     }
 
@@ -67,7 +67,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
         return count($this->items) > $this->pos;
     }
 
-    public function rewind(): void {
+    public function rewind() {
         $this->pos = 0;
     }
 
