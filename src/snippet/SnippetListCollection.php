@@ -19,9 +19,6 @@ class SnippetListCollection {
     }
 
     /**
-     * @param string $id
-     *
-     * @return SnippetList
      * @throws SnippetCollectionException
      */
     public function getSnippetsForId(string $id): SnippetList {

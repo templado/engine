@@ -7,27 +7,16 @@ use DOMXPath;
 
 class XPathSelector implements Selector {
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $queryString;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $prefixMap = [];
 
-    /**
-     * @param string $query
-     */
     public function __construct(string $query) {
         $this->queryString = $query;
     }
 
-    /**
-     * @param string $prefix
-     * @param string $uri
-     */
     public function registerPrefix(string $prefix, string $uri) {
         $this->prefixMap[$prefix] = $uri;
     }
@@ -70,11 +59,6 @@ class XPathSelector implements Selector {
         return $xp;
     }
 
-    /**
-     * @param bool $mode
-     *
-     * @return bool
-     */
     private function toggleErrorHandling(bool $mode): bool {
         $backup = libxml_use_internal_errors($mode);
         libxml_clear_errors();

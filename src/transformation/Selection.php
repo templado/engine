@@ -6,16 +6,9 @@ use IteratorAggregate;
 
 class Selection implements IteratorAggregate {
 
-    /**
-     * @var DOMNodeList
-     */
+    /** @var DOMNodeList */
     private $nodeList;
 
-    /**
-     * Selection constructor.
-     *
-     * @param DOMNodeList $nodeList
-     */
     public function __construct(DOMNodeList $nodeList) {
         $this->nodeList = $nodeList;
     }

@@ -7,9 +7,6 @@ use DOMXPath;
 class FormDataRenderer {
 
     /**
-     * @param DOMElement $context
-     * @param FormData   $form
-     *
      * @throws FormDataRendererException
      */
     public function render(DOMElement $context, FormData $form) {
@@ -26,10 +23,6 @@ class FormDataRenderer {
         }
     }
 
-    /**
-     * @param DOMElement $input
-     * @param string     $value
-     */
     private function setInputValue(DOMElement $input, string $value) {
         $type = $input->getAttribute('type');
         switch ($type) {
@@ -46,10 +39,6 @@ class FormDataRenderer {
         }
     }
 
-    /**
-     * @param DOMElement $input
-     * @param string     $value
-     */
     private function toggleInput(DOMElement $input, string $value) {
         $actualValue = $input->getAttribute('value');
         if ($actualValue === $value) {
@@ -60,10 +49,6 @@ class FormDataRenderer {
         $input->removeAttribute('checked');
     }
 
-    /**
-     * @param DOMElement $select
-     * @param string     $value
-     */
     private function setSelectValue(DOMElement $select, string $value) {
         foreach($select->getElementsByTagName('option') as $option) {
             /** @var DOMElement $option */
@@ -76,10 +61,6 @@ class FormDataRenderer {
     }
 
     /**
-     * @param DOMElement $context
-     * @param string     $identifier
-     *
-     * @return DOMElement
      * @throws FormDataRendererException
      */
     private function findFormElement(DOMElement $context, string $identifier): DOMElement {
@@ -107,9 +88,6 @@ class FormDataRenderer {
     }
 
     /**
-     * @param FormData   $form
-     * @param DOMElement $formElement
-     *
      * @throws FormDataException
      */
     private function processInputElements(FormData $form, DOMElement $formElement) {
@@ -130,9 +108,6 @@ class FormDataRenderer {
     }
 
     /**
-     * @param FormData   $form
-     * @param DOMElement $formElement
-     *
      * @throws FormDataException
      */
     private function processSelectElements(FormData $form, DOMElement $formElement) {
@@ -152,9 +127,6 @@ class FormDataRenderer {
     }
 
     /**
-     * @param FormData   $form
-     * @param DOMElement $formElement
-     *
      * @throws FormDataException
      */
     private function processTextareaElement(FormData $form, DOMElement $formElement) {

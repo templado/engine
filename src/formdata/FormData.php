@@ -3,22 +3,13 @@ namespace Templado\Engine;
 
 class FormData {
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $identifier;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     private $values;
 
     /**
-     * FormData constructor.
-     *
-     * @param string $identifier
-     * @param array  $values
-     *
      * @throws FormDataException
      */
     public function __construct(string $identifier, array $values) {
@@ -30,19 +21,11 @@ class FormData {
         return $this->identifier;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public function hasKey(string $key): bool {
         return array_key_exists($key, $this->values);
     }
 
     /**
-     * @param string $key
-     *
-     * @return mixed
      * @throws FormDataException
      */
     public function getValue(string $key) {
@@ -54,10 +37,6 @@ class FormData {
     }
 
     /**
-     * @param array $values
-     * @param bool  $recursion
-     *
-     * @return array
      * @throws FormDataException
      */
     private function initValuesFromArray(array $values, bool $recursion = false): array {

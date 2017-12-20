@@ -33,6 +33,9 @@ class SnippetLoader {
         );
     }
 
+    /**
+     * @throws SnippetLoaderException
+     */
     private function loadAsSnippet(FileName $fileName): SimpleSnippet {
         $dom = $this->loadFile($fileName);
 
@@ -48,9 +51,6 @@ class SnippetLoader {
     }
 
     /**
-     * @param FileName $fileName
-     *
-     * @return DOMDocument
      * @throws SnippetLoaderException
      */
     private function loadFile(FileName $fileName): DOMDocument {
@@ -73,11 +73,6 @@ class SnippetLoader {
         return $dom;
     }
 
-    /**
-     * @param DOMDocument $dom
-     *
-     * @return bool
-     */
     private function isSnippetDocument(DOMDocument $dom): bool {
         $root = $dom->documentElement;
 
@@ -88,11 +83,6 @@ class SnippetLoader {
         );
     }
 
-    /**
-     * @param DOMDocument $dom
-     *
-     * @return bool
-     */
     private function isHtmlDocument(DOMDocument $dom): bool {
         $root = $dom->documentElement;
 
@@ -103,8 +93,6 @@ class SnippetLoader {
     }
 
     /**
-     * @param FileName $fileName
-     *
      * @throws SnippetLoaderException
      */
     private function ensureFileExists(FileName $fileName) {
@@ -116,8 +104,6 @@ class SnippetLoader {
     }
 
     /**
-     * @param FileName $fileName
-     *
      * @throws SnippetLoaderException
      */
     private function ensureIsReadableFile(FileName $fileName) {

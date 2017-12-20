@@ -3,9 +3,7 @@ namespace Templado\Engine;
 
 class TempladoException extends Exception {
 
-    /**
-     * @var \LibXMLError[]
-     */
+    /** @var \LibXMLError[] */
     private $errorList;
 
     public function __construct(string $message, int $code = 0, Exception $previous = null) {

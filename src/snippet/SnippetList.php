@@ -3,21 +3,13 @@ namespace Templado\Engine;
 
 class SnippetList implements \Iterator, \Countable {
 
-    /**
-     * @var Snippet[]
-     */
+    /** @var Snippet[] */
     private $snippets = [];
 
-    /**
-     * @param Snippet $snippet
-     */
     public function addSnippet(Snippet $snippet) {
         $this->snippets[] = $snippet;
     }
 
-    /**
-     * @return Snippet
-     */
     public function current(): Snippet {
         return current($this->snippets);
     }
@@ -29,23 +21,14 @@ class SnippetList implements \Iterator, \Countable {
         return next($this->snippets);
     }
 
-    /**
-     * @return int
-     */
     public function key(): int {
         return key($this->snippets);
     }
 
-    /**
-     * @return bool
-     */
     public function valid(): bool {
         return key($this->snippets) !== null;
     }
 
-    /**
-     * @return mixed|Snippet
-     */
     public function rewind() {
         return reset($this->snippets);
     }

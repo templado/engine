@@ -6,20 +6,12 @@ use DOMXPath;
 
 class CSRFProtectionRenderer {
 
-    /**
-     * @var CSRFProtection
-     */
+    /** @var CSRFProtection */
     private $protection;
 
-    /**
-     * @var DOMXPath
-     */
+    /** @var DOMXPath */
     private $xp;
 
-    /**
-     * @param DOMElement     $context
-     * @param CSRFProtection $protection
-     */
     public function render(DOMElement $context, CSRFProtection $protection) {
         $this->protection = $protection;
 

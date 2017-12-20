@@ -13,11 +13,10 @@ use Iterator;
  */
 class SnapshotDOMNodelist implements Iterator, \Countable {
 
-    /**
-     * @var DOMNode[]
-     */
+    /** @var DOMNode[] */
     private $items = [];
 
+    /** @var int */
     private $pos = 0;
 
     public function __construct(DOMNodeList $list) {

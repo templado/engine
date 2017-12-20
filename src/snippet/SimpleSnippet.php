@@ -9,34 +9,18 @@ class SimpleSnippet implements Snippet {
     /** @var DOMNode */
     private $content;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $targetId;
 
-    /**
-     * @param string  $targetId
-     * @param DOMNode $content
-     *
-     * @internal param bool $replace
-     */
     public function __construct(string $targetId, DOMNode $content) {
         $this->targetId = $targetId;
         $this->content = $content;
     }
 
-    /**
-     * @return string
-     */
     public function getTargetId(): string {
         return $this->targetId;
     }
 
-    /**
-     * @param DOMElement $node
-     *
-     * @return DOMNode
-     */
     public function applyTo(DOMElement $node): DOMNode {
         $content = $node->ownerDocument->importNode($this->content, true);
 
@@ -51,12 +35,6 @@ class SimpleSnippet implements Snippet {
         return $node;
     }
 
-    /**
-     * @param DOMElement $node
-     * @param DOMNode    $content
-     *
-     * @return bool
-     */
     private function shouldReplace(DOMElement $node, DOMNode $content): bool {
         if (!$content instanceof DOMElement) {
             return false;

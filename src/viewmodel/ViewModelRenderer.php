@@ -18,9 +18,6 @@ class ViewModelRenderer {
     private $listStack;
 
     /**
-     * @param DOMNode $context
-     * @param object  $model
-     *
      * @throws ViewModelRendererException
      */
     public function render(DOMNode $context, $model) {
@@ -31,8 +28,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMNode $context
-     *
      * @throws ViewModelRendererException
      */
     private function walk(DOMNode $context) {
@@ -64,8 +59,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMElement $context
-     *
      * @throws ViewModelRendererException
      */
     private function addToStack(DOMElement $context) {
@@ -108,12 +101,7 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMElement $context
-     *
-     * @return DOMNode
-     *
      * @throws ViewModelRendererException
-     * @throws \Templado\Engine\ViewModelRendererException
      */
     private function applyCurrent(DOMElement $context): DOMNode {
         $model = $this->current();
@@ -144,9 +132,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMElement $context
-     * @param bool       $model
-     *
      * @return DOMDocumentFragment|DOMElement
      */
     private function processBoolean(DOMElement $context, bool $model) {
@@ -163,19 +148,11 @@ class ViewModelRenderer {
         return $fragment;
     }
 
-    /**
-     * @param DOMElement $context
-     * @param string     $model
-     */
     private function processString(DOMElement $context, string $model) {
         $context->nodeValue = $model;
     }
 
     /**
-     * @param DOMElement $context
-     * @param object     $model
-     *
-     * @return DOMDocumentFragment|DOMElement
      * @throws ViewModelRendererException
      */
     private function processObject(DOMElement $context, $model) {
@@ -187,11 +164,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMElement $context
-     * @param Object     $model
-     *
-     * @return DOMElement
-     *
      * @throws ViewModelRendererException
      */
     private function processObjectAsModel(DOMElement $context, $model): DOMElement {
@@ -218,11 +190,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMElement      $context
-     * @param array|\Iterator $model
-     *
-     * @return DOMDocumentFragment
-     *
      * @throws ViewModelRendererException
      */
     private function processArray(DOMElement $context, $model): DOMDocumentFragment {
@@ -247,11 +214,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMElement $context
-     * @param            $entry
-     * @param int        $pos
-     *
-     * @return DOMElement
      * @throws ViewModelRendererException
      */
     private function processArrayEntry(DOMElement $context, $entry, int $pos): DOMElement {
@@ -279,9 +241,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMAttr $attribute
-     * @param object  $model
-     *
      * @throws ViewModelRendererException
      */
     private function processAttribute(DOMAttr $attribute, $model) {
@@ -310,7 +269,7 @@ class ViewModelRenderer {
             }
 
             if ($value === false) {
-                /** @var $parent DOMElement */
+                /** @var DOMElement $parent */
                 $parent = $attribute->parentNode;
                 $parent->removeAttribute($attribute->name);
 
@@ -333,9 +292,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param mixed  $model
-     * @param string $property
-     *
      * @throws ViewModelRendererException
      */
     private function ensureIsObject($model, string $property) {
@@ -352,11 +308,6 @@ class ViewModelRenderer {
     }
 
     /**
-     * @param DOMElement $context
-     * @param            $entry
-     *
-     * @return DOMElement
-     *
      * @throws ViewModelRendererException
      */
     private function selectMatchingWorkContext(DOMElement $context, $entry): DOMElement {
@@ -400,12 +351,6 @@ class ViewModelRenderer {
         return $newContext;
     }
 
-    /**
-     * @param DOMElement $context
-     *
-     * @return DOMElement
-     *
-     */
     private function moveToContainer(DOMElement $context): DOMElement {
         $container = $context->ownerDocument->createElement('container');
         $context->parentNode->insertBefore($container, $context);

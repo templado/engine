@@ -5,21 +5,12 @@ use DOMElement;
 
 class SnippetRenderer {
 
-    /**
-     * @var SnippetListCollection
-     */
+    /** @var SnippetListCollection */
     private $snippetListCollection;
 
-    /**
-     * @var DOMElement
-     */
+    /** @var DOMElement */
     private $currentContext;
 
-    /**
-     * SnippetRenderer constructor.
-     *
-     * @param SnippetListCollection $snippetListCollection
-     */
     public function __construct(SnippetListCollection $snippetListCollection) {
         $this->snippetListCollection = $snippetListCollection;
     }
@@ -54,10 +45,6 @@ class SnippetRenderer {
     }
 
     /**
-     * @param string $id
-     *
-     * @return bool
-     *
      * @throws \Templado\Engine\SnippetCollectionException
      */
     private function applySnippetsToElement($id): bool {
