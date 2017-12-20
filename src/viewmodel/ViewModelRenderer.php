@@ -220,7 +220,7 @@ class ViewModelRenderer {
         $workContext = $this->selectMatchingWorkContext($context, $entry);
         /** @var DOMElement $clone */
         $this->stack[] = $entry;
-        $this->stackNames[] = $pos;
+        $this->stackNames[] = (string)$pos;
 
         $this->applyCurrent($workContext);
 
