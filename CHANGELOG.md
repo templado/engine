@@ -2,6 +2,10 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.2.4] - 2018-01-20
+### Fixed
+* [#7](https://github.com/templado/engine/issues/7): SnapshotNodeList: Undefined offset -1
+
 ## [2.2.3] - 2017-12-07
 ### Fixed
 * [#5](https://github.com/templado/engine/issues/5): Arguments of content in snippets are not processed the same way as non-snippet content?
