@@ -51,6 +51,9 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
     }
 
     public function current(): DOMNode {
+        if (!$this->valid()) {
+            throw new SnapshotDOMNodelistException('No current node available');
+        }
         return $this->items[$this->pos];
     }
 

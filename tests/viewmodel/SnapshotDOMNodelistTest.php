@@ -77,4 +77,17 @@ class SnapshotDOMNodelistTest extends TestCase {
         $this->assertTrue($list->hasNode($root->firstChild));
     }
 
+    public function testTryingToGetCurrentOnEmptyThrowsException() {
+        $list = new SnapshotDOMNodelist(new \DOMNodeList());
+        $this->expectException(SnapshotDOMNodelistException::class);
+        $this->expectExceptionMessage('No current node available');
+        $list->current();
+    }
+
+    public function testCountOfNodesCanBeRetrieved() {
+        $root = $this->dom->documentElement;
+        $list = new SnapshotDOMNodelist($root->childNodes);
+        $this->assertEquals(2, $list->count());
+    }
+
 }
