@@ -63,7 +63,8 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
     }
 
     public function valid(): bool {
-        return count($this->items) > $this->pos;
+        $count = count($this->items);
+        return $count > 0 && $count > $this->pos;
     }
 
     public function rewind() {
@@ -77,7 +78,8 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
     }
 
     public function hasNext(): bool {
-        return $this->pos < count($this->items);
+        $count = count($this->items);
+        return $count > 0 && $this->pos < $count;
     }
 
     public function getNext(): DOMNode {
