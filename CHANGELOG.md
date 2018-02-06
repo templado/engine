@@ -2,24 +2,38 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.2.5] - 2018-02-06
+### Fixed
+* [#8](https://github.com/templado/engine/issues/8): Error: Call to a member function removeChild() on null in ViewModelRenderer
+
+### Changed
+* ViewModelRenderer: An empty array will be treated as boolean false, leading to removal of context node
+* ViewModelRenderer: Trying to remove the document element now throws an exception
+* ViewModelRenderer: Trying to apply an array with multiple items on document element now throws an exception 
+
 ## [2.2.4] - 2018-01-20
 ### Fixed
 * [#7](https://github.com/templado/engine/issues/7): SnapshotNodeList: Undefined offset -1
+
 
 ## [2.2.3] - 2017-12-07
 ### Fixed
 * [#5](https://github.com/templado/engine/issues/5): Arguments of content in snippets are not processed the same way as non-snippet content?
 
+
 ## [2.2.2] - 2017-12-04
 ### Fixed
 * [#4](https://github.com/templado/engine/issues/4): Snippets and CSRFTokens
 
+
 ## [2.2.1] - 2017-11-27
 * ViewModelRenderer: Attributes with dashes are now explicitly mapped (e.g. data-foo to getDataFoo) 
+
 
 ## [2.2.0] - 2017-11-24
 * ViewModelRenderer: RDFa Lite attribute 'typeof' now supported for use as conditional selection
 * Minor tweaks to improve performance
+
 
 ## [2.1.2] - 2017-10-06
 ### Fixed
