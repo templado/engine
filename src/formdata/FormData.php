@@ -42,16 +42,16 @@ class FormData {
     private function initValuesFromArray(array $values, bool $recursion = false): array {
         $result = [];
         foreach($values as $key => $value) {
-            if (is_string($value)) {
+            if (\is_string($value)) {
                 $result[$key] = $value;
                 continue;
             }
-            if ($recursion === false && is_array($value)) {
+            if ($recursion === false && \is_array($value)) {
                 $result[$key] = $this->initValuesFromArray($value, true);
                 continue;
             }
             throw new FormDataException(
-                sprintf('Data type "%s" in key "%s" not supported', gettype($value), $key)
+                sprintf('Data type "%s" in key "%s" not supported', \gettype($value), $key)
             );
         }
 

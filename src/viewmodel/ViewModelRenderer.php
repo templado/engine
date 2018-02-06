@@ -105,7 +105,7 @@ class ViewModelRenderer {
      */
     private function applyCurrent(DOMElement $context): DOMNode {
         $model = $this->current();
-        switch (gettype($model)) {
+        switch (\gettype($model)) {
             case 'boolean': {
                 return $this->processBoolean($context, $model);
             }
@@ -125,7 +125,7 @@ class ViewModelRenderer {
 
             default: {
                 throw new ViewModelRendererException(
-                    sprintf('Unsupported type %s', gettype($model))
+                    sprintf('Unsupported type %s', \gettype($model))
                 );
             }
         }
@@ -194,9 +194,8 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processArray(DOMElement $context, $model): DOMDocumentFragment {
-        $count = count($model);
-        if ($context->isSameNode($context->ownerDocument->documentElement) &&
-            $count > 1) {
+        $count = \count($model);
+        if ($count > 1 && $context->isSameNode($context->ownerDocument->documentElement)) {
             throw new ViewModelRendererException(
                 'Cannot render multiple copies of root element'
             );
@@ -288,10 +287,10 @@ class ViewModelRenderer {
                 return;
             }
 
-            if (!is_string($value)) {
+            if (!\is_string($value)) {
                 throw new ViewModelRendererException(
                     sprintf('Attribute value must be string or boolean false - type %s received from $model->%s',
-                        gettype($value),
+                        \gettype($value),
                         implode('()->', $this->stackNames) . '()'
                     )
                 );
@@ -307,12 +306,12 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function ensureIsObject($model, string $property) {
-        if (!is_object($model)) {
+        if (!\is_object($model)) {
             throw new ViewModelRendererException(
                 sprintf(
                     'Trying to add "%s" failed - Non object (%s) on stack: $%s',
                     $property,
-                    gettype($model),
+                    \gettype($model),
                     implode('()->', $this->stackNames) . '() '
                 )
             );

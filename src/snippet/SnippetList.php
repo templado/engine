@@ -34,7 +34,7 @@ class SnippetList implements \Iterator, \Countable {
     }
 
     public function count(): int {
-        return count($this->snippets);
+        return \count($this->snippets);
     }
 
 }
