@@ -133,6 +133,8 @@ class ViewModelRenderer {
 
     /**
      * @return DOMDocumentFragment|DOMElement
+     *
+     * @throws ViewModelRendererException
      */
     private function processBoolean(DOMElement $context, bool $model) {
         if ($model === true) {
@@ -194,7 +196,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processArray(DOMElement $context, $model): DOMDocumentFragment {
-        $count = \count($model);
+        $count = $this->getElementCount($model);
         if ($count > 1 && $context->isSameNode($context->ownerDocument->documentElement)) {
             throw new ViewModelRendererException(
                 'Cannot render multiple copies of root element'
@@ -380,15 +382,25 @@ class ViewModelRenderer {
         return $container;
         }
 
-    /**
-     * @param DOMElement $context
-     */
     private function removeNodeFromCurrentSnapshotList(DOMElement $context) {
         $stackList = end($this->listStack);
         if ((!$stackList instanceof SnapshotDOMNodelist) || !$stackList->hasNode($context)) {
             return;
         }
         $stackList->removeNode($context);
+    }
+
+    private function getElementCount($model): int {
+        if (is_array($model) || $model instanceof \Countable) {
+            return \count($model);
+        }
+
+        throw new ViewModelRendererException(
+            sprintf(
+                'Class %s must implement \Countable to be used as array',
+                \get_class($model)
+            )
+        );
     }
 
 }
