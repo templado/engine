@@ -359,7 +359,6 @@ class ViewModelRenderer {
             $context->parentNode
         );
 
-        $stackList = end($this->listStack);
         foreach($list as $node) {
             $container->appendChild($node);
             $this->removeNodeFromCurrentSnapshotList($node);
