@@ -138,14 +138,11 @@ class ViewModelRenderer {
         if ($model === true) {
             return $context;
         }
-        while ($context->hasChildNodes()) {
-            $context->removeChild($context->lastChild);
-        }
 
-        $fragment = $context->ownerDocument->createDocumentFragment();
+        $this->removeNodeFromCurrentSnapshotList($context);
         $context->parentNode->removeChild($context);
 
-        return $fragment;
+        return $context->ownerDocument->createDocumentFragment();
     }
 
     private function processString(DOMElement $context, string $model) {
@@ -322,6 +319,7 @@ class ViewModelRenderer {
         }
 
         $requestedTypeOf = $entry->typeOf();
+
         if ($context->getAttribute('typeof') === $requestedTypeOf) {
             return $context;
         }
@@ -364,12 +362,20 @@ class ViewModelRenderer {
         $stackList = end($this->listStack);
         foreach($list as $node) {
             $container->appendChild($node);
-            if (($stackList instanceof SnapshotDOMNodelist) && $stackList->hasNode($node)) {
-                $stackList->removeNode($node);
+            $this->removeNodeFromCurrentSnapshotList($node);
             }
+        return $container;
         }
 
-        return $container;
+    /**
+     * @param DOMElement $context
+     */
+    private function removeNodeFromCurrentSnapshotList(DOMElement $context) {
+        $stackList = end($this->listStack);
+        if ((!$stackList instanceof SnapshotDOMNodelist) || !$stackList->hasNode($context)) {
+            return;
+        }
+        $stackList->removeNode($context);
     }
 
 }
