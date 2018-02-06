@@ -236,6 +236,34 @@ class ViewModelRendererTest extends TestCase {
         });
     }
 
+    public function testMultipleElementsForPropertyOnRootNodeThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new class {
+            public function getTest() {
+                return ['a','b'];
+            }
+        });
+    }
+
+    public function testEmptyArrayForPropertyOnRootNodeThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new class {
+            public function getTest() {
+                return [];
+            }
+        });
+    }
+
     public function testTypeOfSelectionPicksCorrectContextInObjectUse() {
 
         $model = new class {

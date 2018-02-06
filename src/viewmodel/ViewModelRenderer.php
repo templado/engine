@@ -139,6 +139,10 @@ class ViewModelRenderer {
             return $context;
         }
 
+        if ($context->isSameNode($context->ownerDocument->documentElement)) {
+            throw new ViewModelRendererException('Cannot remove root element');
+        }
+
         $this->removeNodeFromCurrentSnapshotList($context);
         $context->parentNode->removeChild($context);
 
@@ -190,6 +194,17 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processArray(DOMElement $context, $model): DOMDocumentFragment {
+        $count = count($model);
+        if ($context->isSameNode($context->ownerDocument->documentElement) &&
+            $count > 1) {
+            throw new ViewModelRendererException(
+                'Cannot render multiple copies of root element'
+            );
+        }
+        if ($count === 0) {
+            return $this->processBoolean($context, false);
+        }
+
         $container = $this->moveToContainer($context);
 
         foreach($model as $pos => $entry) {
