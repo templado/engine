@@ -2,6 +2,10 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.2.6] - 2018-02-06
+### Fixed
+* Ensure iterators implement countable to make them work as array (Regression from 2.2.5)
+
 ## [2.2.5] - 2018-02-06
 ### Fixed
 * [#8](https://github.com/templado/engine/issues/8): Error: Call to a member function removeChild() on null in ViewModelRenderer
