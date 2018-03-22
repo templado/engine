@@ -5,6 +5,9 @@ use PHPUnit\Framework\TestCase;
 
 require __DIR__ . '/viewmodel.php';
 
+/**
+ * @coversNothing
+ */
 class Issue5Test extends TestCase {
 
     public function testIssueIsNoLongerReproduceable() {

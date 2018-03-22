@@ -3,6 +3,9 @@ namespace Templado\Engine;
 
 use PhpUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class SnippetAndCSRFTokenTest extends TestCase {
 
     public function testIssueIsNoLongerReproduceable() {

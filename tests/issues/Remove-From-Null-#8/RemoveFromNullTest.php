@@ -5,6 +5,9 @@ use PHPUnit\Framework\TestCase;
 
 require __DIR__ . '/RemoveFromNullTestViewModel.php';
 
+/**
+ * @coversNothing
+ */
 class RemoveFromNullTest extends TestCase {
 
     public function testIssueIsNoLongerReproduceable() {

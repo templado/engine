@@ -2,6 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class ProblemsWithMultiplePropertiesTest extends TestCase {
 
     public function testIssueIsNoLongerReproduceable() {
