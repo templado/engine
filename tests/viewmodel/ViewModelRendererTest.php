@@ -8,6 +8,8 @@ use Templado\Engine\Example\ViewModel;
 /**
  * @covers \Templado\Engine\ViewModelRenderer
  * @uses \Templado\Engine\SnapshotDOMNodelist
+ * @uses \Templado\Engine\SnapshotAttributeList
+ *
  */
 class ViewModelRendererTest extends TestCase {
 
@@ -425,6 +427,42 @@ class ViewModelRendererTest extends TestCase {
             $expected->documentElement,
             $source->documentElement
         );
+
+    }
+
+    public function testViewModelIteratorWithoutCountableThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root><child property="test" /></root>');
+
+        $renderer = new ViewModelRenderer();
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new class {
+            public function getTest() {
+                return new class implements \Iterator {
+                    private $valid = true;
+
+                    public function current() {
+                        return 'a';
+                    }
+
+                    public function next() {
+                        $this->valid = false;
+                    }
+
+                    public function key() {
+                        return 0;
+                    }
+
+                    public function valid() {
+                        return $this->valid;
+                    }
+
+                    public function rewind() {
+                        $this->valid = true;
+                    }
+                };
+            }
+        });
 
     }
 }

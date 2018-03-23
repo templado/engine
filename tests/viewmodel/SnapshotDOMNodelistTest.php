@@ -90,4 +90,34 @@ class SnapshotDOMNodelistTest extends TestCase {
         $this->assertEquals(2, $list->count());
     }
 
+    public function testNodeCanBeRetrievedByNext() {
+        $root = $this->dom->documentElement;
+        $list = new SnapshotDOMNodelist($root->childNodes);
+        $node = $list->getNext();
+        $this->assertSame($root->firstChild, $node);
+    }
+
+    public function testHasNextReturnsTrueAtBeginning() {
+        $root = $this->dom->documentElement;
+        $list = new SnapshotDOMNodelist($root->childNodes);
+        $this->assertTrue($list->hasNext());
+    }
+
+    public function testHasNextReturnsFalseWhenEndIsReached() {
+        $root = $this->dom->documentElement;
+        $list = new SnapshotDOMNodelist($root->childNodes);
+        $list->next();
+        $list->next();
+        $this->assertFalse($list->hasNext());
+    }
+
+    public function testRemovingNodeBeforeCurrentAdjustsPosition() {
+        $this->dom->loadXML('<?xml version="1.0" ?><root><a/><b/><c/><d/></root>');
+        $root = $this->dom->documentElement;
+        $list = new SnapshotDOMNodelist($root->childNodes);
+        $list->next();
+        $list->removeNode($root->firstChild);
+        $this->assertSame($root->firstChild->nextSibling, $list->current());
+    }
+
 }

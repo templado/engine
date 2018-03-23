@@ -182,7 +182,7 @@ class ViewModelRenderer {
             }
         }
 
-        foreach($workContext->attributes as $attribute) {
+        foreach(new SnapshotAttributeList($workContext->attributes) as $attribute) {
             $this->processAttribute($attribute, $model);
         }
 

@@ -23,6 +23,8 @@ spl_autoload_register(
                 'templado\\engine\\selection' => '/transformation/Selection.php',
                 'templado\\engine\\selector' => '/selectors/Selector.php',
                 'templado\\engine\\simplesnippet' => '/snippet/SimpleSnippet.php',
+                'templado\\engine\\snapshotattributelist' => '/viewmodel/SnapshotAttributeList.php',
+                'templado\\engine\\snapshotattributelistexception' => '/viewmodel/SnapshotAttributeListException.php',
                 'templado\\engine\\snapshotdomnodelist' => '/viewmodel/SnapshotDOMNodelist.php',
                 'templado\\engine\\snapshotdomnodelistexception' => '/viewmodel/SnapshotDOMNodelistException.php',
                 'templado\\engine\\snippet' => '/snippet/Snippet.php',

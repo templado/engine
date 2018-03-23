@@ -8,6 +8,7 @@ use Templado\Engine\Example\ViewModel;
 /**
  * @covers \Templado\Engine\Html
  * @uses \Templado\Engine\SnapshotDOMNodelist
+ * @uses \Templado\Engine\SnapshotAttributeList
  */
 class HTMLTest extends TestCase {
 
