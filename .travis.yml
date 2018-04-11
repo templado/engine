@@ -6,6 +6,7 @@ language: php
 cache:
   directories:
   - $HOME/.phive
+  - $HOME/.gnupg
 
 php:
   - 7.0
@@ -19,14 +20,14 @@ php:
 before_install:
   - wget https://phar.io/releases/phive.phar
   - wget https://phar.io/releases/phive.phar.asc
-  - gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys 0x9B2D5D79
+  - if [ `gpg --keyid-format LONG -k 2>/dev/null | grep -c 9D8A98B29B2D5D79` == "0" ]; then gpg --keyserver hkps.pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79; fi
   - gpg --verify phive.phar.asc phive.phar
   - chmod +x phive.phar
   - sudo mv phive.phar /usr/bin/phive
 
 before_script:
   - composer install --prefer-source --no-interaction --dev
-  - phive --no-progress install --trust-gpg-keys 4AA394086372C20A,2A8299CE842DD38C
+  - phive --no-progress install --trust-gpg-keys 4AA394086372C20A,2A8299CE842DD38C,96AFE5FD66ED915A
   - ant phpab
 
 script: ./tools/phpunit
