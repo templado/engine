@@ -17,10 +17,14 @@ class ViewModelRenderer {
     /** @var SnapshotDOMNodelist[] */
     private $listStack;
 
+
+    /** @var object */
+    private $resourceModel;
     /**
      * @throws ViewModelRendererException
      */
     public function render(DOMNode $context, $model) {
+        $this->resourceModel = $model;
         $this->stack = [$model];
         $this->stackNames = [];
         $this->listStack = [];
@@ -35,12 +39,19 @@ class ViewModelRenderer {
             return;
         }
 
-        $stackAdded = false;
+        $stackAdded = 0;
+
+        if ($context->hasAttribute('resource')) {
+            $this->addResourceToStack($context);
+            $stackAdded++;
+        }
+
         if ($context->hasAttribute('property')) {
             $this->addToStack($context);
-            $stackAdded = true;
+            $stackAdded++;
             $context = $this->applyCurrent($context);
         }
+
         if ($context->hasChildNodes()) {
             $list = new SnapshotDOMNodelist($context->childNodes);
             $this->listStack[] = $list;
@@ -53,8 +64,9 @@ class ViewModelRenderer {
             array_pop($this->listStack);
         }
 
-        if ($stackAdded) {
+        while ($stackAdded > 0) {
             $this->dropFromStack();
+            $stackAdded--;
         }
     }
 
@@ -401,6 +413,31 @@ class ViewModelRenderer {
                 \get_class($model)
             )
         );
+    }
+
+    private function addResourceToStack(DOMElement $context) {
+        $resource = $context->getAttribute('resource');
+
+        $this->stackNames[] = $resource;
+
+        foreach([$resource, 'get' . ucfirst($resource)] as $method) {
+            if (method_exists($this->resourceModel, $method)) {
+                $this->stack[] = $this->resourceModel->{$method}();
+
+                return;
+            }
+        }
+
+        if (method_exists($this->resourceModel, '__call')) {
+            $this->stack[] = $this->resourceModel->{$resource}();
+
+            return;
+        }
+
+        throw new ViewModelRendererException(
+            sprintf('Resource Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
+        );
+
     }
 
 }

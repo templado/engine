@@ -4,6 +4,8 @@ namespace Templado\Engine;
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
+use Templado\Engine\ResourceModel\ResourceViewModel;
+use Templado\Engine\ResourceModel\ResourceCallViewModel;
 
 /**
  * @covers \Templado\Engine\ViewModelRenderer
@@ -27,7 +29,8 @@ class ViewModelRendererTest extends TestCase {
 
         $this->assertEqualXMLStructure(
             $expected->documentElement,
-            $dom->documentElement
+            $dom->documentElement,
+            true
         );
     }
 
@@ -293,7 +296,8 @@ class ViewModelRendererTest extends TestCase {
 
         $this->assertEqualXMLStructure(
             $expected->documentElement,
-            $source->documentElement
+            $source->documentElement,
+            true
         );
 
     }
@@ -336,7 +340,8 @@ class ViewModelRendererTest extends TestCase {
 
         $this->assertEqualXMLStructure(
             $expected->documentElement,
-            $source->documentElement
+            $source->documentElement,
+            true
         );
 
     }
@@ -374,7 +379,8 @@ class ViewModelRendererTest extends TestCase {
 
         $this->assertEqualXMLStructure(
             $expected->documentElement,
-            $source->documentElement
+            $source->documentElement,
+            true
         );
 
     }
@@ -425,7 +431,8 @@ class ViewModelRendererTest extends TestCase {
 
         $this->assertEqualXMLStructure(
             $expected->documentElement,
-            $source->documentElement
+            $source->documentElement,
+            true
         );
 
     }
@@ -463,6 +470,49 @@ class ViewModelRendererTest extends TestCase {
                 };
             }
         });
+
+    }
+
+    public function testResourceViewModelGetsAppliedAsExcepted() {
+        $viewModel = new ResourceViewModel();
+        $dom       = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->load(__DIR__ . '/../_data/viewmodel/resource/source.html');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->preserveWhiteSpace = false;
+        $expected->load(__DIR__ . '/../_data/viewmodel/resource/expected.html');
+
+        $this->assertXmlStringEqualsXmlString($expected, $dom);
+    }
+
+    public function testResourceViewModelWithMagicCallGetsAppliedAsExcepted() {
+        $viewModel = new ResourceCallViewModel();
+        $dom       = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->load(__DIR__ . '/../_data/viewmodel/resource/source.html');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->preserveWhiteSpace = false;
+        $expected->load(__DIR__ . '/../_data/viewmodel/resource/expected.html');
+
+        $this->assertXmlStringEqualsXmlString($expected, $dom);
+    }
+
+    public function testUsingAResourceWithNoMethodToRequestItThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root resource="foo" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new \stdClass());
 
     }
 }
