@@ -20,6 +20,10 @@ class ViewModelRenderer {
 
     /** @var object */
     private $resourceModel;
+
+    /** @var array */
+    private $prefixes;
+
     /**
      * @throws ViewModelRendererException
      */
@@ -28,6 +32,7 @@ class ViewModelRenderer {
         $this->stack = [$model];
         $this->stackNames = [];
         $this->listStack = [];
+        $this->prefixes = [];
         $this->walk($context);
     }
 
@@ -40,6 +45,10 @@ class ViewModelRenderer {
         }
 
         $stackAdded = 0;
+
+        if ($context->hasAttribute('prefix')) {
+            $this->resolvePrefixDefinition($context->getAttribute('prefix'));
+        }
 
         if ($context->hasAttribute('resource')) {
             $this->addResourceToStack($context);
@@ -76,6 +85,15 @@ class ViewModelRenderer {
     private function addToStack(DOMElement $context) {
         $model = $this->current();
         $property = $context->getAttribute('property');
+
+        if (\substr_count($property, ':') === 1) {
+            list($prefix, $property) = explode(':', $property);
+
+            if (!isset($this->prefixes[$prefix])) {
+                throw new ViewModelRendererException(sprintf('Undefined prefix %s', $prefix));
+            }
+            $model = $this->prefixes[$prefix];
+        }
 
         $this->ensureIsObject($model, $property);
 
@@ -390,9 +408,10 @@ class ViewModelRenderer {
         foreach($list as $node) {
             $container->appendChild($node);
             $this->removeNodeFromCurrentSnapshotList($node);
-            }
-        return $container;
         }
+
+        return $container;
+    }
 
     private function removeNodeFromCurrentSnapshotList(DOMElement $context) {
         $stackList = end($this->listStack);
@@ -436,6 +455,36 @@ class ViewModelRenderer {
 
         throw new ViewModelRendererException(
             sprintf('Resource Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
+        );
+
+    }
+
+    private function resolvePrefixDefinition(string $prefixDefinition) {
+        $parts = \explode(' ' , $prefixDefinition);
+        if (\count($parts) !== 2) {
+            throw new ViewModelRendererException(
+                sprintf('Invalid prefix definition "%s" - must be of format "prefix resourcename"', $prefixDefinition)
+            );
+        }
+
+        list($prefix, $resource) = $parts;
+
+        foreach([$resource, 'get' . ucfirst($resource)] as $method) {
+            if (method_exists($this->resourceModel, $method)) {
+                $this->prefixes[$prefix] = $this->resourceModel->{$method}();
+
+                return;
+            }
+        }
+
+        if (method_exists($this->resourceModel, '__call')) {
+            $this->prefixes[$prefix] = $this->resourceModel->{$resource}();
+
+            return;
+        }
+
+        throw new ViewModelRendererException(
+            sprintf('No method %s to resolve prefix %s', $resource, $prefix)
         );
 
     }

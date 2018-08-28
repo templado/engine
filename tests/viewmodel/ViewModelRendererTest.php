@@ -4,6 +4,8 @@ namespace Templado\Engine;
 use DOMDocument;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
+use Templado\Engine\PrefixModel\PrefixCallViewModel;
+use Templado\Engine\PrefixModel\PrefixViewModel;
 use Templado\Engine\ResourceModel\ResourceViewModel;
 use Templado\Engine\ResourceModel\ResourceCallViewModel;
 
@@ -513,6 +515,68 @@ class ViewModelRendererTest extends TestCase {
 
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, new \stdClass());
-
     }
+
+    public function testPrefixViewModelGetsAppliedAsExcepted() {
+        $viewModel = new PrefixViewModel();
+        $dom       = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->load(__DIR__ . '/../_data/viewmodel/prefix/source.html');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->preserveWhiteSpace = false;
+        $expected->load(__DIR__ . '/../_data/viewmodel/prefix/expected.html');
+
+        $this->assertXmlStringEqualsXmlString($expected, $dom);
+    }
+
+    public function testPrefixViewModelWithMagicCallGetsAppliedAsExcepted() {
+        $viewModel = new PrefixCallViewModel();
+        $dom       = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->load(__DIR__ . '/../_data/viewmodel/prefix/source.html');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected = new DOMDocument();
+        $expected->preserveWhiteSpace = false;
+        $expected->load(__DIR__ . '/../_data/viewmodel/prefix/expected.html');
+
+        $this->assertXmlStringEqualsXmlString($expected, $dom);
+    }
+
+    public function testUsingAPrefixWithNoMethodToRequestItThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root prefix="p foo" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new \stdClass());
+    }
+
+    public function testUsingAnUndefinedPrefixThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root property="p:foo" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new \stdClass());
+    }
+
+    public function testInvalidPrefixDefinitionThrowsException() {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root prefix="invalid" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new \stdClass());
+    }
+
 }
