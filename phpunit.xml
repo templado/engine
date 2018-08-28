@@ -8,7 +8,7 @@
          beStrictAboutTestsThatDoNotTestAnything="true"
          beStrictAboutTodoAnnotatedTests="true"
          verbose="true">
-    <testsuite>
+    <testsuite name="Templado Engine">
         <directory suffix="Test.php">tests</directory>
     </testsuite>
 
@@ -19,7 +19,8 @@
     </filter>
 
     <logging>
-        <log type="coverage-html" target="build/coverage/html" title="Templado" />
+        <log type="coverage-html" target="build/coverage/html" />
+        <log type="coverage-xml" target="build/coverage/xml" />
     </logging>
 
 </phpunit>
