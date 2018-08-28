@@ -144,7 +144,6 @@ class ViewModelRenderer {
 
                 return $context;
             }
-
             case 'object': {
                 return $this->processObject($context, $model);
             }

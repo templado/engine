@@ -44,6 +44,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
                 if ($pos <= $this->pos) {
                     $this->pos--;
                 }
+
                 return;
             }
         }
@@ -54,6 +55,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
         if (!$this->valid()) {
             throw new SnapshotDOMNodelistException('No current node available');
         }
+
         return $this->items[$this->pos];
     }
 
@@ -67,6 +69,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
 
     public function valid(): bool {
         $count = \count($this->items);
+
         return $count > 0 && $count > $this->pos;
     }
 
@@ -82,12 +85,14 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
 
     public function hasNext(): bool {
         $count = \count($this->items);
+
         return $count > 0 && $this->pos < $count;
     }
 
     public function getNext(): DOMNode {
         $node = $this->current();
         $this->next();
+
         return $node;
     }
 }

@@ -9,7 +9,7 @@ class StripRDFaAttributesTransformation implements Transformation {
     private $attributes = ['property', 'resource', 'prefix', 'typeof'];
 
     public function getSelector(): Selector {
-        return new XPathSelector('//*[@' . implode(' or @', $this->attributes) .']');
+        return new XPathSelector('//*[@' . implode(' or @', $this->attributes) . ']');
     }
 
     public function apply(DOMNode $context) {

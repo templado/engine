@@ -26,6 +26,7 @@ class SnapshotAttributeList implements Iterator, Countable {
         if (!$this->valid()) {
             throw new SnapshotAttributeListException('No current attribute available');
         }
+
         return $this->attributes[$this->pos];
     }
 
@@ -39,6 +40,7 @@ class SnapshotAttributeList implements Iterator, Countable {
 
     public function valid(): bool {
         $count = \count($this->attributes);
+
         return $count > 0 && $count > $this->pos;
     }
 

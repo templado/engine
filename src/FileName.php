@@ -3,7 +3,7 @@ namespace Templado\Engine;
 
 class FileName {
 
-    /** @var string  */
+    /** @var string */
     private $path;
 
     public function __construct(string $path) {
