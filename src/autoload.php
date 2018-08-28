@@ -35,6 +35,7 @@ spl_autoload_register(
                 'templado\\engine\\snippetloader' => '/snippet/SnippetLoader.php',
                 'templado\\engine\\snippetloaderexception' => '/snippet/SnippetLoaderException.php',
                 'templado\\engine\\snippetrenderer' => '/snippet/SnippetRenderer.php',
+                'templado\\engine\\striprdfaattributestransformation' => '/transformation/StripRDFaAttributesTransformation.php',
                 'templado\\engine\\templado' => '/Templado.php',
                 'templado\\engine\\templadoexception' => '/TempladoException.php',
                 'templado\\engine\\textsnippet' => '/snippet/TextSnippet.php',
