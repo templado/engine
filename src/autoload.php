@@ -12,6 +12,7 @@ spl_autoload_register(
                 'templado\\engine\\csrfprotectionrenderer' => '/csrfprotection/CSRFProtectionRenderer.php',
                 'templado\\engine\\cssselector' => '/selectors/CSSSelector.php',
                 'templado\\engine\\emptyelementsfilter' => '/filters/EmptyElementsFilter.php',
+                'templado\\engine\\emptyelementsfilterexception' => '/filters/EmptyElementsFilterException.php',
                 'templado\\engine\\exception' => '/Exception.php',
                 'templado\\engine\\filename' => '/FileName.php',
                 'templado\\engine\\filter' => '/filters/Filter.php',
