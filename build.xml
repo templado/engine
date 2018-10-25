@@ -97,6 +97,24 @@
         <exec executable="${basedir}/phpdox" />
     </target>
 
+    <target name="getphive" description="Get phive on travis-ci">
+        <exec executable="wget" taskname="wget">
+            <arg value="https://phar.io/releases/phive.phar"/>
+        </exec>
+        <exec executable="wget" taskname="wget">
+            <arg value="https://phar.io/releases/phive.phar.asc"/>
+        </exec>
+        <exec executable="gpg" taskname="gpg-get-key">
+            <arg line="--keyserver hkps.pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79" />
+        </exec>
+        <exec executable="gpg" taskname="gpg-verify">
+            <arg line="--verify phive.phar.asc phive.phar" />
+        </exec>
+        <chmod file="phive.phar" perm="+x" />
+        <delete file="phive.phar.asc" />
+    </target>
+
+
     <target name="build" depends="clean,lint,parallelTasks,phpunit"/>
     <target name="test" depends="clean,lint,phpunit"/>
 </project>
