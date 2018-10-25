@@ -2,6 +2,12 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.3.0] - 2018-10-25
+### Added
+* Implement model resolving using RDFa Lite resource annotation
+* Implement prefix support for view model resolving using RDFa prefix annotation
+* Added a transformation to optionally strip RDFa lite attributes
+
 ## [2.2.7] - 2018-04-11
 ### Fixed
 * [#9](https://github.com/templado/engine/issues/9): Removing an Attribute breaks Iteration in View ModelRenderer
