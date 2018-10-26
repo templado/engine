@@ -22,14 +22,9 @@ php:
   - 7.3snapshot
   - master
 
-before_install:
-  - if [ ! -d $HOME/.phive ]; then mkdir $HOME/.phive ; fi
-  - if [ ! -f $HOME/.phive/phive.phar ]; then ant getphive ; mv phive.phar $HOME/.phive ; fi
-  - sudo cp $HOME/.phive/phive.phar /usr/local/bin/phive
-
 before_script:
   - travis_retry composer install --no-interaction --prefer-source
-  - phive --no-progress install --trust-gpg-keys 4AA394086372C20A,2A8299CE842DD38C,96AFE5FD66ED915A
+  - ant install-tools-ci
   - ant phpab
 
 script: ./tools/phpunit

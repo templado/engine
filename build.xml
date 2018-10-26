@@ -97,23 +97,35 @@
         <exec executable="${basedir}/phpdox" />
     </target>
 
-    <target name="getphive" description="Get phive on travis-ci">
-        <exec executable="wget" taskname="wget">
-            <arg value="https://phar.io/releases/phive.phar"/>
-        </exec>
-        <exec executable="wget" taskname="wget">
-            <arg value="https://phar.io/releases/phive.phar.asc"/>
-        </exec>
-        <exec executable="gpg" taskname="gpg-get-key">
-            <arg line="--keyserver ha.pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79" />
-        </exec>
-        <exec executable="gpg" taskname="gpg-verify">
-            <arg line="--verify phive.phar.asc phive.phar" />
-        </exec>
-        <chmod file="phive.phar" perm="+x" />
-        <delete file="phive.phar.asc" />
+    <target name="phive-exists-ci">
+        <available file="${user.home}/.phive/phive.phar" property="phive.present"/>
     </target>
 
+    <target name="install-phive-ci" depends="phive-exists-ci" if="phive.present"
+            description="Get phive on travis-ci and scrutinizer-ci">
+        <mkdir dir="${user.home}/.phive" />
+
+        <exec executable="wget" taskname="wget" dir="${user.home}/.phive">
+            <arg value="https://phar.io/releases/phive.phar"/>
+        </exec>
+        <exec executable="wget" taskname="wget" dir="${user.home}/.phive">
+            <arg value="https://phar.io/releases/phive.phar.asc"/>
+        </exec>
+        <exec executable="gpg" taskname="gpg-get-key" dir="${user.home}/.phive">
+            <arg line="--keyserver ha.pool.sks-keyservers.net --recv-keys 0x9D8A98B29B2D5D79" />
+        </exec>
+        <exec executable="gpg" taskname="gpg-verify" dir="${user.home}/.phive">
+            <arg line="--verify phive.phar.asc phive.phar" />
+        </exec>
+        <chmod file="${user.home}/.phive/phive.phar" perm="+x" />
+        <delete file="${user.home}/.phive/phive.phar.asc" />
+    </target>
+
+    <target name="install-tools-ci" depends="install-phive-ci">
+        <exec executable="${user.home}/.phive/phive.phar" taskname="phive">
+            <arg line="--no-progress install --trust-gpg-keys 4AA394086372C20A,2A8299CE842DD38C,96AFE5FD66ED915A" />
+        </exec>
+    </target>
 
     <target name="build" depends="clean,lint,parallelTasks,phpunit"/>
     <target name="test" depends="clean,lint,phpunit"/>
