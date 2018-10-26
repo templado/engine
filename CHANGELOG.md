@@ -2,19 +2,27 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.3.1] - 2018-10-26
+### Fixed
+* [#10](https://github.com/templado/engine/issues/10): NULL returned in EmtpyElementsFilter
+
+
 ## [2.3.0] - 2018-10-25
 ### Added
 * Implement model resolving using RDFa Lite resource annotation
 * Implement prefix support for view model resolving using RDFa prefix annotation
 * Added a transformation to optionally strip RDFa lite attributes
 
+
 ## [2.2.7] - 2018-04-11
 ### Fixed
 * [#9](https://github.com/templado/engine/issues/9): Removing an Attribute breaks Iteration in View ModelRenderer
 
+
 ## [2.2.6] - 2018-02-06
 ### Fixed
 * Ensure iterators implement countable to make them work as array (Regression from 2.2.5)
+
 
 ## [2.2.5] - 2018-02-06
 ### Fixed
@@ -24,6 +32,7 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 * ViewModelRenderer: An empty array will be treated as boolean false, leading to removal of context node
 * ViewModelRenderer: Trying to remove the document element now throws an exception
 * ViewModelRenderer: Trying to apply an array with multiple items on document element now throws an exception 
+
 
 ## [2.2.4] - 2018-01-20
 ### Fixed
@@ -52,6 +61,7 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 ## [2.1.2] - 2017-10-06
 ### Fixed
 * Regression from 2.1.1
+
 
 ## [2.1.1] - 2017-10-06
 ### Fixed
@@ -89,4 +99,3 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 
 ## [1.0.0] - 2017-04-16
 * Initial Release
-
