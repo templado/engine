@@ -101,7 +101,7 @@
         <available file="${user.home}/.phive/phive.phar" property="phive.present"/>
     </target>
 
-    <target name="install-phive-ci" depends="phive-exists-ci" if="phive.present"
+    <target name="install-phive-ci" depends="phive-exists-ci" unless="phive.present"
             description="Get phive on travis-ci and scrutinizer-ci">
         <mkdir dir="${user.home}/.phive" />
 
