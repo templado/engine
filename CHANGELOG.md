@@ -2,6 +2,11 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [2.3.2] - 2018-10-26
+### Fixed
+* Simpler implementation for [#10](https://github.com/templado/engine/issues/10) that also works with PHP 7.3
+
+
 ## [2.3.1] - 2018-10-26
 ### Fixed
 * [#10](https://github.com/templado/engine/issues/10): NULL returned in EmtpyElementsFilter
