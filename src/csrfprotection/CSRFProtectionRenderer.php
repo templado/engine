@@ -24,7 +24,7 @@ class CSRFProtectionRenderer {
     }
 
     private function getCSRFField(DOMElement $form): DOMElement {
-        if (!$this->xp instanceof DOMXPath) {
+        if ($this->xp === null) {
             $this->xp = new DOMXPath($form->ownerDocument);
         }
         $nodeList = $this->xp->query(
