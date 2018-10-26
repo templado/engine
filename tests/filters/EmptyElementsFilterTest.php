@@ -38,17 +38,10 @@ class EmptyElementsFilterTest extends TestCase {
         return $map;
     }
 
-    /**
-     * @expectedEx ception \Templado\Engine\EmptyElementsFilterException
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
     public function testRegexErrorsAreTurnedIntoException() {
-
-        $oldL =ini_set('pcre.backtrack_limit', '100');
-        //$this->expectException(EmptyElementsFilterException::class);
+        $this->iniSet('pcre.backtrack_limit', '100');
+        $this->expectException(EmptyElementsFilterException::class);
         (new EmptyElementsFilter())->apply(file_get_contents(__DIR__ . '/../_data/filter/regex_backtrack.html'));
-        ini_set('pcre.backtrack_limit', '100000000');
     }
 
 }
