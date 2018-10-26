@@ -5,7 +5,7 @@ class ClearNamespaceDefinitionsFilter implements Filter {
 
     public function apply(string $content): string {
         $content = preg_replace('/ xmlns=".*[^"]"/U', '', $content);
-        if ($content === NULL) {
+        if ($content === null) {
             throw new ClearNamespaceDefinitionsFilterException(
                 'Error while processing regular expression',
                 preg_last_error()

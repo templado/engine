@@ -17,7 +17,6 @@ class ViewModelRenderer {
     /** @var SnapshotDOMNodelist[] */
     private $listStack;
 
-
     /** @var object */
     private $resourceModel;
 
@@ -65,7 +64,7 @@ class ViewModelRenderer {
             $list = new SnapshotDOMNodelist($context->childNodes);
             $this->listStack[] = $list;
 
-            while($list->hasNext()) {
+            while ($list->hasNext()) {
                 $childNode = $list->getNext();
                 /** @var \DOMNode $childNode */
                 $this->walk($childNode);
@@ -287,11 +286,13 @@ class ViewModelRenderer {
      */
     private function processAttribute(DOMAttr $attribute, $model) {
         $attributeName = $attribute->nodeName;
-        if (strpos($attributeName,'-') !== false) {
+        if (strpos($attributeName, '-') !== false) {
             $parts = explode('-', $attributeName);
             array_walk(
                 $parts,
-                function (&$value, $pos) { $value = ucfirst($value); }
+                function (&$value, $pos) {
+                    $value = ucfirst($value);
+                }
             );
             $attributeName = implode('', $parts);
         }
@@ -459,7 +460,7 @@ class ViewModelRenderer {
     }
 
     private function resolvePrefixDefinition(string $prefixDefinition) {
-        $parts = \explode(' ' , $prefixDefinition);
+        $parts = \explode(' ', $prefixDefinition);
         if (\count($parts) !== 2) {
             throw new ViewModelRendererException(
                 sprintf('Invalid prefix definition "%s" - must be of format "prefix resourcename"', $prefixDefinition)

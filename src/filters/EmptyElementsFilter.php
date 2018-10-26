@@ -15,7 +15,7 @@ class EmptyElementsFilter implements Filter {
                 "<{$tag}\$1 />",
                 $content
             );
-            if ($content === NULL) {
+            if ($content === null) {
                 throw new EmptyElementsFilterException(
                     'Error while processing regular expression',
                     preg_last_error()
