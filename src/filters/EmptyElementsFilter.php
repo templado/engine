@@ -16,12 +16,9 @@ class EmptyElementsFilter implements Filter {
                 $content
             );
             if ($content === NULL) {
-                $errorCode = preg_last_error();
                 throw new EmptyElementsFilterException(
-                    sprintf('Error while processing regular expression: %s (%d)',
-                        array_flip(get_defined_constants(true)['pcre'])[$errorCode],
-                        $errorCode
-                    )
+                    'Error while processing regular expression',
+                    preg_last_error()
                 );
             }
         }

@@ -8,6 +8,7 @@ spl_autoload_register(
         if ($classes === null) {
             $classes = array(
                 'templado\\engine\\clearnamespacedefinitionsfilter' => '/filters/ClearNamespaceDefinitionsFilter.php',
+                'templado\\engine\\clearnamespacedefinitionsfilterexception' => '/filters/ClearNamespaceDefinitionsFilterException.php',
                 'templado\\engine\\csrfprotection' => '/csrfprotection/CSRFProtection.php',
                 'templado\\engine\\csrfprotectionrenderer' => '/csrfprotection/CSRFProtectionRenderer.php',
                 'templado\\engine\\cssselector' => '/selectors/CSSSelector.php',
