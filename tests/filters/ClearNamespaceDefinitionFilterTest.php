@@ -22,4 +22,10 @@ class ClearNamespaceDefinitionFilterTest extends TestCase {
         );
     }
 
+    public function testRegexErrorsAreTurnedIntoException() {
+        $this->iniSet('pcre.backtrack_limit', '1');
+        $this->expectException(ClearNamespaceDefinitionsFilterException::class);
+        (new ClearNamespaceDefinitionsFilter())->apply(file_get_contents(__DIR__ . '/../_data/filter/regex_backtrack.html'));
+    }
+
 }
