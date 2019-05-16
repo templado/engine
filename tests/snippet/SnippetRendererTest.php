@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,7 +25,7 @@ class SnippetRendererTest extends TestCase {
         $dom = new DOMDocument();
         $dom->loadXML($xml);
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection $collection */
+        /** @var MockObject|SnippetListCollection $collection */
         $collection = $this->createMock(SnippetListCollection::class);
         $collection->method('hasSnippetsForId')->willReturn(false);
 
@@ -44,7 +45,7 @@ class SnippetRendererTest extends TestCase {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><!-- comment --></root>');
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection $collection */
+        /** @var MockObject|SnippetListCollection $collection */
         $collection = $this->createMock(SnippetListCollection::class);
         $collection->method('hasSnippetsForId')->willReturn(false);
 
@@ -76,6 +77,8 @@ class SnippetRendererTest extends TestCase {
 
         $dom1 = new DOMDocument();
         $dom1->loadXML('<?xml version="1.0" ?><child id="a"><subchild id="b" /></child>');
+
+        /** @var MockObject|Snippet $snippet1 */
         $snippet1 = $this->createMock(Snippet::class);
         $snippet1->expects($this->once())->method('applyTo')
             ->with($page->documentElement->firstChild)
@@ -83,6 +86,8 @@ class SnippetRendererTest extends TestCase {
 
         $dom2 = new DOMDocument();
         $dom2->loadXML('<?xml version="1.0" ?><replacement id="b"><Nested in="b" /></replacement>');
+
+        /** @var MockObject|Snippet $snippet2 */
         $snippet2 = $this->createMock(Snippet::class);
         $snippet2->expects($this->once())->method('applyTo')
             ->with($dom1->documentElement->firstChild)
@@ -91,6 +96,7 @@ class SnippetRendererTest extends TestCase {
         $snippetList1 = $this->createSnippetListMock($snippet1);
         $snippetList2 = $this->createSnippetListMock($snippet2);
 
+        /** @var MockObject|SnippetListCollection $collection */
         $collection = $this->createMock(SnippetListCollection::class);
         $collection->expects($this->exactly(2))->method('hasSnippetsForId')->withConsecutive(['a'], ['b'])->willReturn(true);
         $collection->method('getSnippetsForId')->willReturnOnConsecutiveCalls(
@@ -106,6 +112,7 @@ class SnippetRendererTest extends TestCase {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
+        /** @var MockObject|Snippet $snippet */
         $snippet = $this->createMock(Snippet::class);
         $snippet->expects($this->once())->method('applyTo')
             ->with($dom->documentElement->firstChild)
@@ -118,33 +125,59 @@ class SnippetRendererTest extends TestCase {
         $renderer->render($dom->documentElement);
     }
 
-    private function createSnippetMock(DOMDocument $dom) {
+    public function testPotentialEndlessRecursionBecauseOfDuplicateIdIsCaught(): void {
+        $page = new DOMDocument();
+        $page->loadXML('<?xml version="1.0" ?><root><target id="a" /></root>');
+
+        $dom1 = new DOMDocument();
+        $dom1->loadXML('<?xml version="1.0" ?><child id="a"><subchild id="a" /></child>');
+
+        /** @var MockObject|Snippet $snippet */
+        $snippet = $this->createMock(Snippet::class);
+        $snippet->expects($this->once())->method('applyTo')
+            ->with($page->documentElement->firstChild)
+            ->willReturn($dom1->documentElement);
+
+
+        $snippetList = $this->createSnippetListMock($snippet);
+
+        /** @var MockObject|SnippetListCollection $collection */
+        $collection = $this->createMock(SnippetListCollection::class);
+        $collection->expects($this->once())->method('hasSnippetsForId')->with('a')->willReturn(true);
+        $collection->method('getSnippetsForId')->willReturn($snippetList);
+
+        $renderer = new SnippetRenderer($collection);
+
+        $this->expectException(SnippetRendererException::class);
+        $renderer->render($page->documentElement);
+    }
+
+    private function createSnippetMock(DOMDocument $dom): Snippet {
         $snippet = $this->createMock(Snippet::class);
         $snippet->expects($this->once())->method('applyTo')
             ->with($dom->documentElement->firstChild)
             ->willReturn($dom->documentElement->firstChild);
 
+        /** @var MockObject|Snippet $snippet */
         return $snippet;
     }
 
-    /**
-     * @param $snippet
-     */
-    private function createSnippetListMock($snippet) {
+    private function createSnippetListMock(Snippet $snippet): SnippetList {
         $snippetList = $this->createMock(SnippetList::class);
         $snippetList->method('valid')->willReturn(true, false);
         $snippetList->method('current')->willReturn($snippet);
 
+        /** @var MockObject|SnippetList $snippetList */
         return $snippetList;
     }
 
     /**
      * @param $snippetList
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection
+     * @return MockObject|SnippetListCollection
      */
     private function createSnippetCollectionMock($snippetList) {
-        /** @var \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection $collection */
+        /** @var MockObject|SnippetListCollection $collection */
         $collection = $this->createMock(SnippetListCollection::class);
         $collection->method('hasSnippetsForId')->willReturn(true);
         $collection->method('getSnippetsForId')->willReturn($snippetList);
@@ -155,7 +188,7 @@ class SnippetRendererTest extends TestCase {
     /**
      * @param $dom
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection
+     * @return MockObject|SnippetListCollection
      */
     private function createMocksForDom($dom) {
         $snippet     = $this->createSnippetMock($dom);

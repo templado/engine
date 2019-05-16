@@ -11,11 +11,19 @@ class SnippetRenderer {
     /** @var DOMElement */
     private $currentContext;
 
+    /** @var bool[] */
+    private $seen;
+
     public function __construct(SnippetListCollection $snippetListCollection) {
         $this->snippetListCollection = $snippetListCollection;
     }
 
     public function render(DOMElement $context): void {
+        $this->resetSeen();
+        $this->process($context);
+    }
+
+    private function process(DOMElement $context): void {
         $children = $context->childNodes;
 
         for ($i = 0; $i < $children->length; $i++) {
@@ -36,13 +44,15 @@ class SnippetRenderer {
         if ($this->currentContext->hasAttribute('id')) {
             $id = $this->currentContext->getAttribute('id');
 
+            $this->ensureNotSeen($id);
+
             if ($this->snippetListCollection->hasSnippetsForId($id) && !$this->applySnippetsToElement($id)) {
                 return;
             }
         }
 
         if ($this->currentContext->hasChildNodes()) {
-            $this->render($this->currentContext);
+            $this->process($this->currentContext);
         }
     }
 
@@ -67,5 +77,22 @@ class SnippetRenderer {
         }
 
         return true;
+    }
+
+    private function resetSeen(): void {
+        $this->seen = [];
+    }
+
+    private function ensureNotSeen(string $id): void {
+        if (isset($this->seen[$id])) {
+            throw new SnippetRendererException(
+                \sprintf(
+                    'Already applied a snippet for id "%s" - re-application might cause endless recursion',
+                    $id
+                )
+            );
+        }
+
+        $this->seen[$id] = true;
     }
 }
