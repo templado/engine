@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\SnippetRenderer
  */
 class SnippetRendererTest extends TestCase {
+
     public function testSimpleElementGetsAdded(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
@@ -117,7 +118,7 @@ class SnippetRendererTest extends TestCase {
         $renderer->render($dom->documentElement);
     }
 
-    private function createSnippetMock(DOMDocument $dom): \PHPUnit_Framework_MockObject_MockObject {
+    private function createSnippetMock(DOMDocument $dom) {
         $snippet = $this->createMock(Snippet::class);
         $snippet->expects($this->once())->method('applyTo')
             ->with($dom->documentElement->firstChild)
@@ -129,7 +130,7 @@ class SnippetRendererTest extends TestCase {
     /**
      * @param $snippet
      */
-    private function createSnippetListMock($snippet): \PHPUnit_Framework_MockObject_MockObject {
+    private function createSnippetListMock($snippet) {
         $snippetList = $this->createMock(SnippetList::class);
         $snippetList->method('valid')->willReturn(true, false);
         $snippetList->method('current')->willReturn($snippet);

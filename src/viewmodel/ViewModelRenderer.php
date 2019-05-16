@@ -26,7 +26,7 @@ class ViewModelRenderer {
     /**
      * @throws ViewModelRendererException
      */
-    public function render(DOMNode $context, $model): void {
+    public function render(DOMNode $context, object $model): void {
         $this->resourceModel = $model;
         $this->stack         = [$model];
         $this->stackNames    = [];
@@ -195,7 +195,7 @@ class ViewModelRenderer {
     /**
      * @throws ViewModelRendererException
      */
-    private function processObjectAsModel(DOMElement $context, $model): DOMElement {
+    private function processObjectAsModel(DOMElement $context, object $model): DOMElement {
         $container   = $this->moveToContainer($context);
         $workContext = $this->selectMatchingWorkContext($container->firstChild, $model);
 
@@ -222,7 +222,7 @@ class ViewModelRenderer {
     /**
      * @throws ViewModelRendererException
      */
-    private function processArray(DOMElement $context, $model): DOMDocumentFragment {
+    private function processArray(DOMElement $context, iterable $model): DOMDocumentFragment {
         $count = $this->getElementCount($model);
 
         if ($count > 1 && $context->isSameNode($context->ownerDocument->documentElement)) {
@@ -289,7 +289,7 @@ class ViewModelRenderer {
             $parts = \explode('-', $attributeName);
             \array_walk(
                 $parts,
-                function (&$value, $pos): void {
+                static function (&$value, $pos): void {
                     $value = \ucfirst($value);
                 }
             );

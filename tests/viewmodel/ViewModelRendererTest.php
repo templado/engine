@@ -150,16 +150,6 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
-    public function testUseOfNonObjectModelThrowsException(): void {
-        $dom = new DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
-
-        $renderer = new ViewModelRenderer();
-
-        $this->expectException(ViewModelRendererException::class);
-        $renderer->render($dom->documentElement, 'Non-Object');
-    }
-
     public function testNoMethodForPropertyThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
