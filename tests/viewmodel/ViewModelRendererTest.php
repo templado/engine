@@ -6,18 +6,17 @@ use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
 use Templado\Engine\PrefixModel\PrefixCallViewModel;
 use Templado\Engine\PrefixModel\PrefixViewModel;
-use Templado\Engine\ResourceModel\ResourceViewModel;
 use Templado\Engine\ResourceModel\ResourceCallViewModel;
+use Templado\Engine\ResourceModel\ResourceViewModel;
 
 /**
  * @covers \Templado\Engine\ViewModelRenderer
+ *
  * @uses \Templado\Engine\SnapshotDOMNodelist
  * @uses \Templado\Engine\SnapshotAttributeList
- *
  */
 class ViewModelRendererTest extends TestCase {
-
-    public function testViewModelGetsAppliedAsExcepted() {
+    public function testViewModelGetsAppliedAsExcepted(): void {
         $viewModel = new ViewModel();
         $dom       = new DOMDocument();
         $dom->load(__DIR__ . '/../_data/viewmodel/source.html');
@@ -28,7 +27,6 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load(__DIR__ . '/../_data/viewmodel/expected.html');
 
-
         $this->assertEqualXMLStructure(
             $expected->documentElement,
             $dom->documentElement,
@@ -36,13 +34,13 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
-    public function testIteratorReturnValueGetsApplied() {
+    public function testIteratorReturnValueGetsApplied(): void {
         $dom       = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" /></body></html>');
 
         $viewModel = new class {
             public function a() {
-                return new \ArrayIterator(['a','b']);
+                return new \ArrayIterator(['a', 'b']);
             }
         };
 
@@ -56,10 +54,9 @@ class ViewModelRendererTest extends TestCase {
             $expected->documentElement,
             $dom->documentElement
         );
-
     }
 
-    public function testMagicCallMethodGetsCalledWhenDefinedAndNoExplicitMethodFits() {
+    public function testMagicCallMethodGetsCalledWhenDefinedAndNoExplicitMethodFits(): void {
         $dom       = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" /></body></html>');
 
@@ -81,7 +78,7 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
-    public function testMagicCallMethodGetsCalledForAttributesWhenDefinedAndNoExplicitMethodFits() {
+    public function testMagicCallMethodGetsCalledForAttributesWhenDefinedAndNoExplicitMethodFits(): void {
         $dom       = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" attr="b" /></body></html>');
 
@@ -89,7 +86,7 @@ class ViewModelRendererTest extends TestCase {
             public function __call($name, $args) {
                 switch ($name) {
                     case 'a': return $this;
-                    case 'property': return null;
+                    case 'property': return;
                     default: return 'text';
                 }
             }
@@ -107,7 +104,7 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
-    public function testDashesInAttributeNamesGetTranslatedToCamelCase() {
+    public function testDashesInAttributeNamesGetTranslatedToCamelCase(): void {
         $dom       = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root property="a" attr-with-dash="old"/>');
 
@@ -133,16 +130,16 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
-    public function testViewModelMethodReturningBooleanTrueKeepsNode() {
+    public function testViewModelMethodReturningBooleanTrueKeepsNode(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
 
-
         $renderer = new ViewModelRenderer();
-        $renderer->render($dom->documentElement,new class {
+        $renderer->render($dom->documentElement, new class {
             public function test() {
                 return true;
-        }});
+            }
+        });
 
         $expected = new DOMDocument();
         $expected->loadXML('<?xml version="1.0" ?><root property="test" />');
@@ -151,10 +148,9 @@ class ViewModelRendererTest extends TestCase {
             $expected->documentElement,
             $dom->documentElement
         );
-
     }
 
-    public function testUseOfNonObjectModelThrowsException() {
+    public function testUseOfNonObjectModelThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
 
@@ -164,7 +160,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, 'Non-Object');
     }
 
-    public function testNoMethodForPropertyThrowsException() {
+    public function testNoMethodForPropertyThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
 
@@ -175,7 +171,7 @@ class ViewModelRendererTest extends TestCase {
         });
     }
 
-    public function testUnsupportedVariableTypeThrowsException() {
+    public function testUnsupportedVariableTypeThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
 
@@ -191,7 +187,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, $model);
     }
 
-    public function testUnsupportedVariableTypeForAttributeThrowsException() {
+    public function testUnsupportedVariableTypeForAttributeThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" attr="value" />');
 
@@ -211,7 +207,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, $model);
     }
 
-    public function testMissingTypeOfMethodOnConditionContextThrowsException() {
+    public function testMissingTypeOfMethodOnConditionContextThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" typeof="A" />');
 
@@ -220,12 +216,13 @@ class ViewModelRendererTest extends TestCase {
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, new class {
             public function getTest() {
-                return new class {};
+                return new class {
+                };
             }
         });
     }
 
-    public function testNoExsitingTypeForRequestedTypeOfMethodOnConditionContextThrowsException() {
+    public function testNoExsitingTypeForRequestedTypeOfMethodOnConditionContextThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" typeof="A" />');
 
@@ -243,7 +240,7 @@ class ViewModelRendererTest extends TestCase {
         });
     }
 
-    public function testMultipleElementsForPropertyOnRootNodeThrowsException() {
+    public function testMultipleElementsForPropertyOnRootNodeThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
 
@@ -252,12 +249,12 @@ class ViewModelRendererTest extends TestCase {
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, new class {
             public function getTest() {
-                return ['a','b'];
+                return ['a', 'b'];
             }
         });
     }
 
-    public function testEmptyArrayForPropertyOnRootNodeThrowsException() {
+    public function testEmptyArrayForPropertyOnRootNodeThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" />');
 
@@ -271,19 +268,18 @@ class ViewModelRendererTest extends TestCase {
         });
     }
 
-    public function testTypeOfSelectionPicksCorrectContextInObjectUse() {
-
+    public function testTypeOfSelectionPicksCorrectContextInObjectUse(): void {
         $model = new class {
             public function getOne() {
                 return new class {
-                        public function typeOf() {
-                            return 'B';
-                        }
+                    public function typeOf() {
+                        return 'B';
+                    }
 
-                        public function getText() {
-                            return 'Replaced text of B';
-                        }
-                    };
+                    public function getText() {
+                        return 'Replaced text of B';
+                    }
+                };
             }
         };
 
@@ -301,11 +297,9 @@ class ViewModelRendererTest extends TestCase {
             $source->documentElement,
             true
         );
-
     }
 
-    public function testTypeOfSelectionPicksCorrectContextInLists() {
-
+    public function testTypeOfSelectionPicksCorrectContextInLists(): void {
         $model = new class {
             public function getOne() {
                 return [
@@ -345,11 +339,9 @@ class ViewModelRendererTest extends TestCase {
             $source->documentElement,
             true
         );
-
     }
 
-    public function testTypeOfSelectionPicksCorrectContextInCombinedObjectListUse() {
-
+    public function testTypeOfSelectionPicksCorrectContextInCombinedObjectListUse(): void {
         $model = new class {
             public function getOne() {
                 return [
@@ -384,11 +376,9 @@ class ViewModelRendererTest extends TestCase {
             $source->documentElement,
             true
         );
-
     }
 
-    public function testTypeOfSelectionPicksCorrectContextInComplexScenario() {
-
+    public function testTypeOfSelectionPicksCorrectContextInComplexScenario(): void {
         $model = new class {
             public function getOne() {
                 return [
@@ -436,10 +426,9 @@ class ViewModelRendererTest extends TestCase {
             $source->documentElement,
             true
         );
-
     }
 
-    public function testViewModelIteratorWithoutCountableThrowsException() {
+    public function testViewModelIteratorWithoutCountableThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child property="test" /></root>');
 
@@ -454,7 +443,7 @@ class ViewModelRendererTest extends TestCase {
                         return 'a';
                     }
 
-                    public function next() {
+                    public function next(): void {
                         $this->valid = false;
                     }
 
@@ -466,48 +455,47 @@ class ViewModelRendererTest extends TestCase {
                         return $this->valid;
                     }
 
-                    public function rewind() {
+                    public function rewind(): void {
                         $this->valid = true;
                     }
                 };
             }
         });
-
     }
 
-    public function testResourceViewModelGetsAppliedAsExcepted() {
-        $viewModel = new ResourceViewModel();
-        $dom       = new DOMDocument();
+    public function testResourceViewModelGetsAppliedAsExcepted(): void {
+        $viewModel               = new ResourceViewModel();
+        $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/resource/source.html');
 
         $renderer = new ViewModelRenderer();
         $renderer->render($dom->documentElement, $viewModel);
 
-        $expected = new DOMDocument();
+        $expected                     = new DOMDocument();
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/resource/expected.html');
 
         $this->assertXmlStringEqualsXmlString($expected, $dom);
     }
 
-    public function testResourceViewModelWithMagicCallGetsAppliedAsExcepted() {
-        $viewModel = new ResourceCallViewModel();
-        $dom       = new DOMDocument();
+    public function testResourceViewModelWithMagicCallGetsAppliedAsExcepted(): void {
+        $viewModel               = new ResourceCallViewModel();
+        $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/resource/source.html');
 
         $renderer = new ViewModelRenderer();
         $renderer->render($dom->documentElement, $viewModel);
 
-        $expected = new DOMDocument();
+        $expected                     = new DOMDocument();
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/resource/expected.html');
 
         $this->assertXmlStringEqualsXmlString($expected, $dom);
     }
 
-    public function testUsingAResourceWithNoMethodToRequestItThrowsException() {
+    public function testUsingAResourceWithNoMethodToRequestItThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root resource="foo" />');
 
@@ -517,39 +505,39 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
-    public function testPrefixViewModelGetsAppliedAsExcepted() {
-        $viewModel = new PrefixViewModel();
-        $dom       = new DOMDocument();
+    public function testPrefixViewModelGetsAppliedAsExcepted(): void {
+        $viewModel               = new PrefixViewModel();
+        $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/prefix/source.html');
 
         $renderer = new ViewModelRenderer();
         $renderer->render($dom->documentElement, $viewModel);
 
-        $expected = new DOMDocument();
+        $expected                     = new DOMDocument();
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/prefix/expected.html');
 
         $this->assertXmlStringEqualsXmlString($expected, $dom);
     }
 
-    public function testPrefixViewModelWithMagicCallGetsAppliedAsExcepted() {
-        $viewModel = new PrefixCallViewModel();
-        $dom       = new DOMDocument();
+    public function testPrefixViewModelWithMagicCallGetsAppliedAsExcepted(): void {
+        $viewModel               = new PrefixCallViewModel();
+        $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/prefix/source.html');
 
         $renderer = new ViewModelRenderer();
         $renderer->render($dom->documentElement, $viewModel);
 
-        $expected = new DOMDocument();
+        $expected                     = new DOMDocument();
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/prefix/expected.html');
 
         $this->assertXmlStringEqualsXmlString($expected, $dom);
     }
 
-    public function testUsingAPrefixWithNoMethodToRequestItThrowsException() {
+    public function testUsingAPrefixWithNoMethodToRequestItThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root prefix="p foo" />');
 
@@ -559,7 +547,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
-    public function testUsingAnUndefinedPrefixThrowsException() {
+    public function testUsingAnUndefinedPrefixThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root property="p:foo" />');
 
@@ -569,7 +557,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
-    public function testInvalidPrefixDefinitionThrowsException() {
+    public function testInvalidPrefixDefinitionThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root prefix="invalid" />');
 
@@ -578,5 +566,4 @@ class ViewModelRendererTest extends TestCase {
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, new \stdClass());
     }
-
 }

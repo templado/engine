@@ -12,10 +12,10 @@ class CSRFProtectionRenderer {
     /** @var DOMXPath */
     private $xp;
 
-    public function render(DOMElement $context, CSRFProtection $protection) {
+    public function render(DOMElement $context, CSRFProtection $protection): void {
         $this->protection = $protection;
 
-        foreach($context->getElementsByTagName('form') as $form) {
+        foreach ($context->getElementsByTagName('form') as $form) {
             $this->getCSRFField($form)->setAttribute(
                 'value',
                 $protection->getTokenValue()
@@ -28,9 +28,10 @@ class CSRFProtectionRenderer {
             $this->xp = new DOMXPath($form->ownerDocument);
         }
         $nodeList = $this->xp->query(
-            sprintf('.//input[@name="%s"]', $this->protection->getFieldName()),
+            \sprintf('.//input[@name="%s"]', $this->protection->getFieldName()),
             $form
         );
+
         if ($nodeList->length === 0) {
             return $this->createField($form);
         }

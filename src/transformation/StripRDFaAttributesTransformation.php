@@ -9,17 +9,16 @@ class StripRDFaAttributesTransformation implements Transformation {
     private $attributes = ['property', 'resource', 'prefix', 'typeof'];
 
     public function getSelector(): Selector {
-        return new XPathSelector('//*[@' . implode(' or @', $this->attributes) . ']');
+        return new XPathSelector('//*[@' . \implode(' or @', $this->attributes) . ']');
     }
 
-    public function apply(DOMNode $context) {
+    public function apply(DOMNode $context): void {
         if (!$context instanceof \DOMElement) {
             return;
         }
 
-        foreach($this->attributes as $attribute) {
+        foreach ($this->attributes as $attribute) {
             $context->removeAttribute($attribute);
         }
     }
-
 }

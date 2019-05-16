@@ -8,8 +8,8 @@ class TempladoException extends Exception {
 
     public function __construct(string $message, int $code = 0, Exception $previous = null) {
         parent::__construct($message, $code, $previous);
-        $this->errorList = libxml_get_errors();
-        libxml_clear_errors();
+        $this->errorList = \libxml_get_errors();
+        \libxml_clear_errors();
     }
 
     /**
@@ -18,5 +18,4 @@ class TempladoException extends Exception {
     public function getErrorList(): array {
         return $this->errorList;
     }
-
 }

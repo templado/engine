@@ -5,9 +5,7 @@ use DOMElement;
 use DOMNode;
 
 interface Snippet {
-
     public function getTargetId(): string;
 
     public function applyTo(DOMElement $node): DOMNode;
-
 }

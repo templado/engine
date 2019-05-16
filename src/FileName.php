@@ -15,23 +15,22 @@ class FileName {
     }
 
     public function getMimeType(): string {
-        return mime_content_type($this->path);
+        return \mime_content_type($this->path);
     }
 
     public function getName(): string {
-        return pathinfo($this->path, PATHINFO_FILENAME);
+        return \pathinfo($this->path, \PATHINFO_FILENAME);
     }
 
     public function exists(): bool {
-        return file_exists($this->path);
+        return \file_exists($this->path);
     }
 
     public function isFile(): bool {
-        return is_file(realpath($this->path));
+        return \is_file(\realpath($this->path));
     }
 
     public function isReadable(): bool {
-        return is_readable($this->path);
+        return \is_readable($this->path);
     }
-
 }

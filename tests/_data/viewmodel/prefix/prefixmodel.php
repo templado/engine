@@ -23,12 +23,9 @@ class Email {
 
 class EMailLink {
 
-    /** @var  Email */
+    /** @var Email */
     private $email;
 
-    /**
-     * @param Email $email
-     */
     public function __construct(Email $email) {
         $this->email = $email;
     }
@@ -39,7 +36,6 @@ class EMailLink {
 }
 
 class User {
-
     public function name() {
         return 'Willi Wichtig';
     }
@@ -54,7 +50,6 @@ class User {
             )
         ];
     }
-
 }
 
 class Header {
@@ -67,9 +62,7 @@ class Header {
     }
 }
 
-
 class PrefixViewModel {
-
     public function getUser(): User {
         return new User();
     }
@@ -77,20 +70,15 @@ class PrefixViewModel {
     public function getHeader(): Header {
         return new Header();
     }
-
 }
 
 class PrefixCallViewModel {
-
     public function __call($method, $args) {
-
-        switch($method) {
+        switch ($method) {
             case 'user': return new User();
             case 'header': return new Header();
         }
 
         throw new \RuntimeException('FAIL:' . $method);
     }
-
 }
-

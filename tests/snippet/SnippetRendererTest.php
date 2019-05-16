@@ -8,8 +8,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\SnippetRenderer
  */
 class SnippetRendererTest extends TestCase {
-
-    public function testSimpleElementGetsAdded() {
+    public function testSimpleElementGetsAdded(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
         $collection = $this->createMocksForDom($dom);
@@ -18,13 +17,13 @@ class SnippetRendererTest extends TestCase {
         $renderer->render($dom->documentElement);
     }
 
-    public function testMissingIdGetsIgnored() {
+    public function testMissingIdGetsIgnored(): void {
         $xml = '<?xml version="1.0" ?><root><child id="a"/></root>';
 
         $dom = new DOMDocument();
         $dom->loadXML($xml);
 
-        /** @var SnippetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection $collection */
         $collection = $this->createMock(SnippetListCollection::class);
         $collection->method('hasSnippetsForId')->willReturn(false);
 
@@ -40,11 +39,11 @@ class SnippetRendererTest extends TestCase {
         );
     }
 
-    public function testNonElementNodesGetIgnored() {
+    public function testNonElementNodesGetIgnored(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><!-- comment --></root>');
 
-        /** @var SnippetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection $collection */
         $collection = $this->createMock(SnippetListCollection::class);
         $collection->method('hasSnippetsForId')->willReturn(false);
 
@@ -60,7 +59,7 @@ class SnippetRendererTest extends TestCase {
         );
     }
 
-    public function testRenderWorksRecursively() {
+    public function testRenderWorksRecursively(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"><subchild /></child></root>');
 
@@ -70,7 +69,7 @@ class SnippetRendererTest extends TestCase {
         $renderer->render($dom->documentElement);
     }
 
-    public function testRenderingWorksRecursivelyOverSnippetReplacedElements() {
+    public function testRenderingWorksRecursivelyOverSnippetReplacedElements(): void {
         $page = new DOMDocument();
         $page->loadXML('<?xml version="1.0" ?><root><target id="a" /></root>');
 
@@ -92,7 +91,7 @@ class SnippetRendererTest extends TestCase {
         $snippetList2 = $this->createSnippetListMock($snippet2);
 
         $collection = $this->createMock(SnippetListCollection::class);
-        $collection->expects($this->exactly(2))->method('hasSnippetsForId')->withConsecutive(['a'],['b'])->willReturn(true);
+        $collection->expects($this->exactly(2))->method('hasSnippetsForId')->withConsecutive(['a'], ['b'])->willReturn(true);
         $collection->method('getSnippetsForId')->willReturnOnConsecutiveCalls(
             $snippetList1,
             $snippetList2
@@ -100,10 +99,9 @@ class SnippetRendererTest extends TestCase {
 
         $renderer = new SnippetRenderer($collection);
         $renderer->render($page->documentElement);
-
     }
 
-    public function testNonElementReplacementtGetsHandled() {
+    public function testNonElementReplacementtGetsHandled(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
@@ -113,17 +111,12 @@ class SnippetRendererTest extends TestCase {
             ->willReturn($dom->createTextNode('replacement-text'));
 
         $snippetList = $this->createSnippetListMock($snippet);
-        $collection = $this->createSnippetCollectionMock($snippetList);
+        $collection  = $this->createSnippetCollectionMock($snippetList);
 
         $renderer = new SnippetRenderer($collection);
         $renderer->render($dom->documentElement);
     }
 
-    /**
-     * @param DOMDocument $dom
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     private function createSnippetMock(DOMDocument $dom): \PHPUnit_Framework_MockObject_MockObject {
         $snippet = $this->createMock(Snippet::class);
         $snippet->expects($this->once())->method('applyTo')
@@ -135,8 +128,6 @@ class SnippetRendererTest extends TestCase {
 
     /**
      * @param $snippet
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function createSnippetListMock($snippet): \PHPUnit_Framework_MockObject_MockObject {
         $snippetList = $this->createMock(SnippetList::class);
@@ -152,7 +143,7 @@ class SnippetRendererTest extends TestCase {
      * @return \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection
      */
     private function createSnippetCollectionMock($snippetList) {
-        /** @var SnippetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection $collection */
         $collection = $this->createMock(SnippetListCollection::class);
         $collection->method('hasSnippetsForId')->willReturn(true);
         $collection->method('getSnippetsForId')->willReturn($snippetList);
@@ -166,11 +157,9 @@ class SnippetRendererTest extends TestCase {
      * @return \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection
      */
     private function createMocksForDom($dom) {
-        $snippet = $this->createSnippetMock($dom);
+        $snippet     = $this->createSnippetMock($dom);
         $snippetList = $this->createSnippetListMock($snippet);
-        $collection = $this->createSnippetCollectionMock($snippetList);
 
-        return $collection;
+        return $this->createSnippetCollectionMock($snippetList);
     }
-
 }

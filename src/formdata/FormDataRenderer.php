@@ -9,7 +9,7 @@ class FormDataRenderer {
     /**
      * @throws FormDataRendererException
      */
-    public function render(DOMElement $context, FormData $form) {
+    public function render(DOMElement $context, FormData $form): void {
         try {
             $formElement = $this->findFormElement($context, $form->getIdentifier());
 
@@ -23,8 +23,9 @@ class FormDataRenderer {
         }
     }
 
-    private function setInputValue(DOMElement $input, string $value) {
+    private function setInputValue(DOMElement $input, string $value): void {
         $type = $input->getAttribute('type');
+
         switch ($type) {
             case 'file':
             case 'password':
@@ -39,8 +40,9 @@ class FormDataRenderer {
         }
     }
 
-    private function toggleInput(DOMElement $input, string $value) {
+    private function toggleInput(DOMElement $input, string $value): void {
         $actualValue = $input->getAttribute('value');
+
         if ($actualValue === $value) {
             $input->setAttribute('checked', 'checked');
 
@@ -49,11 +51,12 @@ class FormDataRenderer {
         $input->removeAttribute('checked');
     }
 
-    private function setSelectValue(DOMElement $select, string $value) {
-        foreach($select->getElementsByTagName('option') as $option) {
+    private function setSelectValue(DOMElement $select, string $value): void {
+        foreach ($select->getElementsByTagName('option') as $option) {
             /** @var DOMElement $option */
             if ($option->getAttribute('value') === $value) {
                 $option->setAttribute('selected', 'selected');
+
                 continue;
             }
             $option->removeAttribute('selected');
@@ -64,23 +67,24 @@ class FormDataRenderer {
      * @throws FormDataRendererException
      */
     private function findFormElement(DOMElement $context, string $identifier): DOMElement {
-        $xp = new DOMXPath($context->ownerDocument);
+        $xp     = new DOMXPath($context->ownerDocument);
         $result = $xp->query(
-            sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
+            \sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
             $context
         );
+
         switch ($result->length) {
             case 1: {
                 return $result->item(0);
             }
             case 0: {
                 throw new FormDataRendererException(
-                    sprintf('No form with name or id "%s" found', $identifier)
+                    \sprintf('No form with name or id "%s" found', $identifier)
                 );
             }
             default: {
                 throw new FormDataRendererException(
-                    sprintf('Multiple forms found with name or id "%s"', $identifier)
+                    \sprintf('Multiple forms found with name or id "%s"', $identifier)
                 );
 
             }
@@ -90,11 +94,11 @@ class FormDataRenderer {
     /**
      * @throws FormDataException
      */
-    private function processInputElements(FormData $form, DOMElement $formElement) {
-        foreach($formElement->getElementsByTagName('input') as $input) {
+    private function processInputElements(FormData $form, DOMElement $formElement): void {
+        foreach ($formElement->getElementsByTagName('input') as $input) {
             /** @var DOMElement $input */
-
             $name = $input->getAttribute('name');
+
             if (!$form->hasKey($name)) {
                 continue;
             }
@@ -110,10 +114,11 @@ class FormDataRenderer {
     /**
      * @throws FormDataException
      */
-    private function processSelectElements(FormData $form, DOMElement $formElement) {
-        foreach($formElement->getElementsByTagName('select') as $select) {
+    private function processSelectElements(FormData $form, DOMElement $formElement): void {
+        foreach ($formElement->getElementsByTagName('select') as $select) {
             /** @var DOMElement $select */
             $name = $select->getAttribute('name');
+
             if (!$form->hasKey($name)) {
                 continue;
             }
@@ -129,10 +134,11 @@ class FormDataRenderer {
     /**
      * @throws FormDataException
      */
-    private function processTextareaElement(FormData $form, DOMElement $formElement) {
-        foreach($formElement->getElementsByTagName('textarea') as $textarea) {
+    private function processTextareaElement(FormData $form, DOMElement $formElement): void {
+        foreach ($formElement->getElementsByTagName('textarea') as $textarea) {
             /** @var DOMElement $textarea */
             $name = $textarea->getAttribute('name');
+
             if (!$form->hasKey($name)) {
                 continue;
             }
@@ -146,5 +152,4 @@ class FormDataRenderer {
             );
         }
     }
-
 }

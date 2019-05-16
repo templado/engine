@@ -10,11 +10,8 @@ class EmptyElementsFilterTest extends TestCase {
 
     /**
      * @dataProvider selfContainedElementsProvider
-     *
-     * @param string $expected
-     * @param string $input
      */
-    public function testSelfContainedElementsGetClosed(string $expected, string $input) {
+    public function testSelfContainedElementsGetClosed(string $expected, string $input): void {
         $this->assertEquals(
             $expected,
             (new EmptyElementsFilter())->apply($input)
@@ -28,20 +25,20 @@ class EmptyElementsFilterTest extends TestCase {
         ];
 
         $map = [];
-        foreach($tagList as $tag) {
+
+        foreach ($tagList as $tag) {
             $map[$tag] = [
-                sprintf('<%s />', $tag),
-                sprintf('<%1$s></%1$s>', $tag)
+                \sprintf('<%s />', $tag),
+                \sprintf('<%1$s></%1$s>', $tag)
             ];
         }
 
         return $map;
     }
 
-    public function testRegexErrorsAreTurnedIntoException() {
+    public function testRegexErrorsAreTurnedIntoException(): void {
         $this->iniSet('pcre.backtrack_limit', '100');
         $this->expectException(EmptyElementsFilterException::class);
-        (new EmptyElementsFilter())->apply(file_get_contents(__DIR__ . '/../_data/filter/regex_backtrack.html'));
+        (new EmptyElementsFilter())->apply(\file_get_contents(__DIR__ . '/../_data/filter/regex_backtrack.html'));
     }
-
 }

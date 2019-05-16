@@ -8,27 +8,24 @@ use PHPUnit\Framework\TestCase;
  */
 class CSRFProtectionTest extends TestCase {
 
-    /**
-     * @var CSRFProtection
-     */
+    /** @var CSRFProtection */
     private $csrfprotection;
 
-    protected function setUp() {
+    protected function setUp(): void {
         $this->csrfprotection = new CSRFProtection('fieldname', 'token-string');
     }
 
-    public function testFieldNameCanBeRetrieved() {
+    public function testFieldNameCanBeRetrieved(): void {
         $this->assertEquals(
             'fieldname',
             $this->csrfprotection->getFieldName()
         );
     }
 
-    public function testTokenValueCanBeRetrieved() {
+    public function testTokenValueCanBeRetrieved(): void {
         $this->assertEquals(
             'token-string',
             $this->csrfprotection->getTokenValue()
         );
     }
-
 }

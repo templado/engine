@@ -2,5 +2,4 @@
 namespace Templado\Engine;
 
 class SnapshotDOMNodelistException extends Exception {
-
 }

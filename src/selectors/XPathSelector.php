@@ -17,7 +17,7 @@ class XPathSelector implements Selector {
         $this->queryString = $query;
     }
 
-    public function registerPrefix(string $prefix, string $uri) {
+    public function registerPrefix(string $prefix, string $uri): void {
         $this->prefixMap[$prefix] = $uri;
     }
 
@@ -27,13 +27,15 @@ class XPathSelector implements Selector {
             $this->queryString,
             $context
         );
+
         if (!$result instanceof DOMNodeList) {
-            $error = libxml_get_last_error();
+            $error = \libxml_get_last_error();
             $this->toggleErrorHandling($backup);
 
             throw new XPathSelectorException(
-                sprintf('%s: "%s"',
-                    trim($error->message),
+                \sprintf(
+                    '%s: "%s"',
+                    \trim($error->message),
                     $this->queryString
                 ),
                 $error->code
@@ -52,7 +54,7 @@ class XPathSelector implements Selector {
             $this->prefixMap['html'] = 'http://www.w3.org/1999/xhtml';
         }
 
-        foreach($this->prefixMap as $prefix => $uri) {
+        foreach ($this->prefixMap as $prefix => $uri) {
             $xp->registerNamespace($prefix, $uri);
         }
 
@@ -60,10 +62,9 @@ class XPathSelector implements Selector {
     }
 
     private function toggleErrorHandling(bool $mode): bool {
-        $backup = libxml_use_internal_errors($mode);
-        libxml_clear_errors();
+        $backup = \libxml_use_internal_errors($mode);
+        \libxml_clear_errors();
 
         return $backup;
     }
-
 }

@@ -6,8 +6,9 @@ class SnippetListCollection {
     /** @var SnippetList[] */
     private $snippetLists = [];
 
-    public function addSnippet(Snippet $snippet) {
+    public function addSnippet(Snippet $snippet): void {
         $id = $snippet->getTargetId();
+
         if (!$this->hasSnippetsForId($id)) {
             $this->snippetLists[$id] = new SnippetList();
         }
@@ -24,11 +25,10 @@ class SnippetListCollection {
     public function getSnippetsForId(string $id): SnippetList {
         if (!$this->hasSnippetsForId($id)) {
             throw new SnippetCollectionException(
-                sprintf("No Snippets for Id '%s' in collection", $id)
+                \sprintf("No Snippets for Id '%s' in collection", $id)
             );
         }
 
         return $this->snippetLists[$id];
     }
-
 }

@@ -10,11 +10,9 @@ use stdClass;
 class FormDataTest extends TestCase {
 
     /**
-     * @param array $data
-     *
      * @dataProvider validDataProvider
      */
-    public function testCanBeInstantiatedWithUsableData(array $data) {
+    public function testCanBeInstantiatedWithUsableData(array $data): void {
         $formdata = new FormData('foo', $data);
         $this->assertInstanceOf(FormData::class, $formdata);
     }
@@ -27,11 +25,9 @@ class FormDataTest extends TestCase {
     }
 
     /**
-     * @param array $data
-     *
      * @dataProvider invalidDataProvider
      */
-    public function testCanNotBeInstantiatedWithUnusableDataTypes(array $data) {
+    public function testCanNotBeInstantiatedWithUnusableDataTypes(array $data): void {
         $this->expectException(FormDataException::class);
         new FormData('foo', $data);
     }
@@ -46,31 +42,29 @@ class FormDataTest extends TestCase {
         ];
     }
 
-    public function testIndentifierCanBeRetrieved() {
+    public function testIndentifierCanBeRetrieved(): void {
         $formdata = new FormData('test', ['a' => 'a']);
         $this->assertEquals('test', $formdata->getIdentifier());
     }
 
-    public function testReturnsTrueOnExistingKey() {
+    public function testReturnsTrueOnExistingKey(): void {
         $formdata = new FormData('test', ['a' => 'a']);
         $this->assertTrue($formdata->hasKey('a'));
     }
 
-    public function testReturnsFalseOnNonExistingKey() {
+    public function testReturnsFalseOnNonExistingKey(): void {
         $formdata = new FormData('test', ['a' => 'a']);
         $this->assertFalse($formdata->hasKey('b'));
     }
 
-    public function testThrowsExcpetionWhenNotExistingKeyIsRequested() {
+    public function testThrowsExcpetionWhenNotExistingKeyIsRequested(): void {
         $this->expectException(FormDataException::class);
         $formdata = new FormData('test', ['a' => 'a']);
         $formdata->getValue('not-existing');
     }
 
-    public function testValueOfExisingKeyCanBeRetrieved() {
+    public function testValueOfExisingKeyCanBeRetrieved(): void {
         $formdata = new FormData('test', ['a' => 'value']);
         $this->assertEquals('value', $formdata->getValue('a'));
     }
-
 }
-

@@ -7,18 +7,15 @@ use PHPUnit_Framework_MockObject_MockObject;
 
 /**
  * @covers \Templado\Engine\FormDataRenderer
+ *
  * @uses   \Templado\Engine\FormData
  */
 class FormDataRendererTest extends TestCase {
 
     /**
-     * @param FormData    $formData
-     * @param DOMDocument $contextDoc
-     * @param DOMDocument $expectedDoc
-     *
      * @dataProvider formdataProvider
      */
-    public function testFormDataGetsRenderedAsExpected(FormData $formData, DOMDocument $contextDoc, DOMDocument $expectedDoc) {
+    public function testFormDataGetsRenderedAsExpected(FormData $formData, DOMDocument $contextDoc, DOMDocument $expectedDoc): void {
         $renderer = new FormDataRenderer();
         $renderer->render($contextDoc->documentElement, $formData);
         $this->assertEqualXMLStructure(
@@ -30,7 +27,7 @@ class FormDataRendererTest extends TestCase {
     public function formdataProvider(): array {
         $result = [];
 
-        foreach(glob(__DIR__ . '/../_data/formdata/*') as $entry) {
+        foreach (\glob(__DIR__ . '/../_data/formdata/*') as $entry) {
             $data       = include $entry . '/formdata.php';
             $contextDOM = new DOMDocument();
             $contextDOM->load($entry . '/form.html');
@@ -38,7 +35,7 @@ class FormDataRendererTest extends TestCase {
             $expectedDOM = new DOMDocument();
             $expectedDOM->load($entry . '/expected.html');
 
-            $result[basename($entry)] = [
+            $result[\basename($entry)] = [
                 $data,
                 $contextDOM,
                 $expectedDOM
@@ -48,7 +45,7 @@ class FormDataRendererTest extends TestCase {
         return $result;
     }
 
-    public function testNoFormByGivenNameThrowsException() {
+    public function testNoFormByGivenNameThrowsException(): void {
         $contextDOM = new DOMDocument();
         $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
 
@@ -59,7 +56,7 @@ class FormDataRendererTest extends TestCase {
         $renderer->render($contextDOM->documentElement, $formdata);
     }
 
-    public function testMultipleFormsByGivenNameThrowsException() {
+    public function testMultipleFormsByGivenNameThrowsException(): void {
         $contextDOM = new DOMDocument();
         $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
 
@@ -73,11 +70,11 @@ class FormDataRendererTest extends TestCase {
         $renderer->render($contextDOM->documentElement, $formdata);
     }
 
-    public function testFormDataExceptionsGetsPassedOnAsFormDataRendererException() {
+    public function testFormDataExceptionsGetsPassedOnAsFormDataRendererException(): void {
         $contextDOM = new DOMDocument();
         $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
 
-        /** @var PHPUnit_Framework_MockObject_MockObject|FormData $formData */
+        /** @var FormData|PHPUnit_Framework_MockObject_MockObject $formData */
         $formData = $this->createMock(FormData::class);
         $formData->method('getIdentifier')->willReturn('test');
         $formData->method('hasKey')->willReturn(true);
@@ -88,5 +85,4 @@ class FormDataRendererTest extends TestCase {
         $this->expectException(FormDataRendererException::class);
         $renderer->render($contextDOM->documentElement, $formData);
     }
-
 }

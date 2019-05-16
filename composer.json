@@ -13,7 +13,7 @@
     "issues" : "https://github.com/templado/engine/issues"
   },
   "require" : {
-    "php" : "^7.0",
+    "php" : "^7.2",
     "ext-dom" : "*",
     "ext-libxml": "*",
     "theseer/css2xpath": "^1.0"

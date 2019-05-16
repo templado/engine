@@ -8,16 +8,14 @@ use PHPUnit\Framework\TestCase;
  */
 class SnippetListCollectionTest extends TestCase {
 
-    /**
-     * @var SnippetListCollection
-     */
+    /** @var SnippetListCollection */
     private $collection;
 
-    protected function setUp() {
+    protected function setUp(): void {
         $this->collection = new SnippetListCollection();
     }
 
-    public function testReturnsFalseWhenNoSnippetWithGivenIdExists() {
+    public function testReturnsFalseWhenNoSnippetWithGivenIdExists(): void {
         $this->assertFalse(
             $this->collection->hasSnippetsForId('abc')
         );
@@ -26,7 +24,7 @@ class SnippetListCollectionTest extends TestCase {
     /**
      * @uses \Templado\Engine\SnippetList
      */
-    public function testReturnsTrueForExistingSnippet() {
+    public function testReturnsTrueForExistingSnippet(): void {
         /** @var \PHPUnit_Framework_MockObject_MockObject|Snippet $snippet */
         $snippet = $this->createMock(SimpleSnippet::class);
         $snippet->method('getTargetId')->willReturn('abc');
@@ -36,7 +34,7 @@ class SnippetListCollectionTest extends TestCase {
         );
     }
 
-    public function testThrowsExceptionWhenTryingToRetrieveNonExistingSnippet() {
+    public function testThrowsExceptionWhenTryingToRetrieveNonExistingSnippet(): void {
         $this->expectException(SnippetCollectionException::class);
         $this->collection->getSnippetsForId('abc');
     }
@@ -44,7 +42,7 @@ class SnippetListCollectionTest extends TestCase {
     /**
      * @uses \Templado\Engine\SnippetList
      */
-    public function testExistingSnippetCanBeRetrieved() {
+    public function testExistingSnippetCanBeRetrieved(): void {
         /** @var \PHPUnit_Framework_MockObject_MockObject|Snippet $snippet */
         $snippet = $this->createMock(SimpleSnippet::class);
         $snippet->method('getTargetId')->willReturn('abc');
@@ -53,5 +51,4 @@ class SnippetListCollectionTest extends TestCase {
         $this->assertInstanceOf(SnippetList::class, $result);
         $this->assertCount(1, $result);
     }
-
 }

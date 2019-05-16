@@ -2,5 +2,4 @@
 namespace Templado\Engine;
 
 class ViewModelRendererException extends Exception {
-
 }

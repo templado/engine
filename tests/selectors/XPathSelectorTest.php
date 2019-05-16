@@ -5,8 +5,7 @@ use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
 class XPathSelectorTest extends TestCase {
-
-    public function testSelectReturnsExceptedNode() {
+    public function testSelectReturnsExceptedNode(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
 
@@ -15,7 +14,7 @@ class XPathSelectorTest extends TestCase {
 
         $this->assertInstanceOf(Selection::class, $selection);
 
-        foreach($selection as $node) {
+        foreach ($selection as $node) {
             $this->assertSame(
                 $dom->documentElement->firstChild,
                 $node
@@ -23,7 +22,7 @@ class XPathSelectorTest extends TestCase {
         }
     }
 
-    public function testRegisteredNamespacePrefixIsUsed() {
+    public function testRegisteredNamespacePrefixIsUsed(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root xmlns="foo:ns"><child /></root>');
 
@@ -33,19 +32,18 @@ class XPathSelectorTest extends TestCase {
 
         $this->assertInstanceOf(Selection::class, $selection);
 
-        foreach($selection as $node) {
+        foreach ($selection as $node) {
             $this->assertSame(
                 $dom->documentElement->firstChild,
                 $node
             );
         }
-
     }
 
     /**
      * @dataProvider invalidXPathQueryStringsProvider
      */
-    public function testUsingInvalidXPathQueryThrowsException(string $queryString) {
+    public function testUsingInvalidXPathQueryThrowsException(string $queryString): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root xmlns="foo:ns"><child /></root>');
 
@@ -57,12 +55,12 @@ class XPathSelectorTest extends TestCase {
 
     public function invalidXPathQueryStringsProvider(): array {
         return [
-            'empty' => [''],
-            'syntax-error' => ['//*['],
-            'non-function' => ['foo()'],
-            'non-axis' => ['f::axis'],
-            'slash-crazy' => ['/////'],
-            'dots' => ['....'],
+            'empty'          => [''],
+            'syntax-error'   => ['//*['],
+            'non-function'   => ['foo()'],
+            'non-axis'       => ['f::axis'],
+            'slash-crazy'    => ['/////'],
+            'dots'           => ['....'],
             'unknown-prefix' => ['//not:known']
         ];
     }

@@ -10,7 +10,7 @@ class CSRFProtection {
     private $tokenValue;
 
     public function __construct(string $fieldName, string $tokenValue) {
-        $this->fieldName = $fieldName;
+        $this->fieldName  = $fieldName;
         $this->tokenValue = $tokenValue;
     }
 
@@ -21,5 +21,4 @@ class CSRFProtection {
     public function getTokenValue(): string {
         return $this->tokenValue;
     }
-
 }

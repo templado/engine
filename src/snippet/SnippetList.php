@@ -6,35 +6,34 @@ class SnippetList implements \Iterator, \Countable {
     /** @var Snippet[] */
     private $snippets = [];
 
-    public function addSnippet(Snippet $snippet) {
+    public function addSnippet(Snippet $snippet): void {
         $this->snippets[] = $snippet;
     }
 
     public function current(): Snippet {
-        return current($this->snippets);
+        return \current($this->snippets);
     }
 
     /**
      * @return mixed|Snippet
      */
     public function next() {
-        return next($this->snippets);
+        return \next($this->snippets);
     }
 
     public function key(): int {
-        return key($this->snippets);
+        return \key($this->snippets);
     }
 
     public function valid(): bool {
-        return key($this->snippets) !== null;
+        return \key($this->snippets) !== null;
     }
 
     public function rewind() {
-        return reset($this->snippets);
+        return \reset($this->snippets);
     }
 
     public function count(): int {
         return \count($this->snippets);
     }
-
 }

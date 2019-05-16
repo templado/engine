@@ -1,5 +1,4 @@
 <?php declare(strict_types = 1);
-
 namespace Templado\Engine\Example;
 
 class Headline {
@@ -38,12 +37,9 @@ class Email {
 
 class EMailLink {
 
-    /** @var  Email */
+    /** @var Email */
     private $email;
 
-    /**
-     * @param Email $email
-     */
     public function __construct(Email $email) {
         $this->email = $email;
     }
@@ -54,7 +50,6 @@ class EMailLink {
 }
 
 class User {
-
     public function name() {
         return 'Willi Wichtig';
     }
@@ -69,11 +64,9 @@ class User {
             )
         ];
     }
-
 }
 
 class ViewModel {
-
     public function getHeadline() {
         return new Headline();
     }

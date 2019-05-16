@@ -8,8 +8,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\TransformationProcessor
  */
 class TransformationProcessorTest extends TestCase {
-
-    public function testProcessCallsTransformation() {
+    public function testProcessCallsTransformation(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
 
@@ -24,11 +23,12 @@ class TransformationProcessorTest extends TestCase {
         $transformation->expects($this->once())->method('apply')->with($dom->documentElement->firstChild);
 
         (new TransformationProcessor($dom->documentElement, $transformation))->process(
-            $dom->documentElement, $transformation
+            $dom->documentElement,
+            $transformation
         );
     }
 
-    public function testEmptySelectionDoesNotCallTransformation() {
+    public function testEmptySelectionDoesNotCallTransformation(): void {
         $selection = $this->createMock(Selection::class);
         $selection->method('isEmpty')->willReturn(true);
 
@@ -40,8 +40,8 @@ class TransformationProcessorTest extends TestCase {
         $transformation->expects($this->never())->method('apply');
 
         (new TransformationProcessor(new \DOMElement('foo'), $transformation))->process(
-            new \DOMElement('bar'), $transformation
+            new \DOMElement('bar'),
+            $transformation
         );
     }
-
 }

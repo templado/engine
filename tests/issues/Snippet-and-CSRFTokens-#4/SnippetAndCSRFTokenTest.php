@@ -7,23 +7,22 @@ use PhpUnit\Framework\TestCase;
  * @coversNothing
  */
 class SnippetAndCSRFTokenTest extends TestCase {
-
-    public function testIssueIsNoLongerReproduceable() {
+    public function testIssueIsNoLongerReproduceable(): void {
         $templadoFile = new FileName(__DIR__ . '/formTest.xhtml');
-        $html = Templado::loadHtmlFile($templadoFile);
+        $html         = Templado::loadHtmlFile($templadoFile);
 
-        $snippetFile = new FileName(__DIR__ . '/include.xhtml');
+        $snippetFile   = new FileName(__DIR__ . '/include.xhtml');
         $snippetLoader = new \Templado\Engine\SnippetLoader();
-        $snippet = $snippetLoader->load($snippetFile);
+        $snippet       = $snippetLoader->load($snippetFile);
 
         $snippetCollection = new \Templado\Engine\SnippetListCollection();
         $snippetCollection->addSnippet($snippet);
 
         $html->applySnippets($snippetCollection);
-        $html->applyCSRFProtection(new \Templado\Engine\CSRFProtection('csrfToken','csrfValue'));
+        $html->applyCSRFProtection(new \Templado\Engine\CSRFProtection('csrfToken', 'csrfValue'));
 
-        file_put_contents(__DIR__ . '/expected.xhtml', $html->asString());
-        $expected = file_get_contents(__DIR__ . '/expected.xhtml');
+        \file_put_contents(__DIR__ . '/expected.xhtml', $html->asString());
+        $expected = \file_get_contents(__DIR__ . '/expected.xhtml');
 
         $this->assertEquals(
             $expected,

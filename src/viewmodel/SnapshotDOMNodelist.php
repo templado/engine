@@ -28,7 +28,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
     }
 
     public function hasNode(DOMNode $node) {
-        foreach($this->items as $pos => $item) {
+        foreach ($this->items as $pos => $item) {
             if ($item->isSameNode($node)) {
                 return true;
             }
@@ -37,10 +37,11 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
         return false;
     }
 
-    public function removeNode(DOMNode $node) {
-        foreach($this->items as $pos => $item) {
+    public function removeNode(DOMNode $node): void {
+        foreach ($this->items as $pos => $item) {
             if ($item->isSameNode($node)) {
-                array_splice($this->items, $pos, 1);
+                \array_splice($this->items, $pos, 1);
+
                 if ($pos <= $this->pos) {
                     $this->pos--;
                 }
@@ -48,6 +49,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
                 return;
             }
         }
+
         throw new SnapshotDOMNodelistException('Node not found in list');
     }
 
@@ -59,7 +61,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
         return $this->items[$this->pos];
     }
 
-    public function next() {
+    public function next(): void {
         $this->pos++;
     }
 
@@ -73,14 +75,8 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
         return $count > 0 && $count > $this->pos;
     }
 
-    public function rewind() {
+    public function rewind(): void {
         $this->pos = 0;
-    }
-
-    private function extractItemsFromNodeList(DOMNodeList $list) {
-        foreach($list as $item) {
-            $this->items[] = $item;
-        }
     }
 
     public function hasNext(): bool {
@@ -94,5 +90,11 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
         $this->next();
 
         return $node;
+    }
+
+    private function extractItemsFromNodeList(DOMNodeList $list): void {
+        foreach ($list as $item) {
+            $this->items[] = $item;
+        }
     }
 }

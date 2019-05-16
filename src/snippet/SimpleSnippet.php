@@ -14,7 +14,7 @@ class SimpleSnippet implements Snippet {
 
     public function __construct(string $targetId, DOMNode $content) {
         $this->targetId = $targetId;
-        $this->content = $content;
+        $this->content  = $content;
     }
 
     public function getTargetId(): string {
@@ -46,5 +46,4 @@ class SimpleSnippet implements Snippet {
 
         return $node->getAttribute('id') === $content->getAttribute('id');
     }
-
 }

@@ -9,18 +9,14 @@ require __DIR__ . '/viewmodel.php';
  * @coversNothing
  */
 class NegativeIndexTest extends TestCase {
-
-    public function testIssueIsNoLongerReproduceable() {
-
+    public function testIssueIsNoLongerReproduceable(): void {
         $templadoFile = new FileName(__DIR__ . '/input.xhtml');
-        $html = Templado::loadHtmlFile($templadoFile);
+        $html         = Templado::loadHtmlFile($templadoFile);
         $html->applyViewModel(new NegativeIndexVM());
 
         $this->assertXmlStringEqualsXmlString(
-            file_get_contents(__DIR__ . '/expected.html'),
+            \file_get_contents(__DIR__ . '/expected.html'),
             $html->asString()
         );
-
     }
 }
-

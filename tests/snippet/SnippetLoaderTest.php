@@ -7,8 +7,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\SnippetLoader
  */
 class SnippetLoaderTest extends TestCase {
-
-    public function testAttemptingToLoadNonExistingFileThrowsException() {
+    public function testAttemptingToLoadNonExistingFileThrowsException(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(false);
@@ -17,7 +16,7 @@ class SnippetLoaderTest extends TestCase {
         $loader->load($filename);
     }
 
-    public function testAttemptingToLoadSomethingThatIsNotAFileThrowsException() {
+    public function testAttemptingToLoadSomethingThatIsNotAFileThrowsException(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
@@ -27,7 +26,7 @@ class SnippetLoaderTest extends TestCase {
         $loader->load($filename);
     }
 
-    public function testAttemptingToLoadANotReadableFileThrowsException() {
+    public function testAttemptingToLoadANotReadableFileThrowsException(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
@@ -38,7 +37,7 @@ class SnippetLoaderTest extends TestCase {
         $loader->load($filename);
     }
 
-    public function testAttemptingToLoadAnInvalidFileThrowsException() {
+    public function testAttemptingToLoadAnInvalidFileThrowsException(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('broken.txt');
 
@@ -46,7 +45,7 @@ class SnippetLoaderTest extends TestCase {
         $loader->load($filename);
     }
 
-    public function testAttemptingToLoadAnUnknownFileTypeThrowsException() {
+    public function testAttemptingToLoadAnUnknownFileTypeThrowsException(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('undefined.xml');
 
@@ -57,10 +56,10 @@ class SnippetLoaderTest extends TestCase {
     /**
      * @uses \Templado\Engine\SimpleSnippet
      */
-    public function testLoadingPlainHtmlReturnsValidSnippet() {
+    public function testLoadingPlainHtmlReturnsValidSnippet(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('simple.xhtml');
-        $snippet = $loader->load($filename);
+        $snippet  = $loader->load($filename);
 
         $this->assertInstanceOf(SimpleSnippet::class, $snippet);
         $this->assertEquals('abc', $snippet->getTargetId());
@@ -69,10 +68,10 @@ class SnippetLoaderTest extends TestCase {
     /**
      * @uses \Templado\Engine\SimpleSnippet
      */
-    public function testLoadingHtmlWithoutIdUsesFilename() {
+    public function testLoadingHtmlWithoutIdUsesFilename(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('noid.xhtml');
-        $snippet = $loader->load($filename);
+        $snippet  = $loader->load($filename);
 
         $this->assertInstanceOf(SimpleSnippet::class, $snippet);
         $this->assertEquals('noid', $snippet->getTargetId());
@@ -81,16 +80,16 @@ class SnippetLoaderTest extends TestCase {
     /**
      * @uses \Templado\Engine\SimpleSnippet
      */
-    public function testLoadingSnippetFileReturnsValidSnippet() {
+    public function testLoadingSnippetFileReturnsValidSnippet(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('snippet.xml');
-        $snippet = $loader->load($filename);
+        $snippet  = $loader->load($filename);
 
         $this->assertInstanceOf(SimpleSnippet::class, $snippet);
         $this->assertEquals('header', $snippet->getTargetId());
     }
 
-    public function testLoadingFileWithUnsupportedMimeTypeThrowsException() {
+    public function testLoadingFileWithUnsupportedMimeTypeThrowsException(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('', 'unknown/binary');
         $this->expectException(SnippetLoaderException::class);
@@ -102,7 +101,7 @@ class SnippetLoaderTest extends TestCase {
      * @uses \Templado\Engine\SimpleSnippet
      * @dataProvider textFileFilenameProvider
      */
-    public function testLoadingATextFileCreatesATextnodeSnippet($name, $mimetype) {
+    public function testLoadingATextFileCreatesATextnodeSnippet($name, $mimetype): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMockFilename($name, $mimetype);
         $filename->method('getName')->willReturn('simple');

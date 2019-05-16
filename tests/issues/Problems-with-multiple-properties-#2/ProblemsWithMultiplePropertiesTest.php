@@ -6,8 +6,7 @@ use PHPUnit\Framework\TestCase;
  * @coversNothing
  */
 class ProblemsWithMultiplePropertiesTest extends TestCase {
-
-    public function testIssueIsNoLongerReproduceable() {
+    public function testIssueIsNoLongerReproduceable(): void {
         $html = \Templado\Engine\Templado::loadHtmlFile(
             new \Templado\Engine\FileName(__DIR__ . '/sample.html')
         );
@@ -22,7 +21,7 @@ class ProblemsWithMultiplePropertiesTest extends TestCase {
         });
 
         $this->assertXmlStringEqualsXmlString(
-            file_get_contents(__DIR__ . '/expected.html'),
+            \file_get_contents(__DIR__ . '/expected.html'),
             $html->asString()
         );
     }

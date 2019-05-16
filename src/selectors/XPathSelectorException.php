@@ -2,9 +2,7 @@
 namespace Templado\Engine;
 
 class XPathSelectorException extends Exception {
-
-    const InvalidExpression = 1207;
-    const UnregisteredFunction = 1209;
-    const UndefinedNamespace = 1219;
-
+    public const InvalidExpression    = 1207;
+    public const UnregisteredFunction = 1209;
+    public const UndefinedNamespace   = 1219;
 }

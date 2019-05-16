@@ -7,6 +7,7 @@ use Templado\Engine\Example\ViewModel;
 
 /**
  * @covers \Templado\Engine\Html
+ *
  * @uses \Templado\Engine\SnapshotDOMNodelist
  * @uses \Templado\Engine\SnapshotAttributeList
  */
@@ -15,7 +16,7 @@ class HTMLTest extends TestCase {
     /**
      * @uses \Templado\Engine\SnippetRenderer
      */
-    public function testSnippetsCanBeApplied() {
+    public function testSnippetsCanBeApplied(): void {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
 
@@ -27,7 +28,7 @@ class HTMLTest extends TestCase {
         $snippetList->method('current')->willReturn($snippet);
         $snippetList->method('valid')->willReturn(true, false);
 
-        /** @var SnippetListCollection|\PHPUnit_Framework_MockObject_MockObject $collection */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|SnippetListCollection $collection */
         $collection = $this->createMock(SnippetListCollection::class);
         $collection->method('hasSnippetsForId')->willReturn(true);
         $collection->method('getSnippetsForId')->willReturn($snippetList);
@@ -35,13 +36,12 @@ class HTMLTest extends TestCase {
         $page = new Html($dom);
 
         $page->applySnippets($collection);
-
     }
 
     /**
      * @uses \Templado\Engine\ViewModelRenderer
      */
-    public function testViewModelCanBeApplied() {
+    public function testViewModelCanBeApplied(): void {
         $viewModel = new ViewModel();
         $dom       = new DOMDocument();
         $dom->load(__DIR__ . '/_data/viewmodel/source.html');
@@ -61,7 +61,7 @@ class HTMLTest extends TestCase {
     /**
      * @uses \Templado\Engine\TransformationProcessor
      */
-    public function testTransformationCanBeApplied() {
+    public function testTransformationCanBeApplied(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
 
@@ -77,14 +77,13 @@ class HTMLTest extends TestCase {
 
         $page = new Html($dom);
         $page->applyTransformation($transformation);
-
     }
 
     /**
      * @uses \Templado\Engine\FormData
      * @uses \Templado\Engine\FormDataRenderer
      */
-    public function testFormDataCanBeApplied() {
+    public function testFormDataCanBeApplied(): void {
         $path = __DIR__ . '/_data/formdata/text';
 
         $formdata = include $path . '/formdata.php';
@@ -107,7 +106,7 @@ class HTMLTest extends TestCase {
     /**
      * @uses \Templado\Engine\CSRFProtectionRenderer
      */
-    public function testCSRFProtectionCanBeApplied() {
+    public function testCSRFProtectionCanBeApplied(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html><body><form></form></body></html>');
 
@@ -134,7 +133,7 @@ class HTMLTest extends TestCase {
      * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
      * @uses \Templado\Engine\EmptyElementsFilter
      */
-    public function testCanBeConvertedToString() {
+    public function testCanBeConvertedToString(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html><head><link rel="stylesheet"></link></head><body><p>test</p></body></html>');
 
@@ -151,7 +150,7 @@ class HTMLTest extends TestCase {
 
         $page = new Html($dom);
         $this->assertEquals(
-            implode("\n", $expected),
+            \implode("\n", $expected),
             $page->asString()
         );
     }
@@ -160,7 +159,7 @@ class HTMLTest extends TestCase {
      * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
      * @uses \Templado\Engine\EmptyElementsFilter
      */
-    public function testCanBeConvertedToStringWithDoctype() {
+    public function testCanBeConvertedToStringWithDoctype(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><!DOCTYPE html><html><head><link rel="stylesheet"></link></head><body><p>test</p></body></html>');
 
@@ -178,7 +177,7 @@ class HTMLTest extends TestCase {
 
         $page = new Html($dom);
         $this->assertEquals(
-            implode("\n", $expected),
+            \implode("\n", $expected),
             $page->asString()
         );
     }
@@ -187,7 +186,7 @@ class HTMLTest extends TestCase {
      * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
      * @uses \Templado\Engine\EmptyElementsFilter
      */
-    public function testPassedFilterGetsCalledAfterSerializing() {
+    public function testPassedFilterGetsCalledAfterSerializing(): void {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root />');
         $page = new Html($dom);
@@ -197,5 +196,4 @@ class HTMLTest extends TestCase {
 
         $page->asString($filter);
     }
-
 }

@@ -2,6 +2,7 @@
 
 use Templado\Engine\FormData;
 
-return new FormData('test',
+return new FormData(
+    'test',
     ['test' => 'Test Value']
 );

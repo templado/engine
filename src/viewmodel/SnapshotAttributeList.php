@@ -30,7 +30,7 @@ class SnapshotAttributeList implements Iterator, Countable {
         return $this->attributes[$this->pos];
     }
 
-    public function next() {
+    public function next(): void {
         $this->pos++;
     }
 
@@ -44,20 +44,19 @@ class SnapshotAttributeList implements Iterator, Countable {
         return $count > 0 && $count > $this->pos;
     }
 
-    public function rewind() {
+    public function rewind(): void {
         $this->pos = 0;
     }
 
-    private function extractAttributeNodes(DOMNamedNodeMap $map) {
-        foreach($map as $attr) {
+    private function extractAttributeNodes(DOMNamedNodeMap $map): void {
+        foreach ($map as $attr) {
             /** @var $attr \DOMNode */
             if (!$attr instanceof DOMAttr) {
                 throw new SnapshotAttributeListException(
-                    sprintf('%s is not an attribute node type (%s given)', $attr->localName, get_class($attr))
+                    \sprintf('%s is not an attribute node type (%s given)', $attr->localName, \get_class($attr))
                 );
             }
             $this->attributes[] = $attr;
         }
     }
-
 }

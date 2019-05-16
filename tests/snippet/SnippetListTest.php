@@ -7,8 +7,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\SnippetList
  */
 class SnippetListTest extends TestCase {
-
-    public function testCanBeUsedAsIterator() {
+    public function testCanBeUsedAsIterator(): void {
         $expected = [
             $this->createMock(SimpleSnippet::class),
             $this->createMock(SimpleSnippet::class)
@@ -17,19 +16,18 @@ class SnippetListTest extends TestCase {
         $list->addSnippet($expected[0]);
         $list->addSnippet($expected[1]);
 
-        foreach($list as $pos => $value) {
+        foreach ($list as $pos => $value) {
             $this->assertSame($expected[$pos], $value);
         }
     }
 
-    public function testReturnsZeroForEmptyList() {
+    public function testReturnsZeroForEmptyList(): void {
         $this->assertCount(0, new SnippetList());
     }
 
-    public function testReturnsCorrectCountForNonEmptyList() {
+    public function testReturnsCorrectCountForNonEmptyList(): void {
         $list = new SnippetList();
         $list->addSnippet($this->createMock(SimpleSnippet::class));
         $this->assertCount(1, $list);
     }
-
 }

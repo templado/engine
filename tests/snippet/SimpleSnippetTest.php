@@ -10,21 +10,21 @@ use PHPUnit\Framework\TestCase;
  */
 class SimpleSnippetTest extends TestCase {
 
-    /** @var  DOMElement */
+    /** @var DOMElement */
     private $domElement;
 
-    protected function setUp() {
+    protected function setUp(): void {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root id="abc" />');
         $this->domElement = $dom->documentElement;
     }
 
-    public function testTargetIdCanBeRetrieved() {
+    public function testTargetIdCanBeRetrieved(): void {
         $snippet = new SimpleSnippet('foo', new DOMNode());
         $this->assertEquals('foo', $snippet->getTargetId());
     }
 
-    public function testSnippetGetsAddedAsChild() {
+    public function testSnippetGetsAddedAsChild(): void {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><node/>');
         $snippet = new SimpleSnippet('abc', $dom->documentElement);
@@ -34,7 +34,7 @@ class SimpleSnippetTest extends TestCase {
         $this->assertEquals(1, $this->domElement->childNodes->length);
     }
 
-    public function testSnippetReplacesContent() {
+    public function testSnippetReplacesContent(): void {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><node id="abc" />');
         $snippet = new SimpleSnippet('abc', $dom->documentElement);
@@ -43,15 +43,12 @@ class SimpleSnippetTest extends TestCase {
         $this->assertEquals('node', $this->domElement->ownerDocument->documentElement->nodeName);
     }
 
-    public function testSnippetWithNonElementContentDoesNotReplaceContent() {
+    public function testSnippetWithNonElementContentDoesNotReplaceContent(): void {
         $fragment = (new \DOMDocument())->createDocumentFragment();
         $fragment->appendXML('<node1 /><node2 />');
 
         $snippet = new SimpleSnippet('abc', $fragment);
         $snippet->applyTo($this->domElement);
         $this->assertEquals(2, $this->domElement->childNodes->length);
-
     }
-
 }
-

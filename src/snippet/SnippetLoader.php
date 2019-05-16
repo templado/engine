@@ -4,12 +4,12 @@ namespace Templado\Engine;
 use DOMDocument;
 
 class SnippetLoader {
-
     public function load(FileName $fileName): Snippet {
         $this->ensureFileExists($fileName);
         $this->ensureIsReadableFile($fileName);
 
         $mimeType = $fileName->getMimeType();
+
         switch ($mimeType) {
             case 'text/x-php':
             case 'text/plain':
@@ -22,14 +22,14 @@ class SnippetLoader {
         }
 
         throw new SnippetLoaderException(
-            sprintf('Unsupported mime-type "%s"', $mimeType)
+            \sprintf('Unsupported mime-type "%s"', $mimeType)
         );
     }
 
     private function loadAsText(FileName $fileName): TextSnippet {
         return new TextSnippet(
             $fileName->getName(),
-            (new DOMDocument())->createTextNode(file_get_contents($fileName->asString()))
+            (new DOMDocument())->createTextNode(\file_get_contents($fileName->asString()))
         );
     }
 
@@ -54,17 +54,20 @@ class SnippetLoader {
      * @throws SnippetLoaderException
      */
     private function loadFile(FileName $fileName): DOMDocument {
-        libxml_use_internal_errors(true);
-        libxml_clear_errors();
-        $dom = new DOMDocument();
+        \libxml_use_internal_errors(true);
+        \libxml_clear_errors();
+        $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
-        $tmp = $dom->load($fileName->asString());
-        if (!$tmp || libxml_get_last_error()) {
-            $error = libxml_get_errors()[0];
+        $tmp                     = $dom->load($fileName->asString());
+
+        if (!$tmp || \libxml_get_last_error()) {
+            $error = \libxml_get_errors()[0];
+
             throw new SnippetLoaderException(
-                sprintf("Loading file '%s' failed: %s (line %d)",
+                \sprintf(
+                    "Loading file '%s' failed: %s (line %d)",
                     $fileName->asString(),
-                    trim($error->message),
+                    \trim($error->message),
                     $error->line
                 )
             );
@@ -95,10 +98,10 @@ class SnippetLoader {
     /**
      * @throws SnippetLoaderException
      */
-    private function ensureFileExists(FileName $fileName) {
+    private function ensureFileExists(FileName $fileName): void {
         if (!$fileName->exists()) {
             throw new SnippetLoaderException(
-                sprintf('File "%s" not found.', $fileName->asString())
+                \sprintf('File "%s" not found.', $fileName->asString())
             );
         }
     }
@@ -106,22 +109,24 @@ class SnippetLoader {
     /**
      * @throws SnippetLoaderException
      */
-    private function ensureIsReadableFile(FileName $fileName) {
+    private function ensureIsReadableFile(FileName $fileName): void {
         if (!$fileName->isFile()) {
             throw new SnippetLoaderException(
-                sprintf('File "%s" not a file.', $fileName->asString())
+                \sprintf('File "%s" not a file.', $fileName->asString())
             );
         }
+
         if (!$fileName->isReadable()) {
             throw new SnippetLoaderException(
-                sprintf('File "%s" can not be read.', $fileName->asString())
+                \sprintf('File "%s" can not be read.', $fileName->asString())
             );
         }
     }
 
     private function parseAsSnippet(DOMDocument $dom): SimpleSnippet {
         $fragment = $dom->createDocumentFragment();
-        foreach($dom->documentElement->childNodes as $child) {
+
+        foreach ($dom->documentElement->childNodes as $child) {
             $fragment->appendChild($child);
         }
 
@@ -130,11 +135,11 @@ class SnippetLoader {
 
     private function parseAsHTML(DOMDocument $dom): SimpleSnippet {
         $id = $dom->documentElement->getAttribute('id');
+
         if ($id === '') {
-            $id = pathinfo($dom->documentURI, PATHINFO_FILENAME);
+            $id = \pathinfo($dom->documentURI, \PATHINFO_FILENAME);
         }
 
         return new SimpleSnippet($id, $dom->documentElement);
     }
-
 }

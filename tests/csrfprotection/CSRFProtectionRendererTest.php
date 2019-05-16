@@ -9,22 +9,16 @@ use PHPUnit\Framework\TestCase;
  */
 class CSRFProtectionRendererTest extends TestCase {
 
-    /**
-     * @var CSRFProtection
-     */
+    /** @var CSRFProtection */
     private $protection;
 
-    /**
-     * @var CSRFProtectionRenderer
-     */
+    /** @var CSRFProtectionRenderer */
     private $renderer;
 
-    /**
-     * @var DOMDocument
-     */
+    /** @var DOMDocument */
     private $expected;
 
-    protected function setUp() {
+    protected function setUp(): void {
         $protection = $this->createMock(CSRFProtection::class);
         $protection->method('getFieldName')->willReturn('csrf');
         $protection->method('getTokenValue')->willReturn('secure');
@@ -39,7 +33,7 @@ class CSRFProtectionRendererTest extends TestCase {
         );
     }
 
-    public function testCSRFTokenFieldGetsAddedWhenMissing() {
+    public function testCSRFTokenFieldGetsAddedWhenMissing(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html><body><form></form></body></html>');
 
@@ -51,7 +45,7 @@ class CSRFProtectionRendererTest extends TestCase {
         );
     }
 
-    public function testCSRFTokenFieldGetsUpdatedWithTokenValue() {
+    public function testCSRFTokenFieldGetsUpdatedWithTokenValue(): void {
         $dom = new DOMDocument();
         $dom->loadXML(
             '<?xml version="1.0"?>
@@ -66,7 +60,7 @@ class CSRFProtectionRendererTest extends TestCase {
         );
     }
 
-    public function testCSRFTokenFieldGetsAddedWithCorrectNamespaceWhenMissing() {
+    public function testCSRFTokenFieldGetsAddedWithCorrectNamespaceWhenMissing(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html xmlns="a:b"><body><form></form></body></html>');
 
@@ -79,7 +73,5 @@ class CSRFProtectionRendererTest extends TestCase {
 
         $input = $dom->getElementsByTagName('input')->item(0);
         $this->assertEquals('a:b', $input->namespaceURI);
-
     }
-
 }

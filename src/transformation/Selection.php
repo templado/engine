@@ -20,5 +20,4 @@ class Selection implements IteratorAggregate {
     public function getIterator(): DOMNodeList {
         return $this->nodeList;
     }
-
 }

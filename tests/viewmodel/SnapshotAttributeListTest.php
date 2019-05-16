@@ -12,15 +12,15 @@ class SnapshotAttributeListTest extends TestCase {
     /** @var SnapshotAttributeList */
     private $list;
 
-    protected function setUp() {
-       $dom = new \DOMDocument();
-       $dom->loadXML('<?xml version="1.0" ?><root a="va" b="vb" c="vc" />');
-       $this->map = $dom->documentElement->attributes;
-       $this->list = new SnapshotAttributeList($this->map);
+    protected function setUp(): void {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root a="va" b="vb" c="vc" />');
+        $this->map  = $dom->documentElement->attributes;
+        $this->list = new SnapshotAttributeList($this->map);
     }
 
-    public function testIteratesOverAllAttributes() {
-        foreach($this->list as $pos => $attr) {
+    public function testIteratesOverAllAttributes(): void {
+        foreach ($this->list as $pos => $attr) {
             $this->assertSame(
                 $this->map->item($pos),
                 $attr
@@ -28,11 +28,11 @@ class SnapshotAttributeListTest extends TestCase {
         }
     }
 
-    public function testCountCanBeRetrieved() {
+    public function testCountCanBeRetrieved(): void {
         $this->assertCount(3, $this->list);
     }
 
-    public function testMapWithNonAttributesThrowsException() {
+    public function testMapWithNonAttributesThrowsException(): void {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><!DOCTYPE test [ <!ENTITY foo "Entity value"> ]><test />');
 
@@ -40,10 +40,10 @@ class SnapshotAttributeListTest extends TestCase {
         new SnapshotAttributeList($dom->doctype->entities);
     }
 
-    public function testGettingCurrentAttributeWhenNoneIsAvailableThrowsException() {
+    public function testGettingCurrentAttributeWhenNoneIsAvailableThrowsException(): void {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root />');
-        $map = $dom->documentElement->attributes;
+        $map  = $dom->documentElement->attributes;
         $list = new SnapshotAttributeList($map);
         $this->expectException(SnapshotAttributeListException::class);
         $list->current();

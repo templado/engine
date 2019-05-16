@@ -13,7 +13,7 @@ class Html {
         $this->dom = $dom;
     }
 
-    public function applySnippets(SnippetListCollection $snippetListCollection) {
+    public function applySnippets(SnippetListCollection $snippetListCollection): void {
         (new SnippetRenderer($snippetListCollection))->render($this->dom->documentElement);
     }
 
@@ -22,22 +22,22 @@ class Html {
      *
      * @throws ViewModelRendererException
      */
-    public function applyViewModel($model) {
+    public function applyViewModel($model): void {
         (new ViewModelRenderer())->render($this->dom->documentElement, $model);
     }
 
     /**
      * @throws FormDataRendererException
      */
-    public function applyFormData(FormData $formData) {
+    public function applyFormData(FormData $formData): void {
         (new FormDataRenderer())->render($this->dom->documentElement, $formData);
     }
 
-    public function applyCSRFProtection(CSRFProtection $protection) {
+    public function applyCSRFProtection(CSRFProtection $protection): void {
         (new CSRFProtectionRenderer())->render($this->dom->documentElement, $protection);
     }
 
-    public function applyTransformation(Transformation $transformation) {
+    public function applyTransformation(Transformation $transformation): void {
         (new TransformationProcessor())->process($this->dom->documentElement, $transformation);
     }
 
@@ -54,7 +54,7 @@ class Html {
     }
 
     private function serializeDomDocument(): string {
-        $this->dom->formatOutput = true;
+        $this->dom->formatOutput       = true;
         $this->dom->preserveWhiteSpace = false;
 
         $this->dom->loadXML(
@@ -65,17 +65,16 @@ class Html {
             return $this->serializeWithoutXMLHeader();
         }
 
-        return $this->dom->saveXML($this->dom->documentElement, LIBXML_NOEMPTYTAG);
+        return $this->dom->saveXML($this->dom->documentElement, \LIBXML_NOEMPTYTAG);
     }
 
     private function serializeWithoutXMLHeader(): string {
-        return implode(
+        return \implode(
             "\n",
             [
                 $this->dom->saveXML($this->dom->doctype),
-                $this->dom->saveXML($this->dom->documentElement, LIBXML_NOEMPTYTAG)
+                $this->dom->saveXML($this->dom->documentElement, \LIBXML_NOEMPTYTAG)
             ]
         );
     }
-
 }

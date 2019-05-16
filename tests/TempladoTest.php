@@ -11,7 +11,7 @@ class TempladoTest extends TestCase {
     /**
      * @uses \Templado\Engine\Html
      */
-    public function testCanBeConstructedFromString() {
+    public function testCanBeConstructedFromString(): void {
         $this->assertInstanceOf(
             Html::class,
             Templado::parseHtmlString('<?xml version="1.0" ?><root />')
@@ -21,7 +21,7 @@ class TempladoTest extends TestCase {
     /**
      * @uses \Templado\Engine\TempladoException
      */
-    public function testTryingToParseInvalidMarkupStringThrowsException() {
+    public function testTryingToParseInvalidMarkupStringThrowsException(): void {
         $this->expectException(TempladoException::class);
         Templado::parseHtmlString('<?xml version="1.0" ?><root>');
     }
@@ -30,7 +30,7 @@ class TempladoTest extends TestCase {
      * @uses \Templado\Engine\TempladoException
      * @uses \Templado\Engine\FileName
      */
-    public function testTryingToLoadBrokenFileThrowsException() {
+    public function testTryingToLoadBrokenFileThrowsException(): void {
         $this->expectException(TempladoException::class);
         Templado::loadHtmlFile(new FileName(__DIR__ . '/_data/broken.txt'));
     }
@@ -39,11 +39,10 @@ class TempladoTest extends TestCase {
      * @uses \Templado\Engine\FileName
      * @uses \Templado\Engine\Html
      */
-    public function testCanBeConstructedFromFile() {
+    public function testCanBeConstructedFromFile(): void {
         $this->assertInstanceOf(
             Html::class,
             Templado::loadHtmlFile(new FileName(__DIR__ . '/_data/viewmodel/source.html'))
         );
     }
-
 }
