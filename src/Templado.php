@@ -6,11 +6,12 @@ use DOMDocument;
 class Templado {
 
     public static function loadHtmlFile(FileName $fileName): Html {
-        libxml_use_internal_errors(true);
+        \libxml_use_internal_errors(true);
+        \libxml_clear_errors();
         $dom = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $tmp = $dom->load($fileName->asString());
-        if (!$tmp || libxml_get_last_error()) {
+        if (!$tmp || \libxml_get_last_error()) {
             throw new TempladoException(
                 sprintf("Loading file '%s' failed.", $fileName->asString())
             );
@@ -20,10 +21,11 @@ class Templado {
     }
 
     public static function parseHtmlString(string $string): Html {
-        libxml_use_internal_errors(true);
+        \libxml_use_internal_errors(true);
+        \libxml_clear_errors();
         $dom = new DOMDocument();
         $tmp = $dom->loadXML($string);
-        if (!$tmp || libxml_get_last_error()) {
+        if (!$tmp || \libxml_get_last_error()) {
             throw new TempladoException('Parsing string failed.');
         }
 
