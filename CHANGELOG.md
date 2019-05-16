@@ -2,6 +2,16 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+##[3.0.0] - 2019-05-16
+
+### Changed
+* Raise minimum PHP Version to 7.2
+* Explicitly clear libxml error buffer (PHP internal global state for the win, Thanks @spriebsch)
+
+### Fixed
+* Detect and prohibit potential endless recursion in SnippetRenderer (Thanks @spriebsch)
+  
+
 ## [2.3.2] - 2018-10-26
 ### Fixed
 * Simpler implementation for [#10](https://github.com/templado/engine/issues/10) that also works with PHP 7.3
