@@ -12,12 +12,8 @@ cache:
   - "$HOME/.gnupg"
 
 php:
-  - 7.0.32
-  - 7.1.23
   - 7.2
   - 7.3
-  - 7.0snapshot
-  - 7.1snapshot
   - 7.2snapshot
   - 7.3snapshot
   - master
