@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phive xmlns="https://phar.io/phive">
-  <phar name="phpunit" version="^6.0" installed="6.5.8" location="./tools/phpunit"/>
-  <phar name="phpab" version="^1.24.1" installed="1.24.1" location="./tools/phpab"/>
-  <phar name="dephpend" version="^0.4.0" installed="0.4.0" location="./tools/dephpend"/>
-  <phar name="php-cs-fixer" version="^2.14.0" installed="2.14.0" location="./tools/php-cs-fixer" copy="false"/>
+  <phar name="phpunit" version="^8.0" installed="8.1.5" location="./tools/phpunit" copy="false"/>
+  <phar name="phpab" version="^1.24.1" installed="1.25.6" location="./tools/phpab" copy="false"/>
+  <phar name="dephpend" version="^0.4.0" installed="0.4.0" location="./tools/dephpend" copy="false"/>
+  <phar name="php-cs-fixer" version="^2.14.0" installed="2.15.0" location="./tools/php-cs-fixer" copy="false"/>
+  <phar name="phploc" version="^4.0.1" installed="4.0.1" location="./tools/phploc" copy="false"/>
 </phive>
