@@ -21,6 +21,10 @@ class SimpleSnippet implements Snippet {
         return $this->targetId;
     }
 
+    public function withTargetId(string $targetId): SimpleSnippet {
+        return new SimpleSnippet($targetId, $this->content);
+    }
+
     public function applyTo(DOMElement $node): DOMNode {
         $content = $node->ownerDocument->importNode($this->content, true);
 
