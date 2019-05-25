@@ -34,18 +34,6 @@ class SimpleSnippetTest extends TestCase {
         $this->assertEquals(1, $this->domElement->childNodes->length);
     }
 
-    public function testTargetIdCanBeModified(): void
-    {
-        $dom = new \DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><node id="abc" />');
-        $snippet = new SimpleSnippet('abc', $dom->documentElement);
-        $id = 'xyz';
-        $modifiedSnippet =$snippet->withTargetId($id)->getTargetId();
-
-        $this->assertEquals($id, $modifiedSnippet);
-        $this->assertNotSame($snippet, $modifiedSnippet);
-    }
-
     public function testSnippetReplacesContent(): void {
         $dom = new \DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><node id="abc" />');
