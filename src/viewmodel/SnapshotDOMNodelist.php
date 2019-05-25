@@ -42,7 +42,7 @@ class SnapshotDOMNodelist implements Iterator, \Countable {
             if ($item->isSameNode($node)) {
                 \array_splice($this->items, $pos, 1);
 
-                if ($pos <= $this->pos) {
+                if ($this->pos > 0 && $pos <= $this->pos) {
                     $this->pos--;
                 }
 
