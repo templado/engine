@@ -185,7 +185,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processObject(DOMElement $context, $model) {
-        if ($model instanceof \Iterator) {
+        if (\is_iterable($model)) {
             return $this->processArray($context, $model);
         }
 
