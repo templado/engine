@@ -36,11 +36,11 @@ class SnippetLoader {
     /**
      * @throws SnippetLoaderException
      */
-    private function loadAsSnippet(FileName $fileName): SimpleSnippet {
+    private function loadAsSnippet(FileName $fileName): Snippet {
         $dom = $this->loadFile($fileName);
 
-        if ($this->isSnippetDocument($dom)) {
-            return $this->parseAsSnippet($dom);
+        if ($this->isTempladoSnippetDocument($dom)) {
+            return $this->parseAsTempladoSnippet($dom);
         }
 
         if ($this->isHtmlDocument($dom)) {
@@ -76,7 +76,7 @@ class SnippetLoader {
         return $dom;
     }
 
-    private function isSnippetDocument(DOMDocument $dom): bool {
+    private function isTempladoSnippetDocument(DOMDocument $dom): bool {
         $root = $dom->documentElement;
 
         return (
@@ -123,14 +123,8 @@ class SnippetLoader {
         }
     }
 
-    private function parseAsSnippet(DOMDocument $dom): SimpleSnippet {
-        $fragment = $dom->createDocumentFragment();
-
-        foreach ($dom->documentElement->childNodes as $child) {
-            $fragment->appendChild($child);
-        }
-
-        return new SimpleSnippet($dom->documentElement->getAttribute('id'), $fragment);
+    private function parseAsTempladoSnippet(DOMDocument $dom): TempladoSnippet {
+        return new TempladoSnippet($dom->documentElement->getAttribute('id'), $dom);
     }
 
     private function parseAsHTML(DOMDocument $dom): SimpleSnippet {

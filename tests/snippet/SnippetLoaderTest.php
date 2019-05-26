@@ -78,14 +78,14 @@ class SnippetLoaderTest extends TestCase {
     }
 
     /**
-     * @uses \Templado\Engine\SimpleSnippet
+     * @uses \Templado\Engine\TempladoSnippet
      */
-    public function testLoadingSnippetFileReturnsValidSnippet(): void {
+    public function testLoadingTempladoSnippetFileReturnsCorrectSnippetType(): void {
         $loader   = new SnippetLoader();
         $filename = $this->createMockFilename('snippet.xml');
         $snippet  = $loader->load($filename);
 
-        $this->assertInstanceOf(SimpleSnippet::class, $snippet);
+        $this->assertInstanceOf(TempladoSnippet::class, $snippet);
         $this->assertEquals('header', $snippet->getTargetId());
     }
 
