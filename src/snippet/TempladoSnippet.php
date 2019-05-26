@@ -70,9 +70,13 @@ class TempladoSnippet implements Snippet {
         return $first;
     }
 
-        if ($dom->childNodes->length === 0) {
     private function ensureNotEmpty(DOMDocument $dom): void {
+        if ($dom->childNodes->length === 0) {
             throw new SnippetException('Document cannot be empty');
+        }
+
+        if ($dom->documentElement->childNodes->length === 0) {
+            throw new SnippetException('Snippet content cannot be empty');
         }
     }
 }

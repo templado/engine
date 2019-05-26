@@ -19,6 +19,12 @@ class TempladoSnippetTest extends TestCase {
         new TempladoSnippet('foo', $this->snippetDom);
     }
 
+    public function testTryingToLoadEmptyContentDocumentThrowsException(): void {
+        $this->snippetDom->loadXML('<?xml version="1.0" ?><p:snippet xmlns:p="https://templado.io/snippets/1.0" />');
+        $this->expectException(SnippetException::class);
+        new TempladoSnippet('foo', $this->snippetDom);
+    }
+
     public function testTargetIdCanBeRetrieved(): void {
         $this->snippetDom->loadXML('<?xml version="1.0" ?><p:snippet xmlns:p="https://templado.io/snippets/1.0" id="abc"><content /></p:snippet>');
 
@@ -27,7 +33,7 @@ class TempladoSnippetTest extends TestCase {
     }
 
     public function testWrongNamespaceThrowsException(): void {
-        $this->snippetDom->loadXML('<?xml version="1.0" ?><foo xmlns="a:b" />');
+        $this->snippetDom->loadXML('<?xml version="1.0" ?><foo xmlns="a:b"><node/></foo>');
 
         $this->expectException(SnippetException::class);
         new TempladoSnippet('foo', $this->snippetDom);
