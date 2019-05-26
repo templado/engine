@@ -2,6 +2,18 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+
+##[3.0.1] - 2019-05-26
+
+### Changed
+* The `SnippetFileLoader` now returns `TempladoSnippts` for templado type snippets rather than `SimpleSnippets`, 
+which never workd reliably due to DOMDocumentFragment issues.
+
+### Fixed
+* Fix iterable detection in ViewModelRenderer
+* Fix potential index underflow in SnapshotDomNodelist
+
+
 ##[3.0.0] - 2019-05-16
 
 ### Changed
