@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\TempladoSnippet
  */
 class TempladoSnippetTest extends TestCase {
-
     private $snippetDom;
 
     protected function setUp(): void {
@@ -68,8 +67,6 @@ class TempladoSnippetTest extends TestCase {
         $snippet = new TempladoSnippet('abc', $this->snippetDom);
         $snippet->applyTo($dom->documentElement);
 
-
         $this->assertEquals('<node id="abc"><content/></node>', $dom->saveXML($dom->documentElement));
     }
-
 }

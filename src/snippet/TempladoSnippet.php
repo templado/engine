@@ -1,9 +1,9 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 namespace Templado\Engine;
 
+use DOMDocument;
 use DOMElement;
 use DOMNode;
-use DOMDocument;
 
 class TempladoSnippet implements Snippet {
 
@@ -17,7 +17,7 @@ class TempladoSnippet implements Snippet {
         $this->ensureNotEmpty($dom);
         $this->ensureTempladoNamespacedContainer($dom);
         $this->targetId = $targetId;
-        $this->content = $dom;
+        $this->content  = $dom;
     }
 
     public function getTargetId(): string {
@@ -40,6 +40,7 @@ class TempladoSnippet implements Snippet {
 
     private function shouldReplace(DOMElement $node): bool {
         $root = $this->content->documentElement;
+
         if (!$node->hasAttribute('id') || !$root->hasAttribute('id')) {
             return false;
         }
@@ -48,7 +49,7 @@ class TempladoSnippet implements Snippet {
     }
 
     private function appendToNode(DOMElement $node): DOMNode {
-        foreach($this->content->documentElement->childNodes as $child) {
+        foreach ($this->content->documentElement->childNodes as $child) {
             $node->appendChild($node->ownerDocument->importNode($child, true));
         }
 
@@ -56,11 +57,12 @@ class TempladoSnippet implements Snippet {
     }
 
     private function replaceNode(DOMElement $node): DOMNode {
-        $root = $this->content->documentElement;
+        $root  = $this->content->documentElement;
         $first = $root->getElementsByTagName('*')->item(0);
 
         $parent = $node->parentNode;
-        foreach($root->childNodes as $child) {
+
+        foreach ($root->childNodes as $child) {
             $parent->insertBefore($node->ownerDocument->importNode($child, true), $node);
         }
         $parent->removeChild($node);
@@ -68,11 +70,9 @@ class TempladoSnippet implements Snippet {
         return $first;
     }
 
-    private function ensureNotEmpty(DOMDocument $dom): void
-    {
         if ($dom->childNodes->length === 0) {
+    private function ensureNotEmpty(DOMDocument $dom): void {
             throw new SnippetException('Document cannot be empty');
         }
     }
-
 }
