@@ -556,4 +556,21 @@ class ViewModelRendererTest extends TestCase {
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, new \stdClass());
     }
+
+    public function testNonObjectcannotBeAddedToStack(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root property="test"><child property="foo" /></root>');
+
+        $class = new class {
+            public function test(): bool {
+                return true;
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, $class);
+    }
+
 }
