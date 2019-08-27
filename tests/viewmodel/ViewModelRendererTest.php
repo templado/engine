@@ -511,6 +511,22 @@ class ViewModelRendererTest extends TestCase {
         $this->assertXmlStringEqualsXmlString($expected, $dom);
     }
 
+    public function testPrefixWithDoubleColonViewModelGetsAppliedAsExcepted(): void {
+        $viewModel               = new PrefixViewModel();
+        $dom                     = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->load(__DIR__ . '/../_data/viewmodel/prefix/colon-source.html');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected                     = new DOMDocument();
+        $expected->preserveWhiteSpace = false;
+        $expected->load(__DIR__ . '/../_data/viewmodel/prefix/colon-expected.html');
+
+        $this->assertXmlStringEqualsXmlString($expected, $dom);
+    }
+
     public function testPrefixViewModelWithMagicCallGetsAppliedAsExcepted(): void {
         $viewModel               = new PrefixCallViewModel();
         $dom                     = new DOMDocument();

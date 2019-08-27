@@ -469,6 +469,7 @@ class ViewModelRenderer {
         }
 
         [$prefix, $resource] = $parts;
+        $prefix = \rtrim($prefix, ':');
 
         foreach ([$resource, 'get' . \ucfirst($resource)] as $method) {
             if (\method_exists($this->resourceModel, $method)) {
