@@ -5,6 +5,7 @@ use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
 class StripRDFaAttributesTransformationTest extends TestCase {
+
     public function testTransformationRemovedExpectedAttributes(): void {
         $transformation = new StripRDFaAttributesTransformation();
         $selector       = $transformation->getSelector();
@@ -20,8 +21,12 @@ class StripRDFaAttributesTransformationTest extends TestCase {
 
     public function testApplyingOnNoneElementDoesNothing(): void {
         $transformation = new StripRDFaAttributesTransformation();
-        $node           = $this->createPartialMock('DOMText', ['removeAttribute']);
-        $node->expects($this->never())->method('removeAttribute');
+        $node           = new class extends \DOMText {
+            public function removeAttribute(): void {
+                throw new \RuntimeException('removeAttribute should not have been called');
+            }
+        };
         $transformation->apply($node);
+        $this->assertTrue(true);
     }
 }
