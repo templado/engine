@@ -23,6 +23,7 @@ class ViewModelRenderer {
     /** @var array */
     private $prefixes;
 
+
     /**
      * @throws ViewModelRendererException
      */
@@ -88,10 +89,14 @@ class ViewModelRenderer {
         if (\substr_count($property, ':') === 1) {
             [$prefix, $property] = \explode(':', $property);
 
-            if (!isset($this->prefixes[$prefix])) {
+            if (!\array_key_exists($prefix, $this->prefixes)) {
                 throw new ViewModelRendererException(\sprintf('Undefined prefix %s', $prefix));
             }
+
             $model = $this->prefixes[$prefix];
+            if ($model === null) {
+                return;
+            }
         }
 
         $this->ensureIsObject($model, $property);
@@ -470,6 +475,11 @@ class ViewModelRenderer {
 
         [$prefix, $resource] = $parts;
         $prefix = \rtrim($prefix, ':');
+
+        if (strpos($resource, ':') !== false) {
+            $this->prefixes[$prefix] = null;
+            return;
+        }
 
         foreach ([$resource, 'get' . \ucfirst($resource)] as $method) {
             if (\method_exists($this->resourceModel, $method)) {

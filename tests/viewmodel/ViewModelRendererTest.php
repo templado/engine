@@ -573,6 +573,22 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
+    public function testForeignRDFaAnnotationsGetIgnored(): void {
+        $viewModel               = new class {};
+        $dom                     = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->load(__DIR__ . '/../_data/viewmodel/prefix/og-source.html');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $viewModel);
+
+        $expected                     = new DOMDocument();
+        $expected->preserveWhiteSpace = false;
+        $expected->load(__DIR__ . '/../_data/viewmodel/prefix/og-source.html');
+
+        $this->assertXmlStringEqualsXmlString($expected, $dom);
+    }
+
     public function testNonObjectcannotBeAddedToStack(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root property="test"><child property="foo" /></root>');
