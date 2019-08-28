@@ -3,5 +3,5 @@
   <phar name="phpunit" version="^8.3" installed="8.3.4" location="./tools/phpunit" copy="false"/>
   <phar name="phpab" version="^1.25" installed="1.25.6" location="./tools/phpab" copy="false"/>
   <phar name="dephpend" version="^0.4.0" installed="0.4.0" location="./tools/dephpend" copy="false"/>
-  <phar name="php-cs-fixer" version="^2.15.0" installed="2.15.0" location="./tools/php-cs-fixer" copy="false"/>
+  <phar name="php-cs-fixer" version="^2.15.1" installed="2.15.1" location="./tools/php-cs-fixer" copy="false"/>
 </phive>
