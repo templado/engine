@@ -23,7 +23,6 @@ class ViewModelRenderer {
     /** @var array */
     private $prefixes;
 
-
     /**
      * @throws ViewModelRendererException
      */
@@ -94,6 +93,7 @@ class ViewModelRenderer {
             }
 
             $model = $this->prefixes[$prefix];
+
             if ($model === null) {
                 return;
             }
@@ -474,10 +474,11 @@ class ViewModelRenderer {
         }
 
         [$prefix, $resource] = $parts;
-        $prefix = \rtrim($prefix, ':');
+        $prefix              = \rtrim($prefix, ':');
 
-        if (strpos($resource, ':') !== false) {
+        if (\strpos($resource, ':') !== false) {
             $this->prefixes[$prefix] = null;
+
             return;
         }
 

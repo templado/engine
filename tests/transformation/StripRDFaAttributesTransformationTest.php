@@ -5,7 +5,6 @@ use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
 class StripRDFaAttributesTransformationTest extends TestCase {
-
     public function testTransformationRemovedExpectedAttributes(): void {
         $transformation = new StripRDFaAttributesTransformation();
         $selector       = $transformation->getSelector();

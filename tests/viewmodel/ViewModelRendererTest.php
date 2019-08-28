@@ -574,7 +574,8 @@ class ViewModelRendererTest extends TestCase {
     }
 
     public function testForeignRDFaAnnotationsGetIgnored(): void {
-        $viewModel               = new class {};
+        $viewModel               = new class {
+        };
         $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/prefix/og-source.html');
@@ -604,5 +605,4 @@ class ViewModelRendererTest extends TestCase {
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, $class);
     }
-
 }
