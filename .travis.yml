@@ -19,6 +19,7 @@ php:
   - master
 
 before_script:
+  - sudo apt-get install ant
   - travis_retry composer install --no-interaction --prefer-source
   - ant install-tools-ci
   - ant phpab
