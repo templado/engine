@@ -1,6 +1,6 @@
 {
   "name" : "templado/engine",
-  "description" : "A pragmatic approach to templating for PHP 7.x",
+  "description" : "A pragmatic approach to templating for PHP 7.2+",
   "license" : "BSD-3-Clause",
   "authors" : [
     {
@@ -16,7 +16,7 @@
     "php" : "^7.2",
     "ext-dom" : "*",
     "ext-libxml": "*",
-    "theseer/css2xpath": "^1.0"
+    "theseer/css2xpath": "^2.0"
   },
   "autoload": {
     "classmap": [

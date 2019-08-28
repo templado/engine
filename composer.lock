@@ -4,24 +4,24 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b45e4f4aff5b075d396f162538bb0af",
+    "content-hash": "f13f03cbe1405b1a85c465255c858af5",
     "packages": [
         {
             "name": "theseer/css2xpath",
-            "version": "1.1.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/css2xpath.git",
-                "reference": "df8df4aa548540dbdd90b6465db825f84628463a"
+                "reference": "ffa0225ced4530e423aa2a3c89faae68ee93270f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/css2xpath/zipball/df8df4aa548540dbdd90b6465db825f84628463a",
-                "reference": "df8df4aa548540dbdd90b6465db825f84628463a",
+                "url": "https://api.github.com/repos/theseer/css2xpath/zipball/ffa0225ced4530e423aa2a3c89faae68ee93270f",
+                "reference": "ffa0225ced4530e423aa2a3c89faae68ee93270f",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.0"
+                "php": "^7.2|^8.0"
             },
             "type": "library",
             "autoload": {
@@ -36,12 +36,12 @@
             "authors": [
                 {
                     "name": "Arne Blankerts",
-                    "email": "arne@blankerts.de",
-                    "role": "Developer"
+                    "role": "Developer",
+                    "email": "arne@blankerts.de"
                 }
             ],
             "description": "PHP Library to translate CSS selectors into XPath",
-            "time": "2017-10-31T15:13:30+00:00"
+            "time": "2019-08-28T04:35:56+00:00"
         }
     ],
     "packages-dev": [],
