@@ -53,29 +53,6 @@
         </parallel>
     </target>
 
-    <target name="pdepend" description="Generate jdepend.xml and software metrics charts using PHP_Depend">
-        <exec executable="pdepend">
-            <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml
-              --jdepend-chart=${basedir}/build/pdepend/dependencies.svg
-              --overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg
-              ${source}"/>
-        </exec>
-    </target>
-
-    <target name="phpmd" description="Generate pmd.xml using PHPMD">
-        <exec executable="phpmd">
-            <arg line="${source}
-              xml
-              codesize,design,naming,unusedcode
-              --reportfile ${basedir}/build/logs/pmd.xml"/>
-        </exec>
-    </target>
-
-    <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
-        <exec executable="phpcpd">
-            <arg line="--log-pmd ${basedir}/build/logs/pmd-cpd.xml ${source}"/>
-        </exec>
-    </target>
 
     <target name="phploc" description="Generate phploc.xml">
         <exec executable="phploc">
@@ -90,11 +67,6 @@
               --standard=phpcs.xml
               ${source}"/>
         </exec>
-    </target>
-
-    <target name="docs">
-        <delete dir="${basedir}/build/docs" />
-        <exec executable="${basedir}/phpdox" />
     </target>
 
     <target name="phive-exists-ci">
