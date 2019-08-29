@@ -574,8 +574,7 @@ class ViewModelRendererTest extends TestCase {
     }
 
     public function testForeignRDFaAnnotationsGetIgnored(): void {
-        $viewModel               = new class {
-        };
+        $viewModel               = new class {};
         $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/prefix/og-source.html');
@@ -605,4 +604,47 @@ class ViewModelRendererTest extends TestCase {
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, $class);
     }
+
+    public function testSettingTextStringWithXMLSpecialCharsGetsProperlyEncoded(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root property="test" />');
+
+        $class = new class {
+            public function test(): string {
+                return 'Text with <tag> and & included';
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $class);
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0"?><root property="test">Text with &lt;tag&gt; and &amp; included</root>');
+
+        $this->assertXmlStringEqualsXmlString($expected, $dom);
+    }
+
+    public function testSettingTextStringWithXMLSpecialCharsFromObjectGetsProperlyEncoded(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root property="test" />');
+
+        $class = new class {
+            public function test(): object {
+                return new class {
+                    public function asString(): string {
+                        return 'Text with <tag> and & included';
+                    }
+                };
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $class);
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0"?><root property="test">Text with &lt;tag&gt; and &amp; included</root>');
+
+        $this->assertXmlStringEqualsXmlString($expected, $dom);
+    }
+
 }

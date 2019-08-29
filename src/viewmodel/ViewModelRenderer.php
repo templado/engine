@@ -183,7 +183,8 @@ class ViewModelRenderer {
     }
 
     private function processString(DOMElement $context, string $model): void {
-        $context->nodeValue = $model;
+        $context->nodeValue = '';
+        $context->textContent = $model;
     }
 
     /**
@@ -210,7 +211,8 @@ class ViewModelRenderer {
             $value = $model->asString($workContext->nodeValue);
 
             if ($value !== null) {
-                $workContext->nodeValue = $value;
+                $workContext->nodeValue = '';
+                $workContext->textContent = $value;
             }
         }
 
@@ -316,9 +318,10 @@ class ViewModelRenderer {
                 return;
             }
 
+            /** @var DOMElement $parent */
+            $parent = $attribute->parentNode;
+
             if ($value === false) {
-                /** @var DOMElement $parent */
-                $parent = $attribute->parentNode;
                 $parent->removeAttribute($attribute->name);
 
                 return;
@@ -334,7 +337,7 @@ class ViewModelRenderer {
                 );
             }
 
-            $attribute->value = $value;
+            $parent->setAttribute($attribute->name, $value);
 
             return;
         }
