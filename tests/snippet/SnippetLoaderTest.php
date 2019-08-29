@@ -124,7 +124,7 @@ class SnippetLoaderTest extends TestCase {
      *
      * @return FileName|PHPUnit_Mock_Object_Object
      */
-    private function createMockFilename(string $name, string $mimetype='text/xml'): FileName {
+    private function createMockFilename(string $name, string $mimetype = 'text/xml'): FileName {
         $filename = $this->createMock(FileName::class);
         $filename->method('exists')->willReturn(true);
         $filename->method('isFile')->willReturn(true);

@@ -12,7 +12,7 @@ class SnippetListTest extends TestCase {
             $this->createMock(SimpleSnippet::class),
             $this->createMock(SimpleSnippet::class)
         ];
-        $list     = new SnippetList();
+        $list = new SnippetList();
         $list->addSnippet($expected[0]);
         $list->addSnippet($expected[1]);
 

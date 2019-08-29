@@ -35,7 +35,7 @@ class ViewModelRendererTest extends TestCase {
     }
 
     public function testIteratorReturnValueGetsApplied(): void {
-        $dom       = new DOMDocument();
+        $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" /></body></html>');
 
         $viewModel = new class {
@@ -57,7 +57,7 @@ class ViewModelRendererTest extends TestCase {
     }
 
     public function testMagicCallMethodGetsCalledWhenDefinedAndNoExplicitMethodFits(): void {
-        $dom       = new DOMDocument();
+        $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" /></body></html>');
 
         $viewModel = new class {
@@ -79,7 +79,7 @@ class ViewModelRendererTest extends TestCase {
     }
 
     public function testMagicCallMethodGetsCalledForAttributesWhenDefinedAndNoExplicitMethodFits(): void {
-        $dom       = new DOMDocument();
+        $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><html><body><p property="a" attr="b" /></body></html>');
 
         $viewModel = new class {
@@ -105,7 +105,7 @@ class ViewModelRendererTest extends TestCase {
     }
 
     public function testDashesInAttributeNamesGetTranslatedToCamelCase(): void {
-        $dom       = new DOMDocument();
+        $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root property="a" attr-with-dash="old"/>');
 
         $viewModel = new class {
@@ -574,7 +574,8 @@ class ViewModelRendererTest extends TestCase {
     }
 
     public function testForeignRDFaAnnotationsGetIgnored(): void {
-        $viewModel               = new class {};
+        $viewModel = new class {
+        };
         $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/prefix/og-source.html');
@@ -646,5 +647,4 @@ class ViewModelRendererTest extends TestCase {
 
         $this->assertXmlStringEqualsXmlString($expected, $dom);
     }
-
 }

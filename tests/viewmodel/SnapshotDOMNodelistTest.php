@@ -50,7 +50,7 @@ class SnapshotDOMNodelistTest extends TestCase {
         $list = new SnapshotDOMNodelist($root->childNodes);
         $list->removeNode($root->getElementsByTagName('b')->item(0));
 
-        $count=0;
+        $count = 0;
 
         foreach ($list as $pos => $item) {
             $count++;

@@ -183,7 +183,7 @@ class ViewModelRenderer {
     }
 
     private function processString(DOMElement $context, string $model): void {
-        $context->nodeValue = '';
+        $context->nodeValue   = '';
         $context->textContent = $model;
     }
 
@@ -211,7 +211,7 @@ class ViewModelRenderer {
             $value = $model->asString($workContext->nodeValue);
 
             if ($value !== null) {
-                $workContext->nodeValue = '';
+                $workContext->nodeValue   = '';
                 $workContext->textContent = $value;
             }
         }
