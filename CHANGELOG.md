@@ -2,6 +2,17 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+##[4.0.0] - 2019-09-13
+
+### Changed
+* The `ViewModelRenderer` now ensures that text content can no longer be used to create syntactically invalid markup.
+  While this is technically a bug fix, some  may consider it a BC break as it also removes the "non-feature" of
+  having a model returning xml/html markup. If you need html fragments to be inserted please use a snippet instead.
+
+* `SnapshotDOMNodelist` no longer implements \Iterator and \Countable as those became superflous
+
+### Fixed
+* ViewModelRenderer: Might skip a node when processing arrays due to invalid use of an foreach on iteration
 
 ##[3.0.1] - 2019-05-26
 
