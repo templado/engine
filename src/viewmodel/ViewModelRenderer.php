@@ -275,9 +275,8 @@ class ViewModelRenderer {
             $list              = new SnapshotDOMNodelist($workContext->childNodes);
             $this->listStack[] = $list;
 
-            foreach ($list as $cpos => $childNode) {
-                /* @var \DOMNode $childNode */
-                $this->walk($childNode);
+            while ($list->hasNext()) {
+                $this->walk($list->getNext());
             }
             \array_pop($this->listStack);
         }
