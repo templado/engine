@@ -18,11 +18,13 @@ class SnapshotDOMNodelistTest extends TestCase {
         $DOMNodeList = $this->dom->documentElement->childNodes;
         $list        = new SnapshotDOMNodelist($DOMNodeList);
 
-        foreach ($list as $pos => $item) {
+        $pos = 0;
+        while($list->hasNext()) {
             $this->assertSame(
                 $DOMNodeList->item($pos),
-                $item
+                $list->getNext()
             );
+            $pos++;
         }
     }
 
@@ -35,9 +37,9 @@ class SnapshotDOMNodelistTest extends TestCase {
 
         $count = 0;
 
-        foreach ($list as $pos => $item) {
+        while($list->hasNext()) {
             $count++;
-            $this->assertNull($item->parentNode);
+            $this->assertNull($list->getNext()->parentNode);
         }
 
         $this->assertEquals(2, $count);
@@ -52,8 +54,9 @@ class SnapshotDOMNodelistTest extends TestCase {
 
         $count = 0;
 
-        foreach ($list as $pos => $item) {
+        while ($list->hasNext()) {
             $count++;
+            $list->getNext();
         }
         $this->assertEquals(1, $count);
     }
@@ -77,17 +80,11 @@ class SnapshotDOMNodelistTest extends TestCase {
         $this->assertTrue($list->hasNode($root->firstChild));
     }
 
-    public function testTryingToGetCurrentOnEmptyThrowsException(): void {
+    public function testTryingToGetNextOnEmptyThrowsException(): void {
         $list = new SnapshotDOMNodelist(new \DOMNodeList());
         $this->expectException(SnapshotDOMNodelistException::class);
         $this->expectExceptionMessage('No current node available');
-        $list->current();
-    }
-
-    public function testCountOfNodesCanBeRetrieved(): void {
-        $root = $this->dom->documentElement;
-        $list = new SnapshotDOMNodelist($root->childNodes);
-        $this->assertEquals(2, $list->count());
+        $list->getNext();
     }
 
     public function testNodeCanBeRetrievedByNext(): void {
@@ -106,8 +103,8 @@ class SnapshotDOMNodelistTest extends TestCase {
     public function testHasNextReturnsFalseWhenEndIsReached(): void {
         $root = $this->dom->documentElement;
         $list = new SnapshotDOMNodelist($root->childNodes);
-        $list->next();
-        $list->next();
+        $list->getNext();
+        $list->getNext();
         $this->assertFalse($list->hasNext());
     }
 
@@ -115,8 +112,8 @@ class SnapshotDOMNodelistTest extends TestCase {
         $this->dom->loadXML('<?xml version="1.0" ?><root><a/><b/><c/><d/></root>');
         $root = $this->dom->documentElement;
         $list = new SnapshotDOMNodelist($root->childNodes);
-        $list->next();
+        $list->getNext();
         $list->removeNode($root->firstChild);
-        $this->assertSame($root->firstChild->nextSibling, $list->current());
+        $this->assertSame($root->firstChild->nextSibling, $list->getNext());
     }
 }
