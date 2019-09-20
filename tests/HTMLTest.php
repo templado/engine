@@ -66,7 +66,7 @@ class HTMLTest extends TestCase {
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
 
         $selection = $this->createMock(Selection::class);
-        $selection->method('getIterator')->willReturn($dom->documentElement->childNodes);
+        $selection->method('getIterator')->willReturn(new \ArrayIterator([$dom->documentElement->firstChild]));
 
         $selector = $this->createMock(Selector::class);
         $selector->method('select')->willReturn($selection);

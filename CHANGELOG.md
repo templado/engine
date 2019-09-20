@@ -2,6 +2,15 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+
+##[4.0.1] - 2019-09-20
+
+### Changed
+
+* The `Iterator` returned by the `Selection` class is no longer based on `DOMNodeList` but on `ArrayIterator`. This is
+  necessary to not have the list reset on changes to the DOM but to provide a stable Snapshots of the selection result.   
+
+
 ##[4.0.0] - 2019-09-13
 
 ### Changed
@@ -16,7 +25,7 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 
 ##[3.0.1] - 2019-05-26
 
-### Changed
+### Changed 
 * The `SnippetFileLoader` now returns `TempladoSnippts` for templado type snippets rather than `SimpleSnippets`, 
 which never workd reliably due to DOMDocumentFragment issues.
 

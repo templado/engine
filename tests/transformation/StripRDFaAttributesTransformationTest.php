@@ -13,7 +13,7 @@ class StripRDFaAttributesTransformationTest extends TestCase {
         $dom->loadXML('<?xml version="1.0" ?><root property="p" resource="r" prefix="p" typeof="t" />');
 
         $selection = $selector->select($dom->documentElement);
-        $transformation->apply($selection->getIterator()->item(0));
+        $transformation->apply($selection->getIterator()->current());
 
         $this->assertEqualXMLStructure($dom->createElement('root'), $dom->documentElement, true);
     }
