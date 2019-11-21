@@ -28,7 +28,7 @@ class CSRFProtectionRenderer {
             $this->xp = new DOMXPath($form->ownerDocument);
         }
         $nodeList = $this->xp->query(
-            \sprintf('.//input[@name="%s"]', $this->protection->getFieldName()),
+            \sprintf('.//*[local-name() = "input" and @name="%s"]', $this->protection->getFieldName()),
             $form
         );
 
