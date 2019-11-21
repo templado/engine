@@ -2,6 +2,11 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+##[4.0.2] - 2019-11-21
+
+### Fixed
+* [#17](https://github.com/templado/engine/issues/17): CSRFPotectionRenderer fails to update existing token element when in xml namespace
+
 
 ##[4.0.1] - 2019-09-20
 
