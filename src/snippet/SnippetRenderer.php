@@ -87,7 +87,7 @@ class SnippetRenderer {
         if (isset($this->seen[$id])) {
             throw new SnippetRendererException(
                 \sprintf(
-                    'Already applied a snippet for id "%s" - re-application might cause endless recursion',
+                    'Duplicate id "%s" in Document detected - bailing out.',
                     $id
                 )
             );
