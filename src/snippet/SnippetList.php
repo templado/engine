@@ -14,11 +14,8 @@ class SnippetList implements \Iterator, \Countable {
         return \current($this->snippets);
     }
 
-    /**
-     * @return mixed|Snippet
-     */
-    public function next() {
-        return \next($this->snippets);
+    public function next(): void {
+        \next($this->snippets);
     }
 
     public function key(): int {
@@ -29,8 +26,8 @@ class SnippetList implements \Iterator, \Countable {
         return \key($this->snippets) !== null;
     }
 
-    public function rewind() {
-        return \reset($this->snippets);
+    public function rewind(): void {
+        \reset($this->snippets);
     }
 
     public function count(): int {

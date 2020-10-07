@@ -61,6 +61,7 @@ class Html {
             $this->dom->saveXML()
         );
 
+        /** @psalm-suppress RedundantCondition psalm believes this cannot be null, but it can ;) */
         if ($this->dom->doctype instanceof DOMDocumentType) {
             return $this->serializeWithoutXMLHeader();
         }

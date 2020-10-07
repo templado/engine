@@ -10,7 +10,7 @@ class XPathSelector implements Selector {
     /** @var string */
     private $queryString;
 
-    /** @var array */
+    /** @var array<string, string> */
     private $prefixMap = [];
 
     public function __construct(string $query) {

@@ -11,6 +11,7 @@ class TransformationProcessor {
             return;
         }
 
+        /** @psalm-var \DOMNode $node */
         foreach ($selection as $node) {
             $transformation->apply($node);
         }

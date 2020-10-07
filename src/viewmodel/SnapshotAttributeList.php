@@ -50,7 +50,6 @@ class SnapshotAttributeList implements Iterator, Countable {
 
     private function extractAttributeNodes(DOMNamedNodeMap $map): void {
         foreach ($map as $attr) {
-            /** @var $attr \DOMNode */
             if (!$attr instanceof DOMAttr) {
                 throw new SnapshotAttributeListException(
                     \sprintf('%s is not an attribute node type (%s given)', $attr->localName, \get_class($attr))

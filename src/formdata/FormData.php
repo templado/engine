@@ -28,11 +28,12 @@ class FormData {
     /**
      * @throws FormDataException
      */
-    public function getValue(string $key) {
+    public function getValue(string $key): string {
         if (!$this->hasKey($key)) {
             throw new FormDataException(\sprintf('No such key: %s', $key));
         }
 
+        /** @psalm-var string */
         return $this->values[$key];
     }
 
@@ -42,6 +43,7 @@ class FormData {
     private function initValuesFromArray(array $values, bool $recursion = false): array {
         $result = [];
 
+        /** @psalm-suppress MixedAssignment */
         foreach ($values as $key => $value) {
             if (\is_string($value)) {
                 $result[$key] = $value;
