@@ -648,15 +648,15 @@ class ViewModelRendererTest extends TestCase {
         $this->assertXmlStringEqualsXmlString($expected, $dom);
     }
 
-    public function testReturningUnsupportedTypeViaAsStringThrowsException() {
+    public function testReturningUnsupportedTypeViaAsStringThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root property="test" />');
 
         $class = new class {
             public function test(): object {
                 return new class {
-                    public function asString()  {
-                        return STDIN;
+                    public function asString() {
+                        return \STDIN;
                     }
                 };
             }
@@ -666,11 +666,9 @@ class ViewModelRendererTest extends TestCase {
 
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, $class);
-
     }
 
-
-    public function testTryingToCallTypeOfOnNoneObjectThrowsException() {
+    public function testTryingToCallTypeOfOnNoneObjectThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root property="test" typeof="a" />');
 
@@ -684,7 +682,5 @@ class ViewModelRendererTest extends TestCase {
 
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, $class);
-
     }
-
 }

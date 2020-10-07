@@ -197,6 +197,7 @@ class ViewModelRenderer {
 
     /**
      * @throws ViewModelRendererException
+     *
      * @return \DOMDocumentFragment|\DOMElement
      */
     private function processObject(DOMElement $context, object $model) {
@@ -221,9 +222,10 @@ class ViewModelRenderer {
             /** @psalm-suppress MixedAssignment */
             $value = $model->asString($workContext->nodeValue);
 
-            if (!in_array(\gettype($value), ['null','string'])) {
+            if (!\in_array(\gettype($value), ['null', 'string'])) {
                 throw new ViewModelRendererException(
-                    sprintf("Method \$model->%s must return 'null' or 'string', got '%s'",
+                    \sprintf(
+                        "Method \$model->%s must return 'null' or 'string', got '%s'",
                         \implode('()->', $this->stackNames) . '()->asString()',
                         \gettype($value)
                     )
@@ -396,7 +398,7 @@ class ViewModelRenderer {
             return $context;
         }
 
-        if (!is_object($entry)) {
+        if (!\is_object($entry)) {
             throw new ViewModelRendererException(
                 \sprintf(
                     "Cannot call 'typeOf' on none object type '%s' returned from \$model->%s()",
@@ -417,7 +419,8 @@ class ViewModelRenderer {
 
         /** @psalm-suppress MixedAssignment */
         $requestedTypeOf = $entry->typeOf();
-        if (!is_string($requestedTypeOf)) {
+
+        if (!\is_string($requestedTypeOf)) {
             throw new ViewModelRendererException(
                 \sprintf(
                     "Return value of \$model->%s()->typeOf() must be string, got '%s'",
