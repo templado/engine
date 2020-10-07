@@ -9,19 +9,19 @@ use DOMNode;
 class ViewModelRenderer {
 
     /** @var array */
-    private $stack;
+    private $stack = [];
 
     /** @var string[] */
-    private $stackNames;
+    private $stackNames = [];
 
     /** @var SnapshotDOMNodelist[] */
-    private $listStack;
+    private $listStack = [];
 
     /** @var object */
     private $resourceModel;
 
     /** @var array */
-    private $prefixes;
+    private $prefixes = [];
 
     /**
      * @throws ViewModelRendererException
@@ -135,18 +135,22 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function applyCurrent(DOMElement $context): DOMNode {
+        /** @psalm-suppress MixedAssignment */
         $model = $this->current();
 
         switch (\gettype($model)) {
             case 'boolean': {
+                /** @var bool $model */
                 return $this->processBoolean($context, $model);
             }
             case 'string': {
+                /** @var string $model */
                 $this->processString($context, $model);
 
                 return $context;
             }
             case 'object': {
+                /** @var object $model */
                 return $this->processObject($context, $model);
             }
 
@@ -193,9 +197,11 @@ class ViewModelRenderer {
 
     /**
      * @throws ViewModelRendererException
+     * @return \DOMDocumentFragment|\DOMElement
      */
-    private function processObject(DOMElement $context, $model) {
+    private function processObject(DOMElement $context, object $model) {
         if (\is_iterable($model)) {
+            /** @var iterable $model */
             return $this->processArray($context, $model);
         }
 
@@ -212,8 +218,10 @@ class ViewModelRenderer {
         if (\method_exists($model, 'asString') ||
             \method_exists($model, '__call')
         ) {
+            /** @psalm-suppress MixedAssignment */
             $value = $model->asString($workContext->nodeValue);
 
+            /** @psalm-var null|string $value */
             if ($value !== null) {
                 $workContext->nodeValue   = '';
                 $workContext->textContent = $value;
@@ -248,6 +256,10 @@ class ViewModelRenderer {
 
         $container = $this->moveToContainer($context);
 
+        /**
+         * @psalm-suppress MixedAssignment
+         * @psalm-var int $pos
+         */
         foreach ($model as $pos => $entry) {
             $subcontext = $container->cloneNode(true);
             $container->parentNode->insertBefore($subcontext, $container);
@@ -266,6 +278,7 @@ class ViewModelRenderer {
 
     /**
      * @throws ViewModelRendererException
+     * @psalm-suppress MissingParamType
      */
     private function processArrayEntry(DOMElement $context, $entry, int $pos): DOMElement {
         $workContext = $this->selectMatchingWorkContext($context, $entry);
@@ -292,14 +305,14 @@ class ViewModelRenderer {
     /**
      * @throws ViewModelRendererException
      */
-    private function processAttribute(DOMAttr $attribute, $model): void {
+    private function processAttribute(DOMAttr $attribute, object $model): void {
         $attributeName = $attribute->nodeName;
 
         if (\strpos($attributeName, '-') !== false) {
             $parts = \explode('-', $attributeName);
             \array_walk(
                 $parts,
-                static function (&$value, $pos): void {
+                static function (string &$value, int $pos): void {
                     $value = \ucfirst($value);
                 }
             );
@@ -315,6 +328,7 @@ class ViewModelRenderer {
                 $method = $attribute->name;
             }
 
+            /** @psalm-var null|bool|string $value */
             $value = $model->{$method}($attribute->value);
 
             if ($value === null) {
@@ -348,6 +362,8 @@ class ViewModelRenderer {
 
     /**
      * @throws ViewModelRendererException
+     * @psalm-assert object $mode
+     * @psalm-suppress MissingParamType
      */
     private function ensureIsObject($model, string $property): void {
         if (!\is_object($model)) {
@@ -364,6 +380,7 @@ class ViewModelRenderer {
 
     /**
      * @throws ViewModelRendererException
+     * @psalm-suppress MissingParamType
      */
     private function selectMatchingWorkContext(DOMElement $context, $entry): DOMElement {
         if (!$context->hasAttribute('typeof')) {
@@ -376,6 +393,7 @@ class ViewModelRenderer {
             );
         }
 
+        /** @psalm-suppress MixedAssignment */
         $requestedTypeOf = $entry->typeOf();
 
         if ($context->getAttribute('typeof') === $requestedTypeOf) {
@@ -433,7 +451,7 @@ class ViewModelRenderer {
         $stackList->removeNode($context);
     }
 
-    private function getElementCount($model): int {
+    private function getElementCount(iterable $model): int {
         if (\is_array($model) || $model instanceof \Countable) {
             return \count($model);
         }

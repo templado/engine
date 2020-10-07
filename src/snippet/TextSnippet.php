@@ -4,7 +4,7 @@ namespace Templado\Engine;
 use DOMText;
 
 class TextSnippet extends SimpleSnippet {
-    public function __construct($targetId, DOMText $content) {
+    public function __construct(string $targetId, DOMText $content) {
         parent::__construct($targetId, $content);
     }
 }

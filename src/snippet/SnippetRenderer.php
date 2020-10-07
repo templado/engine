@@ -59,7 +59,7 @@ class SnippetRenderer {
     /**
      * @throws \Templado\Engine\SnippetCollectionException
      */
-    private function applySnippetsToElement($id): bool {
+    private function applySnippetsToElement(string $id): bool {
         $snippets = $this->snippetListCollection->getSnippetsForId($id);
 
         foreach ($snippets as $snippet) {

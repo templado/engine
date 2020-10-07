@@ -45,6 +45,7 @@ class SnapshotDOMNodelist {
     }
 
     public function removeNode(DOMNode $node): void {
+        /** @psalm-var int $pos */
         foreach ($this->items as $pos => $item) {
             if ($item->isSameNode($node)) {
                 \array_splice($this->items, $pos, 1);

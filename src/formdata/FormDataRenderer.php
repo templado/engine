@@ -75,6 +75,7 @@ class FormDataRenderer {
 
         switch ($result->length) {
             case 1: {
+                /** @psalm-var DOMElement */
                 return $result->item(0);
             }
             case 0: {

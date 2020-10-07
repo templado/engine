@@ -4,6 +4,7 @@ namespace Templado\Engine;
 use DOMElement;
 use DOMXPath;
 
+/** @psalm-suppress MissingConstructor */
 class CSRFProtectionRenderer {
 
     /** @var CSRFProtection */
@@ -34,6 +35,7 @@ class CSRFProtectionRenderer {
             return $this->createField($form);
         }
 
+        /** @psalm-var \DOMElement */
         return $nodeList->item(0);
     }
 
