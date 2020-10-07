@@ -156,7 +156,11 @@ class ViewModelRenderer {
 
             default: {
                 throw new ViewModelRendererException(
-                    \sprintf('Unsupported type %s', \gettype($model))
+                    \sprintf(
+                        'Value returned by $model->%s must not be of type %s',
+                        \implode('()->', $this->stackNames) . '()',
+                        \gettype($model)
+                    )
                 );
             }
         }
