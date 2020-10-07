@@ -14,6 +14,7 @@ class CSRFProtectionRenderer {
 
     public function render(DOMElement $context, CSRFProtection $protection): void {
         $this->protection = $protection;
+        $this->xp = new DOMXPath($context->ownerDocument);
 
         foreach ($context->getElementsByTagName('form') as $form) {
             $this->getCSRFField($form)->setAttribute(
@@ -24,9 +25,6 @@ class CSRFProtectionRenderer {
     }
 
     private function getCSRFField(DOMElement $form): DOMElement {
-        if ($this->xp === null) {
-            $this->xp = new DOMXPath($form->ownerDocument);
-        }
         $nodeList = $this->xp->query(
             \sprintf('.//*[local-name() = "input" and @name="%s"]', $this->protection->getFieldName()),
             $form
