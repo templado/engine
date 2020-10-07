@@ -221,6 +221,15 @@ class ViewModelRenderer {
             /** @psalm-suppress MixedAssignment */
             $value = $model->asString($workContext->nodeValue);
 
+            if (!in_array(\gettype($value), ['null','string'])) {
+                throw new ViewModelRendererException(
+                    sprintf("Method \$model->%s must return 'null' or 'string', got '%s'",
+                        \implode('()->', $this->stackNames) . '()->asString()',
+                        \gettype($value)
+                    )
+                );
+            }
+
             /** @psalm-var null|string $value */
             if ($value !== null) {
                 $workContext->nodeValue   = '';
@@ -387,14 +396,36 @@ class ViewModelRenderer {
             return $context;
         }
 
+        if (!is_object($entry)) {
+            throw new ViewModelRendererException(
+                \sprintf(
+                    "Cannot call 'typeOf' on none object type '%s' returned from \$model->%s()",
+                    \gettype($entry),
+                    \implode('()->', $this->stackNames)
+                )
+            );
+        }
+
         if (!\method_exists($entry, 'typeOf')) {
             throw new ViewModelRendererException(
-                'No typeOf method in model but current context is conditional'
+                \sprintf(
+                    "No 'typeOf' method in model returned from \$model->%s() but current context is conditional",
+                    \implode('()->', $this->stackNames)
+                )
             );
         }
 
         /** @psalm-suppress MixedAssignment */
         $requestedTypeOf = $entry->typeOf();
+        if (!is_string($requestedTypeOf)) {
+            throw new ViewModelRendererException(
+                \sprintf(
+                    "Return value of \$model->%s()->typeOf() must be string, got '%s'",
+                    \implode('()->', $this->stackNames),
+                    \gettype($entry)
+                )
+            );
+        }
 
         if ($context->getAttribute('typeof') === $requestedTypeOf) {
             return $context;
