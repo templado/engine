@@ -19,7 +19,8 @@ class SnapshotDOMNodelistTest extends TestCase {
         $list        = new SnapshotDOMNodelist($DOMNodeList);
 
         $pos = 0;
-        while($list->hasNext()) {
+
+        while ($list->hasNext()) {
             $this->assertSame(
                 $DOMNodeList->item($pos),
                 $list->getNext()
@@ -37,7 +38,7 @@ class SnapshotDOMNodelistTest extends TestCase {
 
         $count = 0;
 
-        while($list->hasNext()) {
+        while ($list->hasNext()) {
             $count++;
             $this->assertNull($list->getNext()->parentNode);
         }

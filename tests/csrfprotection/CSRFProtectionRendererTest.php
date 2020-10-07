@@ -79,7 +79,6 @@ class CSRFProtectionRendererTest extends TestCase {
         $this->assertEquals('secure', $input->getAttribute('value'));
     }
 
-
     public function testCSRFTokenFieldWithNamespaceGetsUpdatedWithTokenValue(): void {
         $dom = new DOMDocument();
         $dom->loadXML(
@@ -97,5 +96,4 @@ class CSRFProtectionRendererTest extends TestCase {
         $input = $dom->getElementsByTagName('input')->item(0);
         $this->assertEquals('secure', $input->getAttribute('value'));
     }
-
 }

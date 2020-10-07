@@ -12,13 +12,13 @@ class Selection implements IteratorAggregate {
     private $list = [];
 
     public function __construct(DOMNodeList $nodeList) {
-        foreach($nodeList as $node) {
+        foreach ($nodeList as $node) {
             $this->list[] = $node;
         }
     }
 
     public function isEmpty(): bool {
-        return count($this->list) === 0;
+        return \count($this->list) === 0;
     }
 
     public function getIterator(): \Iterator {
