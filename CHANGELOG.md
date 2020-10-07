@@ -2,6 +2,15 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+##[4.0.3] - 2020-10-08
+
+### Fixed
+* CSRFProtectionRenderer could have leaked an internal DOMXPath reference over multiple invocations
+
+### Changed
+* The `ViewModelRenderer` now produces a more helpful error messages when it encounters unsupported types
+
+
 ##[4.0.2] - 2019-11-21
 
 ### Fixed
@@ -21,12 +30,12 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 ### Changed
 * The `ViewModelRenderer` now ensures that text content can no longer be used to create syntactically invalid markup.
   While this is technically a bug fix, some  may consider it a BC break as it also removes the "non-feature" of
-  having a model returning xml/html markup. If you need html fragments to be inserted please use a snippet instead.
-
+  having a model returning xml/html markup. If you need html fragments to be inserted, please use a snippet instead.
 * `SnapshotDOMNodelist` no longer implements \Iterator and \Countable as those became superflous
 
 ### Fixed
-* ViewModelRenderer: Might skip a node when processing arrays due to invalid use of an foreach on iteration
+
+* ViewModelRenderer: Might skip a node when processing arrays due to invalid use of foreach on iteration
 
 ##[3.0.1] - 2019-05-26
 
@@ -151,3 +160,28 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 ## [1.0.0] - 2017-04-16
 * Initial Release
+
+
+[4.0.3]: https://github.com/templado/engine/compare/4.0.2...4.0.3
+[4.0.2]: https://github.com/templado/engine/compare/4.0.1...4.0.2
+[4.0.1]: https://github.com/templado/engine/compare/4.0.0...4.0.1
+[4.0.0]: https://github.com/templado/engine/compare/3.0.1...4.0.0
+[3.0.1]: https://github.com/templado/engine/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/templado/engine/compare/2.3.1...3.0.0
+[2.3.2]: https://github.com/templado/engine/compare/2.3.1...2.3.2
+[2.3.1]: https://github.com/templado/engine/compare/2.3.0...2.3.1
+[2.3.0]: https://github.com/templado/engine/compare/2.2.7...2.3.0
+[2.2.7]: https://github.com/templado/engine/compare/2.2.6...2.2.7
+[2.2.6]: https://github.com/templado/engine/compare/2.2.5...2.2.6
+[2.2.5]: https://github.com/templado/engine/compare/2.2.4...2.2.5
+[2.2.4]: https://github.com/templado/engine/compare/2.2.3...2.2.4
+[2.2.3]: https://github.com/templado/engine/compare/2.2.2...2.2.3
+[2.2.2]: https://github.com/templado/engine/compare/2.2.1...2.2.2
+[2.2.1]: https://github.com/templado/engine/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/templado/engine/compare/2.1.2...2.2.0
+[2.1.2]: https://github.com/templado/engine/compare/2.1.1...2.1.2
+[2.1.1]: https://github.com/templado/engine/compare/2.1.0...2.1.1
+[2.1.0]: https://github.com/templado/engine/compare/2.0.0...2.1.0
+[2.0.0]: https://github.com/templado/engine/compare/1.1.0...2.0.0
+[1.1.0]: https://github.com/templado/engine/compare/1.0.0...1.1.0
+[1.0.0]: https://github.com/templado/engine/compare/38a2f74f3af2693193e344df0e1f9130d264835c...1.0.0
