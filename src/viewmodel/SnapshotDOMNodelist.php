@@ -22,7 +22,7 @@ class SnapshotDOMNodelist {
     }
 
     public function hasNode(DOMNode $node): bool {
-        foreach($this->items as $pos => $item) {
+        foreach ($this->items as $pos => $item) {
             if ($item->isSameNode($node)) {
                 return true;
             }
@@ -45,7 +45,7 @@ class SnapshotDOMNodelist {
     }
 
     public function removeNode(DOMNode $node): void {
-        foreach($this->items as $pos => $item) {
+        foreach ($this->items as $pos => $item) {
             if ($item->isSameNode($node)) {
                 \array_splice($this->items, $pos, 1);
 
@@ -75,7 +75,7 @@ class SnapshotDOMNodelist {
     }
 
     private function extractItemsFromNodeList(DOMNodeList $list): void {
-        foreach($list as $item) {
+        foreach ($list as $item) {
             $this->items[] = $item;
         }
     }
