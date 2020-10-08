@@ -683,4 +683,25 @@ class ViewModelRendererTest extends TestCase {
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, $class);
     }
+
+    public function testReturningNonStringValueFromTypeOfThrowsException(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root property="test" typeof="a" />');
+
+        $class = new class {
+            public function test(): object {
+                return new class {
+                    public function typeOf() {
+                        return \STDIN;
+                    }
+                };
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, $class);
+    }
+
 }
