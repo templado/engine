@@ -7,8 +7,6 @@ A pragmatic approach to templating for PHP 7.x
 
 [![Build Status](https://travis-ci.org/templado/engine.svg?branch=master)](https://travis-ci.org/templado/engine)
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/f5b424bf-2a00-4df8-8070-db7f0d03e4e9/mini.png)](https://insight.sensiolabs.com/projects/f5b424bf-2a00-4df8-8070-db7f0d03e4e9)
-
 
 ### Motivation
 
