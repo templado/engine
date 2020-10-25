@@ -2,6 +2,11 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+##[4.0.4] - 2020-10-25
+
+### Fixed
+* Regression: A Null type check in `ViewModelRenderer` was not working correctly, producing false positives
+
 ##[4.0.3] - 2020-10-08
 
 ### Fixed
