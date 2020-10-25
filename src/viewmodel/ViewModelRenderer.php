@@ -222,7 +222,7 @@ class ViewModelRenderer {
             /** @psalm-suppress MixedAssignment */
             $value = $model->asString($workContext->nodeValue);
 
-            if (!\in_array(\gettype($value), ['null', 'string'])) {
+            if (!\is_null($value) && !\is_string($value)) {
                 throw new ViewModelRendererException(
                     \sprintf(
                         "Method \$model->%s must return 'null' or 'string', got '%s'",
