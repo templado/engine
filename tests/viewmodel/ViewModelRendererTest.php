@@ -16,6 +16,8 @@ use Templado\Engine\ResourceModel\ResourceViewModel;
  * @uses \Templado\Engine\SnapshotAttributeList
  */
 class ViewModelRendererTest extends TestCase {
+    use DomDocumentsEqualTrait;
+
     public function testViewModelGetsAppliedAsExcepted(): void {
         $viewModel = new ViewModel();
         $dom       = new DOMDocument();
@@ -27,7 +29,7 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load(__DIR__ . '/../_data/viewmodel/expected.html');
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $dom->documentElement,
             true
@@ -282,7 +284,7 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load(__DIR__ . '/../_data/typeof/expected-single.xhtml');
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $source->documentElement,
             true
@@ -324,7 +326,7 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load(__DIR__ . '/../_data/typeof/expected-list.xhtml');
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $source->documentElement,
             true
@@ -361,7 +363,7 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load(__DIR__ . '/../_data/typeof/combined-expected.xhtml');
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $source->documentElement,
             true
@@ -411,7 +413,7 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load(__DIR__ . '/../_data/typeof/complex-expected.xhtml');
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $source->documentElement,
             true
@@ -466,7 +468,7 @@ class ViewModelRendererTest extends TestCase {
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/resource/expected.html');
 
-        $this->assertXmlStringEqualsXmlString($expected, $dom);
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
     public function testResourceViewModelWithMagicCallGetsAppliedAsExcepted(): void {
@@ -482,7 +484,7 @@ class ViewModelRendererTest extends TestCase {
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/resource/expected.html');
 
-        $this->assertXmlStringEqualsXmlString($expected, $dom);
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
     public function testUsingAResourceWithNoMethodToRequestItThrowsException(): void {
@@ -508,7 +510,7 @@ class ViewModelRendererTest extends TestCase {
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/prefix/expected.html');
 
-        $this->assertXmlStringEqualsXmlString($expected, $dom);
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
     public function testPrefixWithDoubleColonViewModelGetsAppliedAsExcepted(): void {
@@ -524,7 +526,7 @@ class ViewModelRendererTest extends TestCase {
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/prefix/colon-expected.html');
 
-        $this->assertXmlStringEqualsXmlString($expected, $dom);
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
     public function testPrefixViewModelWithMagicCallGetsAppliedAsExcepted(): void {
@@ -540,7 +542,7 @@ class ViewModelRendererTest extends TestCase {
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/prefix/expected.html');
 
-        $this->assertXmlStringEqualsXmlString($expected, $dom);
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
     public function testUsingAPrefixWithNoMethodToRequestItThrowsException(): void {
@@ -587,7 +589,7 @@ class ViewModelRendererTest extends TestCase {
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/prefix/og-source.html');
 
-        $this->assertXmlStringEqualsXmlString($expected, $dom);
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
     public function testNonObjectcannotBeAddedToStack(): void {
@@ -622,7 +624,7 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->loadXML('<?xml version="1.0"?><root property="test">Text with &lt;tag&gt; and &amp; included</root>');
 
-        $this->assertXmlStringEqualsXmlString($expected, $dom);
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
     public function testSettingTextStringWithXMLSpecialCharsFromObjectGetsProperlyEncoded(): void {
@@ -645,7 +647,7 @@ class ViewModelRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->loadXML('<?xml version="1.0"?><root property="test">Text with &lt;tag&gt; and &amp; included</root>');
 
-        $this->assertXmlStringEqualsXmlString($expected, $dom);
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
     public function testReturningUnsupportedTypeViaAsStringThrowsException(): void {

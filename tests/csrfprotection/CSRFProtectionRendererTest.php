@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\CSRFProtectionRenderer
  */
 class CSRFProtectionRendererTest extends TestCase {
+    use DomDocumentsEqualTrait;
 
     /** @var CSRFProtection */
     private $protection;
@@ -39,7 +40,7 @@ class CSRFProtectionRendererTest extends TestCase {
 
         $this->renderer->render($dom->documentElement, $this->protection);
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $this->expected->documentElement,
             $dom->documentElement
         );
@@ -54,7 +55,7 @@ class CSRFProtectionRendererTest extends TestCase {
 
         $this->renderer->render($dom->documentElement, $this->protection);
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $this->expected->documentElement,
             $dom->documentElement
         );
@@ -64,12 +65,14 @@ class CSRFProtectionRendererTest extends TestCase {
     }
 
     public function testCSRFTokenFieldGetsAddedWithCorrectNamespaceWhenMissing(): void {
+        $this->expected->documentElement->setAttribute('xmlns', "a:b");
+
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html xmlns="a:b"><body><form></form></body></html>');
 
         $this->renderer->render($dom->documentElement, $this->protection);
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $this->expected->documentElement,
             $dom->documentElement
         );
@@ -80,6 +83,8 @@ class CSRFProtectionRendererTest extends TestCase {
     }
 
     public function testCSRFTokenFieldWithNamespaceGetsUpdatedWithTokenValue(): void {
+        $this->expected->documentElement->setAttribute('xmlns', "a:b");
+
         $dom = new DOMDocument();
         $dom->loadXML(
             '<?xml version="1.0"?>
@@ -88,7 +93,7 @@ class CSRFProtectionRendererTest extends TestCase {
 
         $this->renderer->render($dom->documentElement, $this->protection);
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $this->expected->documentElement,
             $dom->documentElement
         );

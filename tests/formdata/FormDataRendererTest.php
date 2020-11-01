@@ -11,6 +11,7 @@ use PHPUnit_Framework_MockObject_MockObject;
  * @uses   \Templado\Engine\FormData
  */
 class FormDataRendererTest extends TestCase {
+    use DomDocumentsEqualTrait;
 
     /**
      * @dataProvider formdataProvider
@@ -18,7 +19,7 @@ class FormDataRendererTest extends TestCase {
     public function testFormDataGetsRenderedAsExpected(FormData $formData, DOMDocument $contextDoc, DOMDocument $expectedDoc): void {
         $renderer = new FormDataRenderer();
         $renderer->render($contextDoc->documentElement, $formData);
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $contextDoc->documentElement,
             $expectedDoc->documentElement
         );

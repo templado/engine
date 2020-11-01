@@ -5,6 +5,8 @@ use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
 class StripRDFaAttributesTransformationTest extends TestCase {
+    use DomDocumentsEqualTrait;
+
     public function testTransformationRemovedExpectedAttributes(): void {
         $transformation = new StripRDFaAttributesTransformation();
         $selector       = $transformation->getSelector();
@@ -15,7 +17,7 @@ class StripRDFaAttributesTransformationTest extends TestCase {
         $selection = $selector->select($dom->documentElement);
         $transformation->apply($selection->getIterator()->current());
 
-        $this->assertEqualXMLStructure($dom->createElement('root'), $dom->documentElement, true);
+        $this->assertResultMatches($dom->createElement('root'), $dom->documentElement, true);
     }
 
     public function testApplyingOnNoneElementDoesNothing(): void {

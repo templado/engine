@@ -9,6 +9,8 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\SnippetRenderer
  */
 class SnippetRendererTest extends TestCase {
+    use DomDocumentsEqualTrait;
+
     public function testSimpleElementGetsAdded(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
@@ -34,7 +36,7 @@ class SnippetRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->loadXML($xml);
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $dom->documentElement
         );
@@ -54,7 +56,7 @@ class SnippetRendererTest extends TestCase {
         $expected = new DOMDocument();
         $expected->loadXML('<?xml version="1.0" ?><root><!-- comment --></root>');
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $dom->documentElement
         );

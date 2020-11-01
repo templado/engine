@@ -12,6 +12,7 @@ use Templado\Engine\Example\ViewModel;
  * @uses \Templado\Engine\SnapshotAttributeList
  */
 class HTMLTest extends TestCase {
+    use DomDocumentsEqualTrait;
 
     /**
      * @uses \Templado\Engine\SnippetRenderer
@@ -52,7 +53,7 @@ class HTMLTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load(__DIR__ . '/_data/viewmodel/expected.html');
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $dom->documentElement
         );
@@ -97,7 +98,7 @@ class HTMLTest extends TestCase {
         $page = new Html($dom);
         $page->applyFormData($formdata);
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $dom->documentElement
         );
@@ -123,7 +124,7 @@ class HTMLTest extends TestCase {
         $page = new Html($dom);
         $page->applyCSRFProtection($protection);
 
-        $this->assertEqualXMLStructure(
+        $this->assertResultMatches(
             $expected->documentElement,
             $dom->documentElement
         );
