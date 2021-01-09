@@ -2,6 +2,11 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+##[4.0.5] - 2021-01-09
+
+### Fixed
+* An invalid duplicate ID exception could be triggered in `SnippetRenderer` because of an invalid use of DOMNodelist, reported privately by @spriebsch
+
 ##[4.0.4] - 2020-10-25
 
 ### Fixed
@@ -28,7 +33,7 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 
 * The `Iterator` returned by the `Selection` class is no longer based on `DOMNodeList` but on `ArrayIterator`. This is
   necessary to not have the list reset on changes to the DOM but to provide a stable Snapshots of the selection result.   
-
+  
 
 ##[4.0.0] - 2019-09-13
 
