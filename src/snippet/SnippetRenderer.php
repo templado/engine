@@ -45,6 +45,7 @@ class SnippetRenderer {
             $id = $this->currentContext->getAttribute('id');
 
             $this->ensureNotSeen($id);
+            $this->markAsSeen($id);
 
             if ($this->snippetListCollection->hasSnippetsForId($id) && !$this->applySnippetsToElement($id)) {
                 return;
@@ -92,7 +93,10 @@ class SnippetRenderer {
                 )
             );
         }
+    }
 
+    private function markAsSeen(string $id): void {
         $this->seen[$id] = true;
     }
+
 }
