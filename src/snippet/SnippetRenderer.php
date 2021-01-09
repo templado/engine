@@ -72,7 +72,7 @@ class SnippetRenderer {
                     // so we cannot apply further snippets
                     return false;
                 }
-                /* @var DOMElement $node */
+
                 $this->currentContext = $result;
             }
         }
