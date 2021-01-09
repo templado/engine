@@ -24,10 +24,10 @@ class SnippetRenderer {
     }
 
     private function process(DOMElement $context): void {
-        $children = $context->childNodes;
+        $children = new SnapshotDOMNodelist($context->childNodes);
 
-        for ($i = 0; $i < $children->length; $i++) {
-            $node = $children->item($i);
+        while($children->hasNext()) {
+            $node = $children->getNext();
 
             if (!$node instanceof DOMElement) {
                 continue;
@@ -35,6 +35,7 @@ class SnippetRenderer {
             $this->currentContext = $node;
             $this->processCurrent();
         }
+
     }
 
     /**
