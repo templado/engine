@@ -5,8 +5,7 @@ A pragmatic approach to templating for PHP 7.x
 [![Code Coverage](https://scrutinizer-ci.com/g/templado/engine/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/templado/engine/?branch=master)
 [![Build Status](https://scrutinizer-ci.com/g/templado/engine/badges/build.png?b=master)](https://scrutinizer-ci.com/g/templado/engine/build-status/master)
 
-[![Build Status](https://travis-ci.org/templado/engine.svg?branch=master)](https://travis-ci.org/templado/engine)
-
+[![Integrate](https://github.com/templado/engine/workflows/Integrate/badge.svg)](https://github.com/templado/engine/actions)
 
 ### Motivation
 
