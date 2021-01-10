@@ -30,6 +30,7 @@
     </target>
 
     <target name="phpab" description="Build autoloader">
+        <mkdir dir="${basedir}/build/phpab" />
         <exec executable="${tools}/phpab">
             <arg line="--cache ${basedir}/build/phpab/autoload.cache -1 -o src/autoload.php" />
             <arg path="src" />
