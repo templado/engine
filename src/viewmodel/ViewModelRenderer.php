@@ -213,7 +213,7 @@ class ViewModelRenderer {
      * @throws ViewModelRendererException
      */
     private function processObjectAsModel(DOMElement $context, object $model): DOMElement {
-        $container   = $this->moveToContainer($context);
+        $container   = $this->moveToContainer($context, false);
         $workContext = $this->selectMatchingWorkContext($container->firstChild, $model);
 
         if (\method_exists($model, 'asString') ||
@@ -265,7 +265,7 @@ class ViewModelRenderer {
             return $this->processBoolean($context, false);
         }
 
-        $container = $this->moveToContainer($context);
+        $container = $this->moveToContainer($context, true);
 
         /**
          * @psalm-suppress MixedAssignment
@@ -458,9 +458,16 @@ class ViewModelRenderer {
         return $newContext;
     }
 
-    private function moveToContainer(DOMElement $context): DOMElement {
+    private function moveToContainer(DOMElement $context, bool $greedy = true): DOMElement {
         $container = $context->ownerDocument->createElement('container');
         $context->parentNode->insertBefore($container, $context);
+
+        if (!$greedy && !$context->hasAttribute('typeof')) {
+            $container->appendChild($context);
+            $this->removeNodeFromCurrentSnapshotList($context);
+
+            return $container;
+        }
 
         $xp   = new \DOMXPath($container->ownerDocument);
         $list = $xp->query(
