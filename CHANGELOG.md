@@ -2,6 +2,14 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.0.6] - 2021-03-20
+
+### Fixed
+
+* Consecutive nodes with the same property got incorrectly always treated as if in array processing mode and thus the
+  presumed ones removed.
+
+  
 ## [4.0.5] - 2021-01-09
 
 ### Fixed
@@ -198,6 +206,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.0.6]: https://github.com/templado/engine/compare/4.0.5...4.0.6
 [4.0.5]: https://github.com/templado/engine/compare/4.0.4...4.0.5
 [4.0.4]: https://github.com/templado/engine/compare/4.0.3...4.0.4
 [4.0.3]: https://github.com/templado/engine/compare/4.0.2...4.0.3
