@@ -7,7 +7,7 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 ### Fixed
 
 * Consecutive nodes with the same property got incorrectly always treated as if in array processing mode and thus the
-  presumed ones removed.
+  presumed redundant ones got removed.
 
   
 ## [4.0.5] - 2021-01-09
