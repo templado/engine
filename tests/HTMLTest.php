@@ -16,6 +16,25 @@ class HTMLTest extends TestCase {
 
     /**
      * @uses \Templado\Engine\SnippetRenderer
+     * @uses \Templado\Engine\SnippetListCollection
+     * @uses \Templado\Engine\SnippetList
+     */
+    public function testSingleSnippetCanBeApplied(): void {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root><child id="a"/></root>');
+
+        $reference = $dom->documentElement->firstChild;
+
+        $snippet = $this->createMock(SimpleSnippet::class);
+        $snippet->expects($this->once())->method('getTargetId')->willReturn('a');
+        $snippet->expects($this->once())->method('applyTo')->with($reference)->willReturn($reference);
+
+        $page = new Html($dom);
+        $page->applySnippet($snippet);
+    }
+
+    /**
+     * @uses \Templado\Engine\SnippetRenderer
      */
     public function testSnippetsCanBeApplied(): void {
         $dom = new \DOMDocument();
@@ -196,5 +215,17 @@ class HTMLTest extends TestCase {
         $filter->expects($this->once())->method('apply')->with('<root></root>');
 
         $page->asString($filter);
+    }
+
+    /**
+     * @uses \Templado\Engine\SimpleSnippet
+     */
+    public function testCanBeConvertedToSnippet(): void {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root />');
+        $snippet = (new Html($dom))->toSnippet('test');
+
+        $this->assertInstanceOf(Snippet::class, $snippet);
+        $this->assertEquals('test', $snippet->getTargetId());
     }
 }

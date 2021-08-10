@@ -46,6 +46,41 @@ class FormDataRendererTest extends TestCase {
         return $result;
     }
 
+    public function testFormElementFoundOnRootElementById(): void {
+        $src = new DOMDocument();
+        $src->loadXML('<?xml version="1.0" ?><form id="foo"><input type="text" name="bar" /></form>');
+
+        $exp = new DOMDocument();
+        $exp->loadXML('<?xml version="1.0" ?><form id="foo"><input type="text" name="bar" value="val" /></form>');
+
+        $formData = new FormData('foo', ['bar' => 'val']);
+        $renderer = new FormDataRenderer();
+
+        $renderer->render($src->documentElement, $formData);
+        $this->assertResultMatches(
+            $src->documentElement,
+            $exp->documentElement
+        );
+
+    }
+
+    public function testFormElementFoundOnRootElementByName(): void {
+        $src = new DOMDocument();
+        $src->loadXML('<?xml version="1.0" ?><form name="foo"><input type="text" name="bar" /></form>');
+
+        $exp = new DOMDocument();
+        $exp->loadXML('<?xml version="1.0" ?><form name="foo"><input type="text" name="bar" value="val" /></form>');
+
+        $formData = new FormData('foo', ['bar' => 'val']);
+        $renderer = new FormDataRenderer();
+
+        $renderer->render($src->documentElement, $formData);
+        $this->assertResultMatches(
+            $src->documentElement,
+            $exp->documentElement
+        );
+    }
+
     public function testNoFormByGivenNameThrowsException(): void {
         $contextDOM = new DOMDocument();
         $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
