@@ -67,7 +67,14 @@ class FormDataRenderer {
      * @throws FormDataRendererException
      */
     private function findFormElement(DOMElement $context, string $identifier): DOMElement {
-        $xp     = new DOMXPath($context->ownerDocument);
+        if ($context->localName === 'form' &&
+            ($context->getAttribute('id') === $identifier ||
+             $context->getAttribute('name') === $identifier)) {
+
+            return $context;
+        }
+
+        $xp = new DOMXPath($context->ownerDocument);
         $result = $xp->query(
             \sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
             $context
