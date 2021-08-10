@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Templado\Engine\SnippetRenderer
+ *
  * @uses \Templado\Engine\SnapshotDOMNodelist
  */
 class SnippetRendererTest extends TestCase {

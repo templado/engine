@@ -65,7 +65,7 @@ class CSRFProtectionRendererTest extends TestCase {
     }
 
     public function testCSRFTokenFieldGetsAddedWithCorrectNamespaceWhenMissing(): void {
-        $this->expected->documentElement->setAttribute('xmlns', "a:b");
+        $this->expected->documentElement->setAttribute('xmlns', 'a:b');
 
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html xmlns="a:b"><body><form></form></body></html>');
@@ -83,7 +83,7 @@ class CSRFProtectionRendererTest extends TestCase {
     }
 
     public function testCSRFTokenFieldWithNamespaceGetsUpdatedWithTokenValue(): void {
-        $this->expected->documentElement->setAttribute('xmlns', "a:b");
+        $this->expected->documentElement->setAttribute('xmlns', 'a:b');
 
         $dom = new DOMDocument();
         $dom->loadXML(

@@ -64,7 +64,7 @@ class Html {
         $dom = new DOMDocument();
         $dom->importNode($this->dom->documentElement, true);
 
-        return new SimpleSnippet($id,  $dom->documentElement);
+        return new SimpleSnippet($id, $dom->documentElement);
     }
 
     public function asString(Filter $filter = null): string {

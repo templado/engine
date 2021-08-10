@@ -26,7 +26,7 @@ class SnippetRenderer {
     private function process(DOMElement $context): void {
         $children = new SnapshotDOMNodelist($context->childNodes);
 
-        while($children->hasNext()) {
+        while ($children->hasNext()) {
             $node = $children->getNext();
 
             if (!$node instanceof DOMElement) {
@@ -35,7 +35,6 @@ class SnippetRenderer {
             $this->currentContext = $node;
             $this->processCurrent();
         }
-
     }
 
     /**
@@ -99,5 +98,4 @@ class SnippetRenderer {
     private function markAsSeen(string $id): void {
         $this->seen[$id] = true;
     }
-
 }

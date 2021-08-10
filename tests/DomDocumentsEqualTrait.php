@@ -7,7 +7,6 @@ use PHPUnit\Framework\Assert;
 use RuntimeException;
 
 trait DomDocumentsEqualTrait {
-
     private function assertResultMatches(DOMElement $expectedElement, DOMElement $actualElement): void {
         \libxml_clear_errors();
         $org = \libxml_use_internal_errors(true);
@@ -15,9 +14,11 @@ trait DomDocumentsEqualTrait {
         $ed = new DOMDocument();
         $ed->appendChild($ed->importNode($expectedElement, true));
         $xmlStr = $ed->C14N();
+
         if (!$xmlStr) {
             $error = \libxml_get_last_error();
             \libxml_use_internal_errors($org);
+
             throw new RuntimeException('expectedElement: ' . $error->message, $error->code);
         }
 
@@ -28,9 +29,11 @@ trait DomDocumentsEqualTrait {
         $ad = new DOMDocument();
         $ad->appendChild($ad->importNode($actualElement, true));
         $xmlStr = $ad->C14N();
+
         if (!$xmlStr) {
             $error = \libxml_get_last_error();
             \libxml_use_internal_errors($org);
+
             throw new RuntimeException('actualElement: ' . $error->message, $error->code);
         }
 

@@ -7,7 +7,6 @@ use PhpUnit\Framework\TestCase;
  * @coversNothing
  */
 class InvalidDuplicateIdExceptionTest extends TestCase {
-
     public function testIssueIsNoLongerReproduceable(): void {
         $templado = Templado::loadHtmlFile(new FileName(__DIR__ . '/skeleton.xhtml'));
 
@@ -20,8 +19,8 @@ class InvalidDuplicateIdExceptionTest extends TestCase {
         $templado->applySnippets($collection);
 
         $this->assertStringEqualsFile(
-            __DIR__ . '/expected.xhtml', $templado->asString()
+            __DIR__ . '/expected.xhtml',
+            $templado->asString()
         );
     }
 }
-

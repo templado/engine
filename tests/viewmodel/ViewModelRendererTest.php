@@ -706,7 +706,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, $class);
     }
 
-    public function testTwoNodesOnSameLavelWithSamePropertyGetProcessedInNonArrayMode() {
+    public function testTwoNodesOnSameLavelWithSamePropertyGetProcessedInNonArrayMode(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0"?><root><a property="test" /><b property="test" /></root>');
 
@@ -714,6 +714,7 @@ class ViewModelRendererTest extends TestCase {
             private $count = 0;
             public function test(): object {
                 $this->count++;
+
                 return new class($this->count) {
                     private $count;
                     public function __construct(int $count) {
@@ -734,5 +735,4 @@ class ViewModelRendererTest extends TestCase {
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
-
 }
