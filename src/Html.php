@@ -59,6 +59,12 @@ class Html {
 
         return $this;
     }
+
+    public function toSnippet(string $id): Snippet {
+        $dom = new DOMDocument();
+        $dom->importNode($this->dom->documentElement, true);
+
+        return new SimpleSnippet($id,  $dom->documentElement);
     }
 
     public function asString(Filter $filter = null): string {
