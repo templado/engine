@@ -13,7 +13,15 @@ class Html {
         $this->dom = $dom;
     }
 
-    public function applySnippets(SnippetListCollection $snippetListCollection): void {
+    public function applySnippet(Snippet $snippet): self {
+        $list = new SnippetListCollection();
+        $list->addSnippet($snippet);
+
+        $this->applySnippets($list);
+
+        return $this;
+    }
+
     public function applySnippets(SnippetListCollection $snippetListCollection): self {
         (new SnippetRenderer($snippetListCollection))->render($this->dom->documentElement);
 
