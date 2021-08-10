@@ -2,6 +2,21 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.1.0] - 2021-08-10
+
+### Fixed
+
+* The FormDataRenderer now also finds a `<form>` element when it's the document root element
+
+### Added
+
+* Introduced fluent interface for easier chaining to `Html::applySnippet()`, `Html::applySnippets()`, `Html::applyViewModel()`,
+  `Html::applyFormData()`, `Html::applyCSRFProtection()`, and `Html::applyTransformation()`
+
+* Added `Html::toSnippet` to allow for easier re-use and nesting
+
+* Added new convenience method `Html::applySnippet` to reduce boilerplate code when only adding a single snippet
+
 ## [4.0.6] - 2021-03-20
 
 ### Fixed
