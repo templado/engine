@@ -221,6 +221,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.1.0]: https://github.com/templado/engine/compare/4.0.6...4.1.0
 [4.0.6]: https://github.com/templado/engine/compare/4.0.5...4.0.6
 [4.0.5]: https://github.com/templado/engine/compare/4.0.4...4.0.5
 [4.0.4]: https://github.com/templado/engine/compare/4.0.3...4.0.4
