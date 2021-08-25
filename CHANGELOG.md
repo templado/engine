@@ -2,6 +2,13 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.1.2] - 2021-08-25
+
+### Fixed
+
+* Regression from 4.1.1: `SnippetRenderer` was missing a type check
+
+
 ## [4.1.1] - 2021-08-25
 
 ### Fixed
@@ -231,6 +238,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.1.2]: https://github.com/templado/engine/compare/4.1.1...4.1.2
 [4.1.1]: https://github.com/templado/engine/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/templado/engine/compare/4.0.6...4.1.0
 [4.0.6]: https://github.com/templado/engine/compare/4.0.5...4.0.6
