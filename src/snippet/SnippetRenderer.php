@@ -63,7 +63,9 @@ class SnippetRenderer {
         }
 
         while (true) {
-            $this->process($actualNext);
+            if ($actualNext instanceof DOMElement) {
+                $this->process($actualNext);
+            }
             $actualNext = $actualNext->nextSibling;
             if ($actualNext === null || $actualNext->isSameNode($nextSibling)) {
                 return;
