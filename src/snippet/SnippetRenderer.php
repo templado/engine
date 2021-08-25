@@ -41,6 +41,7 @@ class SnippetRenderer {
      * @throws SnippetCollectionException
      */
     private function processCurrent(): void {
+        $nextSibling = $this->currentContext->nextSibling;
         if ($this->currentContext->hasAttribute('id')) {
             $id = $this->currentContext->getAttribute('id');
 
@@ -52,8 +53,21 @@ class SnippetRenderer {
             }
         }
 
+        $actualNext = $this->currentContext->nextSibling;
         if ($this->currentContext->hasChildNodes()) {
             $this->process($this->currentContext);
+        }
+
+        if ($nextSibling === null || $actualNext === null || $actualNext->isSameNode($nextSibling)) {
+            return;
+        }
+
+        while (true) {
+            $this->process($actualNext);
+            $actualNext = $actualNext->nextSibling;
+            if ($actualNext === null || $actualNext->isSameNode($nextSibling)) {
+                return;
+            }
         }
     }
 

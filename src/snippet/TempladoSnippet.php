@@ -58,12 +58,14 @@ class TempladoSnippet implements Snippet {
 
     private function replaceNode(DOMElement $node): DOMNode {
         $root  = $this->content->documentElement;
-        $first = $root->getElementsByTagName('*')->item(0);
+        $first = null;
 
         $parent = $node->parentNode;
 
         foreach ($root->childNodes as $child) {
-            $parent->insertBefore($node->ownerDocument->importNode($child, true), $node);
+            $imported = $node->ownerDocument->importNode($child, true);
+            $parent->insertBefore($imported, $node);
+            if ($first === null && $imported instanceof DOMElement) { $first = $imported; }
         }
         $parent->removeChild($node);
 
