@@ -2,6 +2,16 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.1.1] - 2021-08-25
+
+### Fixed
+
+* Regression from 4.0.5 in `SnippetRenderer`: A multi element `TempladoSnippet` only handled
+  the first element when applied in replace mode, ignoring the sibling elements
+
+* `TempladoSnippet` returned the replaced context node anchored in the wrong document
+
+
 ## [4.1.0] - 2021-08-10
 
 ### Fixed
@@ -221,6 +231,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.1.1]: https://github.com/templado/engine/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/templado/engine/compare/4.0.6...4.1.0
 [4.0.6]: https://github.com/templado/engine/compare/4.0.5...4.0.6
 [4.0.5]: https://github.com/templado/engine/compare/4.0.4...4.0.5
