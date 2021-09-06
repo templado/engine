@@ -4,7 +4,7 @@ namespace Templado\Engine;
 use DOMDocument;
 
 class SnippetLoader {
-    public function load(FileName $fileName): Snippet {
+    public function load(FileName $fileName, string $id = null): Snippet {
         $this->ensureFileExists($fileName);
         $this->ensureIsReadableFile($fileName);
 
@@ -13,12 +13,12 @@ class SnippetLoader {
         switch ($mimeType) {
             case 'text/x-php':
             case 'text/plain':
-                return $this->loadAsText($fileName);
+                return $this->loadAsText($fileName, $id);
 
             case 'application/xml':
             case 'text/xml':
             case 'text/html':
-                return $this->loadAsSnippet($fileName);
+                return $this->loadAsSnippet($fileName, $id);
         }
 
         throw new SnippetLoaderException(
@@ -26,9 +26,9 @@ class SnippetLoader {
         );
     }
 
-    private function loadAsText(FileName $fileName): TextSnippet {
+    private function loadAsText(FileName $fileName, string $id = null): TextSnippet {
         return new TextSnippet(
-            $fileName->getName(),
+            $id ?? $fileName->getName(),
             (new DOMDocument())->createTextNode(\file_get_contents($fileName->asString()))
         );
     }
@@ -36,15 +36,15 @@ class SnippetLoader {
     /**
      * @throws SnippetLoaderException
      */
-    private function loadAsSnippet(FileName $fileName): Snippet {
+    private function loadAsSnippet(FileName $fileName, string $id = null): Snippet {
         $dom = $this->loadFile($fileName);
 
         if ($this->isTempladoSnippetDocument($dom)) {
-            return $this->parseAsTempladoSnippet($dom);
+            return $this->parseAsTempladoSnippet($dom, $id);
         }
 
         if ($this->isHtmlDocument($dom)) {
-            return $this->parseAsHTML($dom);
+            return $this->parseAsHTML($dom, $id);
         }
 
         throw new SnippetLoaderException('Document does not seem to be a valid HtmlSnippet or (X)HTML file.');
@@ -123,12 +123,12 @@ class SnippetLoader {
         }
     }
 
-    private function parseAsTempladoSnippet(DOMDocument $dom): TempladoSnippet {
-        return new TempladoSnippet($dom->documentElement->getAttribute('id'), $dom);
+    private function parseAsTempladoSnippet(DOMDocument $dom, string $id = null): TempladoSnippet {
+        return new TempladoSnippet($id ?? $dom->documentElement->getAttribute('id'), $dom);
     }
 
-    private function parseAsHTML(DOMDocument $dom): SimpleSnippet {
-        $id = $dom->documentElement->getAttribute('id');
+    private function parseAsHTML(DOMDocument $dom, string $id = null): SimpleSnippet {
+        $id = $id ?? $dom->documentElement->getAttribute('id');
 
         if ($id === '') {
             $id = \pathinfo($dom->documentURI, \PATHINFO_FILENAME);
