@@ -16,18 +16,6 @@ trait Engine {
 
     private DOMDOcument $dom;
 
-    public static function fromFile(FileName $fileName): static {
-    }
-
-    public static function fromString(string $string): static {
-    }
-
-    public static function fromDomDocument(DOMDocument $dom): static {
-    }
-
-    public function toFile(FileName $name): static {
-    }
-
     public function applySnippet(Snippet $snippet): static {
     }
 
@@ -52,6 +40,18 @@ trait Engine {
 class Html {
     use Engine;
 
+    public static function fromFile(FileName $fileName): static {
+    }
+
+    public static function fromString(string $string): static {
+    }
+
+    public static function fromDomDocument(DOMDocument $dom): static {
+    }
+
+    public function toFile(FileName $name): void {
+    }
+
     public function toSnippet(): Snippet {
     }
 
@@ -62,6 +62,18 @@ class Html {
 
 class TempladoSnippet implements Snippet{
     use Engine;
+
+    public static function fromFile(FileName $fileName): static {
+    }
+
+    public static function fromString(string $string): static {
+    }
+
+    public static function fromDomDocument(DOMDocument $dom): static {
+    }
+
+    public function toFile(FileName $name): void {
+    }
 
     public function toString(): string {
     }
