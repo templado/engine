@@ -2,6 +2,13 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.1.3] - 2021-09-07
+
+### Added
+
+* Added option to `SnippetLoader` to explictly specify snippet id to use when loading
+
+
 ## [4.1.2] - 2021-08-25
 
 ### Fixed
@@ -238,6 +245,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.1.3]: https://github.com/templado/engine/compare/4.1.2...4.1.3
 [4.1.2]: https://github.com/templado/engine/compare/4.1.1...4.1.2
 [4.1.1]: https://github.com/templado/engine/compare/4.1.0...4.1.1
 [4.1.0]: https://github.com/templado/engine/compare/4.0.6...4.1.0
