@@ -1,109 +1,24 @@
 <?php declare(strict_types = 1);
-namespace Templado\Engine;
-
-use DOMDocument;
-use DOMDocumentType;
 
 class Html {
+    use Engine;
 
-    /** @var DOMDocument */
-    private $dom;
-
-    public function __construct(DOMDocument $dom) {
-        $this->dom = $dom;
+    public static function fromFile(FileName $fileName): static {
     }
 
-    public function applySnippet(Snippet $snippet): self {
-        $list = new SnippetListCollection();
-        $list->addSnippet($snippet);
-
-        $this->applySnippets($list);
-
-        return $this;
+    public static function fromString(string $string): static {
     }
 
-    public function applySnippets(SnippetListCollection $snippetListCollection): self {
-        (new SnippetRenderer($snippetListCollection))->render($this->dom->documentElement);
-
-        return $this;
+    public static function fromDomDocument(DOMDocument $dom): static {
     }
 
-    /**
-     * @param object $model
-     *
-     * @throws ViewModelRendererException
-     */
-    public function applyViewModel($model): self {
-        (new ViewModelRenderer())->render($this->dom->documentElement, $model);
-
-        return $this;
+    public function toFile(FileName $name): void {
     }
 
-    /**
-     * @throws FormDataRendererException
-     */
-    public function applyFormData(FormData $formData): self {
-        (new FormDataRenderer())->render($this->dom->documentElement, $formData);
-
-        return $this;
+    public function toSnippet(?Selector $selector = null): Snippet {
     }
 
-    public function applyCSRFProtection(CSRFProtection $protection): self {
-        (new CSRFProtectionRenderer())->render($this->dom->documentElement, $protection);
-
-        return $this;
+    public function toString(?Serializer $serializer = null): string {
     }
 
-    public function applyTransformation(Transformation $transformation): self {
-        (new TransformationProcessor())->process($this->dom->documentElement, $transformation);
-
-        return $this;
-    }
-
-    public function toSnippet(string $id): Snippet {
-        $imported = (new DOMDocument())->importNode(
-            $this->dom->documentElement,
-            true
-        );
-
-        return new SimpleSnippet($id, $imported);
-    }
-
-    public function asString(Filter $filter = null): string {
-        $content = $this->serializeDomDocument();
-        $content = (new EmptyElementsFilter())->apply($content);
-        $content = (new ClearNamespaceDefinitionsFilter())->apply($content);
-
-        if ($filter === null) {
-            return $content;
-        }
-
-        return $filter->apply($content);
-    }
-
-    private function serializeDomDocument(): string {
-        $this->dom->formatOutput       = true;
-        $this->dom->preserveWhiteSpace = false;
-
-        $this->dom->loadXML(
-            $this->dom->saveXML()
-        );
-
-        /** @psalm-suppress RedundantCondition psalm believes this cannot be null, but it can ;) */
-        if ($this->dom->doctype instanceof DOMDocumentType) {
-            return $this->serializeWithoutXMLHeader();
-        }
-
-        return $this->dom->saveXML($this->dom->documentElement, \LIBXML_NOEMPTYTAG);
-    }
-
-    private function serializeWithoutXMLHeader(): string {
-        return \implode(
-            "\n",
-            [
-                $this->dom->saveXML($this->dom->doctype),
-                $this->dom->saveXML($this->dom->documentElement, \LIBXML_NOEMPTYTAG)
-            ]
-        );
-    }
 }

@@ -12,53 +12,8 @@ use Templado\Engine\Snippet;
 use Templado\Engine\SnippetListCollection;
 use Templado\Engine\Transformation;
 
-trait Engine {
-
-    private DOMDOcument $dom;
-
-    public function applySnippet(Snippet $snippet): static {
-    }
-
-    public function applySnippets(SnippetListCollection $snippetList): static {
-    }
-
-    public function applyViewModel(object $model, ?Selector $selector = null): static {
-    }
-
-    public function applyFormData(FormData $formData): static {
-    }
-
-    public function applyCSRFProtection(CSRFProtection $protection): static {
-    }
-
-    public function applyTransformation(Transformation $transformation): static {
-    }
-
-}
 
 
-class Html {
-    use Engine;
-
-    public static function fromFile(FileName $fileName): static {
-    }
-
-    public static function fromString(string $string): static {
-    }
-
-    public static function fromDomDocument(DOMDocument $dom): static {
-    }
-
-    public function toFile(FileName $name): void {
-    }
-
-    public function toSnippet(): Snippet {
-    }
-
-    public function toString(?Serializer $serializer = null): string {
-    }
-
-}
 
 class TempladoSnippet implements Snippet{
     use Engine;
