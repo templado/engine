@@ -18,7 +18,7 @@ class SnapshotAttributeList implements Iterator, Countable {
         $this->extractAttributeNodes($map);
     }
 
-    public function count() {
+    public function count(): int {
         return \count($this->attributes);
     }
 

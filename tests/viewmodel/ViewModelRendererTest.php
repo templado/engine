@@ -431,7 +431,7 @@ class ViewModelRendererTest extends TestCase {
                 return new class implements \Iterator {
                     private $valid = true;
 
-                    public function current() {
+                    public function current(): string {
                         return 'a';
                     }
 
@@ -439,11 +439,11 @@ class ViewModelRendererTest extends TestCase {
                         $this->valid = false;
                     }
 
-                    public function key() {
+                    public function key(): int {
                         return 0;
                     }
 
-                    public function valid() {
+                    public function valid(): bool {
                         return $this->valid;
                     }
 
