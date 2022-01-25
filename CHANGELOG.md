@@ -2,6 +2,13 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.1.4] - 2022-01-25
+
+### Fixed
+
+* `SnapshotAttributeList`: PHP 8.1 deprecation notices
+
+
 ## [4.1.3] - 2021-09-07
 
 ### Added
