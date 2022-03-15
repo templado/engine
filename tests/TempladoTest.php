@@ -23,6 +23,8 @@ class TempladoTest extends TestCase {
      */
     public function testTryingToParseInvalidMarkupStringThrowsException(): void {
         $this->expectException(TempladoException::class);
+        $this->expectExceptionMessage('Premature end of data in tag root line 1 (Line 1, Column 29)');
+
         Templado::parseHtmlString('<?xml version="1.0" ?><root>');
     }
 
@@ -32,6 +34,8 @@ class TempladoTest extends TestCase {
      */
     public function testTryingToLoadBrokenFileThrowsException(): void {
         $this->expectException(TempladoException::class);
+        $this->expectExceptionMessage('Premature end of data in tag start line 2 (Line 4, Column 1)');
+
         Templado::loadHtmlFile(new FileName(__DIR__ . '/_data/broken.txt'));
     }
 
