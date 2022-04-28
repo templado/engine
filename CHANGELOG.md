@@ -10,7 +10,7 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 
 ### Added
 
-* `Html::extractSnippets` to allow extraction of elements as snippets 
+* `Html::extractAsSnippets` to allow extraction of elements as snippets 
 
 
 ## [4.1.4] - 2022-01-25
