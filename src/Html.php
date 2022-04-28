@@ -6,6 +6,7 @@ use DOMDocumentType;
 use DOMElement;
 use DOMNode;
 use DOMText;
+use function assert;
 
 class Html {
 
@@ -74,12 +75,14 @@ class Html {
 
     public function extractAsSnippets(Selector $selector, string $targetId): SnippetList {
         $selection = $selector->select($this->dom->documentElement);
+
         if ($selection->isEmpty()) {
             throw new TempladoException('Selection result is empty - cannot extract');
         }
 
         $list = new SnippetList();
-        foreach($selection as $item) {
+
+        foreach ($selection as $item) {
             assert($item instanceof DOMNode);
 
             if ($item instanceof DOMText) {
@@ -103,7 +106,6 @@ class Html {
 
         return $list;
     }
-
 
     public function asString(Filter $filter = null): string {
         $content = $this->serializeDomDocument();

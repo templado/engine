@@ -65,7 +65,10 @@ class TempladoSnippet implements Snippet {
         foreach ($root->childNodes as $child) {
             $imported = $node->ownerDocument->importNode($child, true);
             $parent->insertBefore($imported, $node);
-            if ($first === null && $imported instanceof DOMElement) { $first = $imported; }
+
+            if ($first === null && $imported instanceof DOMElement) {
+                $first = $imported;
+            }
         }
         $parent->removeChild($node);
 

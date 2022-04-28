@@ -61,7 +61,6 @@ class FormDataRendererTest extends TestCase {
             $src->documentElement,
             $exp->documentElement
         );
-
     }
 
     public function testFormElementFoundOnRootElementByName(): void {

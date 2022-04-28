@@ -261,7 +261,8 @@ class HTMLTest extends TestCase {
         $testDom = new DOMDocument();
 
         $this->assertCount(3, $list);
-        foreach($list as $snippet) {
+
+        foreach ($list as $snippet) {
             $this->assertInstanceOf(SimpleSnippet::class, $snippet);
             $this->assertSame('some-id', $snippet->getTargetId());
 
@@ -292,7 +293,7 @@ class HTMLTest extends TestCase {
 
         $this->assertCount(1, $list);
 
-        foreach($list as $snippet) {
+        foreach ($list as $snippet) {
             $this->assertInstanceOf(TextSnippet::class, $snippet);
             $this->assertSame('some-id', $snippet->getTargetId());
 
@@ -317,7 +318,5 @@ class HTMLTest extends TestCase {
 
         $this->expectException(TempladoException::class);
         (new Html($dom))->extractAsSnippets($selector, 'some-id');
-
     }
-
 }

@@ -45,8 +45,7 @@ class Templado {
         return new Html($dom);
     }
 
-    private static function formatError(\LibXMLError $error): string
-    {
+    private static function formatError(\LibXMLError $error): string {
         return \sprintf(
             '%s (Line %d, Column %d)',
             \trim($error->message),

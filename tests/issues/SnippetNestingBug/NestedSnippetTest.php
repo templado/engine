@@ -5,7 +5,6 @@ use DOMDocument;
 use PHPUnit\Framework\TestCase;
 
 class NestedSnippetTest extends TestCase {
-
     use DomDocumentsEqualTrait;
 
     public function testReplacementWithMultipleSiblingBug(): void {
