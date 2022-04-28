@@ -2,6 +2,17 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.2.0] - 2022-04-28
+
+### Changed
+
+* Include information from libxml_get_last_error() in TempladoException message (Thanks @sebastianbergmann)
+
+### Added
+
+* `Html::extractSnippets` to allow extraction of elements as snippets 
+
+
 ## [4.1.4] - 2022-01-25
 
 ### Fixed
