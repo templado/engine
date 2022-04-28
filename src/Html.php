@@ -3,6 +3,9 @@ namespace Templado\Engine;
 
 use DOMDocument;
 use DOMDocumentType;
+use DOMElement;
+use DOMNode;
+use DOMText;
 
 class Html {
 
@@ -68,6 +71,39 @@ class Html {
 
         return new SimpleSnippet($id, $imported);
     }
+
+    public function extractAsSnippets(Selector $selector, string $targetId): SnippetList {
+        $selection = $selector->select($this->dom->documentElement);
+        if ($selection->isEmpty()) {
+            throw new TempladoException('Selection result is empty - cannot extract');
+        }
+
+        $list = new SnippetList();
+        foreach($selection as $item) {
+            assert($item instanceof DOMNode);
+
+            if ($item instanceof DOMText) {
+                $list->addSnippet(
+                    new TextSnippet($targetId, $item)
+                );
+
+                continue;
+            }
+
+            if ($item instanceof DOMElement) {
+                $list->addSnippet(
+                    new SimpleSnippet($targetId, $item)
+                );
+
+                continue;
+            }
+
+            throw new TempladoException('Unspported node type - cannot extract to snippet');
+        }
+
+        return $list;
+    }
+
 
     public function asString(Filter $filter = null): string {
         $content = $this->serializeDomDocument();

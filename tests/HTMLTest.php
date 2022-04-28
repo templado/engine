@@ -228,4 +228,96 @@ class HTMLTest extends TestCase {
         $this->assertInstanceOf(Snippet::class, $snippet);
         $this->assertEquals('test', $snippet->getTargetId());
     }
+
+    /**
+     * @uses \Templado\Engine\XPathSelector
+     * @uses \Templado\Engine\Selection
+     * @uses \Templado\Engine\TempladoException
+     */
+    public function testEmptySelectionOnExtractThrowsException(): void {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root><a/><a/><a/></root>');
+
+        $selector = new XPathSelector('//no-match');
+
+        $this->expectException(TempladoException::class);
+        (new Html($dom))->extractAsSnippets($selector, 'some-id');
+    }
+
+    /**
+     * @uses \Templado\Engine\XPathSelector
+     * @uses \Templado\Engine\SimpleSnippet
+     * @uses \Templado\Engine\SnippetList
+     * @uses \Templado\Engine\Selection
+     */
+    public function testSimpleSnippetsCanBeExtracted(): void {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root><a/><a/><a/></root>');
+
+        $selector = new XPathSelector('//a');
+
+        $list = (new Html($dom))->extractAsSnippets($selector, 'some-id');
+
+        $testDom = new DOMDocument();
+
+        $this->assertCount(3, $list);
+        foreach($list as $snippet) {
+            $this->assertInstanceOf(SimpleSnippet::class, $snippet);
+            $this->assertSame('some-id', $snippet->getTargetId());
+
+            $targetNode = $testDom->createElement('target');
+
+            $snippet->applyTo($targetNode);
+
+            $this->assertSame('<target><a/></target>', $testDom->saveXML($targetNode));
+        }
+    }
+
+    /**
+     * @uses \Templado\Engine\XPathSelector
+     * @uses \Templado\Engine\SimpleSnippet
+     * @uses \Templado\Engine\TextSnippet
+     * @uses \Templado\Engine\SnippetList
+     * @uses \Templado\Engine\Selection
+     */
+    public function testTextSnippetsCanBeExtracted(): void {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root>Text</root>');
+
+        $selector = new XPathSelector('/root/text()');
+
+        $list = (new Html($dom))->extractAsSnippets($selector, 'some-id');
+
+        $testDom = new DOMDocument();
+
+        $this->assertCount(1, $list);
+
+        foreach($list as $snippet) {
+            $this->assertInstanceOf(TextSnippet::class, $snippet);
+            $this->assertSame('some-id', $snippet->getTargetId());
+
+            $targetNode = $testDom->createElement('target');
+
+            $snippet->applyTo($targetNode);
+
+            $this->assertSame('<target>Text</target>', $testDom->saveXML($targetNode));
+        }
+    }
+
+    /**
+     * @uses \Templado\Engine\Selection
+     * @uses \Templado\Engine\TempladoException
+     * @uses \Templado\Engine\XPathSelector
+     */
+    public function testTryingToExtractNonElementNodeThrowsException(): void {
+        $dom = new \DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root><?php // ?></root>');
+
+        $selector = new XPathSelector('//processing-instruction("php")');
+
+        $this->expectException(TempladoException::class);
+        (new Html($dom))->extractAsSnippets($selector, 'some-id');
+
+    }
+
 }
