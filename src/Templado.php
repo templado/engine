@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use LibXMLError;
 
 class Templado {
     public static function loadHtmlFile(FileName $fileName): Html {
@@ -10,16 +11,16 @@ class Templado {
 
         $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
-        $tmp                     = $dom->load($fileName->asString());
-        $error                   = \libxml_get_last_error();
-        $message                 = \sprintf("Loading file '%s' failed", $fileName->asString());
 
-        if (!$tmp && $error === false) {
-            throw new TempladoException($message);
-        }
+        if (!$dom->load($fileName->asString())) {
+            $error   = \libxml_get_last_error();
+            assert($error instanceof LibXMLError);
 
-        if ($error instanceof \LibXMLError) {
-            throw new TempladoException($message . ':' . \PHP_EOL . self::formatError($error));
+            throw new TempladoException(
+                \sprintf("Loading file '%s' failed:\n%s",
+                    $fileName->asString(),
+                    self::formatError($error))
+            );
         }
 
         return new Html($dom);
@@ -30,16 +31,11 @@ class Templado {
         \libxml_clear_errors();
 
         $dom     = new DOMDocument();
-        $tmp     = $dom->loadXML($string);
-        $error   = \libxml_get_last_error();
-        $message = 'Parsing string failed';
+        if (!$dom->loadXML($string)) {
+            $error   = \libxml_get_last_error();
+            assert($error instanceof LibXMLError);
 
-        if (!$tmp && $error === false) {
-            throw new TempladoException($message);
-        }
-
-        if ($error instanceof \LibXMLError) {
-            throw new TempladoException($message . ':' . \PHP_EOL . self::formatError($error));
+            throw new TempladoException('Parsing string failed:' . \PHP_EOL . self::formatError($error));
         }
 
         return new Html($dom);
