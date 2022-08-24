@@ -10,7 +10,7 @@ class EmptyElementsFilter implements Filter {
 
         foreach ($tagList as $tag) {
             $content = \preg_replace(
-                "=<{$tag}(.*[^>]?)></{$tag}>=U",
+                "#<{$tag}(.[^>]*)?></{$tag}>#U",
                 "<{$tag}\$1 />",
                 $content
             );
