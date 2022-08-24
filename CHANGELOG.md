@@ -2,6 +2,12 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.2.1] - 2022-08-24
+
+### Fixed
+* [#26](https://github.com/templado/engine/issues/26): `EmptyElementsFilter` can cause invalid markup
+
+
 ## [4.2.0] - 2022-04-28
 
 ### Changed
