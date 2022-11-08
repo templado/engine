@@ -2,6 +2,14 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.2.2] - 2022-11-08
+
+### Changed
+* ClearNamespaceDefinitionsFilter now supports an optional root node name that will get the xhtml xmlns set
+
+### Fixed
+* `Html::asString()` no longer has unexpected side effects on the working DOM (which may have lead to namespaces being unset)
+
 ## [4.2.1] - 2022-08-24
 
 ### Fixed
@@ -269,6 +277,10 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.2.2]: https://github.com/templado/engine/compare/4.2.1...4.2.2
+[4.2.1]: https://github.com/templado/engine/compare/4.2.0...4.2.1
+[4.2.0]: https://github.com/templado/engine/compare/4.1.4...4.2.0
+[4.1.4]: https://github.com/templado/engine/compare/4.1.3...4.1.4
 [4.1.3]: https://github.com/templado/engine/compare/4.1.2...4.1.3
 [4.1.2]: https://github.com/templado/engine/compare/4.1.1...4.1.2
 [4.1.1]: https://github.com/templado/engine/compare/4.1.0...4.1.1
