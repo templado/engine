@@ -110,7 +110,7 @@ class Html {
     public function asString(Filter $filter = null): string {
         $content = $this->serializeDomDocument();
         $content = (new EmptyElementsFilter())->apply($content);
-        $content = (new ClearNamespaceDefinitionsFilter())->apply($content);
+        $content = (new ClearNamespaceDefinitionsFilter($this->dom->documentElement->nodeName))->apply($content);
 
         if ($filter === null) {
             return $content;

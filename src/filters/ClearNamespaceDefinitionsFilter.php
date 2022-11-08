@@ -2,6 +2,12 @@
 namespace Templado\Engine;
 
 class ClearNamespaceDefinitionsFilter implements Filter {
+    private string $rootElementName;
+
+    public function __construct(string $rootElementName = 'html')
+    {
+        $this->rootElementName = $rootElementName;
+    }
     public function apply(string $content): string {
         $content = \preg_replace('/ xmlns=".*[^"]"/U', '', $content);
 
@@ -12,6 +18,6 @@ class ClearNamespaceDefinitionsFilter implements Filter {
             );
         }
 
-        return \str_replace('<html', '<html xmlns="http://www.w3.org/1999/xhtml"', $content);
+        return \str_replace('<' . $this->rootElementName, '<' . $this->rootElementName . ' xmlns="http://www.w3.org/1999/xhtml"', $content);
     }
 }
