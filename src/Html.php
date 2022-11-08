@@ -120,27 +120,30 @@ class Html {
     }
 
     private function serializeDomDocument(): string {
-        $this->dom->formatOutput       = true;
-        $this->dom->preserveWhiteSpace = false;
+        $tmp = new DOMDocument();
+        $tmp->formatOutput       = true;
+        $tmp->preserveWhiteSpace = false;
 
-        $this->dom->loadXML(
+        $tmp->loadXML(
             $this->dom->saveXML()
         );
+        $tmp->formatOutput       = true;
+        $tmp->preserveWhiteSpace = false;
 
         /** @psalm-suppress RedundantCondition psalm believes this cannot be null, but it can ;) */
-        if ($this->dom->doctype instanceof DOMDocumentType) {
-            return $this->serializeWithoutXMLHeader();
+        if ($tmp->doctype instanceof DOMDocumentType) {
+            return $this->serializeWithoutXMLHeader($tmp);
         }
 
-        return $this->dom->saveXML($this->dom->documentElement, \LIBXML_NOEMPTYTAG);
+        return $tmp->saveXML($tmp->documentElement, \LIBXML_NOEMPTYTAG);
     }
 
-    private function serializeWithoutXMLHeader(): string {
+    private function serializeWithoutXMLHeader(DOMDocument $dom): string {
         return \implode(
             "\n",
             [
-                $this->dom->saveXML($this->dom->doctype),
-                $this->dom->saveXML($this->dom->documentElement, \LIBXML_NOEMPTYTAG)
+                $dom->saveXML($dom->doctype),
+                $dom->saveXML($dom->documentElement, \LIBXML_NOEMPTYTAG)
             ]
         );
     }
