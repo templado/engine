@@ -36,7 +36,6 @@ class EmptyElementsFilterTest extends TestCase {
                 \sprintf('<%s attr="value" />', $tag),
                 \sprintf('<%1$s attr="value"></%1$s>', $tag)
             ];
-
         }
 
         return $map;
@@ -53,7 +52,7 @@ class EmptyElementsFilterTest extends TestCase {
      *
      * @dataProvider nestedElementsProvider
      */
-    public function testNestedElementsWithRequiredSelfClosingWhenEmptyDoNotGetMangledWhenNotEmpty(string $input) {
+    public function testNestedElementsWithRequiredSelfClosingWhenEmptyDoNotGetMangledWhenNotEmpty(string $input): void {
         $this->assertEquals(
             $input,
             (new EmptyElementsFilter())->apply($input)

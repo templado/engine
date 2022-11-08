@@ -4,8 +4,7 @@ namespace Templado\Engine;
 class ClearNamespaceDefinitionsFilter implements Filter {
     private string $rootElementName;
 
-    public function __construct(string $rootElementName = 'html')
-    {
+    public function __construct(string $rootElementName = 'html') {
         $this->rootElementName = $rootElementName;
     }
     public function apply(string $content): string {

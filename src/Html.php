@@ -120,7 +120,7 @@ class Html {
     }
 
     private function serializeDomDocument(): string {
-        $tmp = new DOMDocument();
+        $tmp                     = new DOMDocument();
         $tmp->formatOutput       = true;
         $tmp->preserveWhiteSpace = false;
 

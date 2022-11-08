@@ -13,13 +13,15 @@ class Templado {
         $dom->preserveWhiteSpace = false;
 
         if (!$dom->load($fileName->asString())) {
-            $error   = \libxml_get_last_error();
-            assert($error instanceof LibXMLError);
+            $error = \libxml_get_last_error();
+            \assert($error instanceof LibXMLError);
 
             throw new TempladoException(
-                \sprintf("Loading file '%s' failed:\n%s",
+                \sprintf(
+                    "Loading file '%s' failed:\n%s",
                     $fileName->asString(),
-                    self::formatError($error))
+                    self::formatError($error)
+                )
             );
         }
 
@@ -30,10 +32,11 @@ class Templado {
         \libxml_use_internal_errors(true);
         \libxml_clear_errors();
 
-        $dom     = new DOMDocument();
+        $dom = new DOMDocument();
+
         if (!$dom->loadXML($string)) {
-            $error   = \libxml_get_last_error();
-            assert($error instanceof LibXMLError);
+            $error = \libxml_get_last_error();
+            \assert($error instanceof LibXMLError);
 
             throw new TempladoException('Parsing string failed:' . \PHP_EOL . self::formatError($error));
         }
@@ -41,7 +44,7 @@ class Templado {
         return new Html($dom);
     }
 
-    private static function formatError(\LibXMLError $error): string {
+    private static function formatError(LibXMLError $error): string {
         return \sprintf(
             '%s (Line %d, Column %d)',
             \trim($error->message),
