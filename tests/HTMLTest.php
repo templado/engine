@@ -212,7 +212,7 @@ class HTMLTest extends TestCase {
         $page = new Html($dom);
 
         $filter = $this->createMock(Filter::class);
-        $filter->expects($this->once())->method('apply')->with('<root></root>');
+        $filter->expects($this->once())->method('apply')->with('<root xmlns="http://www.w3.org/1999/xhtml"></root>');
 
         $page->asString($filter);
     }
