@@ -2,6 +2,12 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.2.3] - 2023-05-16
+
+### Fixed
+* CSRFProtectionRendererTest fails with PHP 8.3.0-dev due to invalid xmlns
+
+
 ## [4.2.2] - 2022-11-08
 
 ### Changed
@@ -277,6 +283,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.2.3]: https://github.com/templado/engine/compare/4.2.2...4.2.3
 [4.2.2]: https://github.com/templado/engine/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/templado/engine/compare/4.2.0...4.2.1
 [4.2.0]: https://github.com/templado/engine/compare/4.1.4...4.2.0
