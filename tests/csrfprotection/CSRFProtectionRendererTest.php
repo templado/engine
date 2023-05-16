@@ -65,10 +65,10 @@ class CSRFProtectionRendererTest extends TestCase {
     }
 
     public function testCSRFTokenFieldGetsAddedWithCorrectNamespaceWhenMissing(): void {
-        $this->expected->documentElement->setAttribute('xmlns', 'a:b');
+        $this->expected->documentElement->setAttribute('xmlns', 'urn:b:c');
 
         $dom = new DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><html xmlns="a:b"><body><form></form></body></html>');
+        $dom->loadXML('<?xml version="1.0" ?><html xmlns="urn:b:c"><body><form></form></body></html>');
 
         $this->renderer->render($dom->documentElement, $this->protection);
 
@@ -78,17 +78,17 @@ class CSRFProtectionRendererTest extends TestCase {
         );
 
         $input = $dom->getElementsByTagName('input')->item(0);
-        $this->assertEquals('a:b', $input->namespaceURI);
+        $this->assertEquals('urn:b:c', $input->namespaceURI);
         $this->assertEquals('secure', $input->getAttribute('value'));
     }
 
     public function testCSRFTokenFieldWithNamespaceGetsUpdatedWithTokenValue(): void {
-        $this->expected->documentElement->setAttribute('xmlns', 'a:b');
+        $this->expected->documentElement->setAttribute('xmlns', 'urn:a:b');
 
         $dom = new DOMDocument();
         $dom->loadXML(
             '<?xml version="1.0"?>
-            <html xmlns="a:b"><body><form><input type="hidden" name="csrf" value=""/></form></body></html>'
+            <html xmlns="urn:a:b"><body><form><input type="hidden" name="csrf" value=""/></form></body></html>'
         );
 
         $this->renderer->render($dom->documentElement, $this->protection);
