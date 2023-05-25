@@ -11,5 +11,5 @@ namespace Templado\Engine;
 
 use Exception;
 
-class SnapshotDOMNodelistException extends Exception {
+class TempladoException extends Exception {
 }

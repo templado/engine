@@ -53,6 +53,33 @@ final readonly class Templado {
     }
 
     public function extract(Selector $selector, ?Id $id = null): self {
+        $exportDom = new DOMDocument;
+        $selection = $selector->select($this->dom->documentElement);
+
+        if ($selection->isEmpty()) {
+            throw new TempladoException('Selection cannot be empty');
+        }
+
+        if (count($selection) === 1) {
+            $exportDom->appendChild(
+                $exportDom->importNode(
+                    $selection->getIterator()->current(),
+                    true
+                )
+            );
+
+            return new self($exportDom, $id);
+        }
+
+        $exportDom->loadXML('<templado:document xmlns:templado="https://templado.io/document/1.0" />');
+
+        foreach ($selection as $node) {
+            $exportDom->documentElement->appendChild(
+                $exportDom->importNode($node, true)
+            );
+        }
+
+        return new self($exportDom, $id);
     }
 
     public function asString(?Serializer $serializer = null): string {
@@ -91,7 +118,7 @@ final readonly class Templado {
 
     public function applyTransformation(Transformation $transformation, ?Selector $selector = null): self {
         $processor = new TransformationProcessor();
-        $selection = $selector ? $selector->select($this->dom) : [$this->dom->documentElement];
+        $selection = $selector !== null ? $selector->select($this->dom) : [$this->dom->documentElement];
 
         foreach ($selection as $ctx) {
             $processor->process($ctx, $transformation);

@@ -11,12 +11,13 @@ namespace Templado\Engine;
 
 use function count;
 use ArrayIterator;
+use Countable;
 use DOMNode;
 use DOMNodeList;
 use IteratorAggregate;
 
 /** @template-implements IteratorAggregate<int,DOMNode> */
-class Selection implements IteratorAggregate {
+class Selection implements Countable, IteratorAggregate {
     /** @var DOMNode[] */
     private array $list = [];
 
@@ -24,6 +25,10 @@ class Selection implements IteratorAggregate {
         foreach ($nodeList as $node) {
             $this->list[] = $node;
         }
+    }
+
+    public function count(): int {
+        return count($this->list);
     }
 
     public function isEmpty(): bool {

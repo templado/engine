@@ -14,9 +14,9 @@ use IteratorAggregate;
 
 /** @template-implements IteratorAggregate<int,Templado> */
 class TempladoCollection implements IteratorAggregate {
-
     /** @psalm-param list<int,Templado> */
     private array $documents = [];
+
     public function getIterator(): ArrayIterator {
         return new ArrayIterator($this->documents);
     }
