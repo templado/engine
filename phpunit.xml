@@ -1,26 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/5.4/phpunit.xsd"
-         bootstrap="tests/bootstrap.php"
-         backupGlobals="false"
-         beStrictAboutCoversAnnotation="true"
-         beStrictAboutOutputDuringTests="true"
-         beStrictAboutTestsThatDoNotTestAnything="true"
-         beStrictAboutTodoAnnotatedTests="true"
-         verbose="true">
-    <testsuite name="Templado Engine">
-        <directory suffix="Test.php">tests</directory>
-    </testsuite>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
-
-    <logging>
-        <log type="coverage-html" target="build/coverage/html" />
-        <log type="coverage-xml" target="build/coverage/xml" />
-    </logging>
-
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd" bootstrap="tests/bootstrap.php" backupGlobals="false" beStrictAboutOutputDuringTests="true" beStrictAboutTestsThatDoNotTestAnything="true" cacheDirectory=".phpunit.cache" beStrictAboutCoverageMetadata="true">
+  <coverage>
+    <report>
+      <html outputDirectory="build/coverage/html"/>
+      <xml outputDirectory="build/coverage/xml"/>
+    </report>
+  </coverage>
+  <testsuite name="Templado Engine">
+    <directory suffix="Test.php">tests</directory>
+  </testsuite>
+  <logging/>
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </source>
 </phpunit>

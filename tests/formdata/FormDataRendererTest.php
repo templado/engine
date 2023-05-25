@@ -25,7 +25,7 @@ class FormDataRendererTest extends TestCase {
         );
     }
 
-    public function formdataProvider(): array {
+    public static function formdataProvider(): array {
         $result = [];
 
         foreach (\glob(__DIR__ . '/../_data/formdata/*') as $entry) {

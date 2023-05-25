@@ -17,7 +17,7 @@ class FormDataTest extends TestCase {
         $this->assertInstanceOf(FormData::class, $formdata);
     }
 
-    public function validDataProvider(): array {
+    public static function validDataProvider(): array {
         return [
             'string' => [['a' => 'a']],
             'array'  => [['a' => ['a', 'b']]]
@@ -32,7 +32,7 @@ class FormDataTest extends TestCase {
         new FormData('foo', $data);
     }
 
-    public function invalidDataProvider(): array {
+    public static function invalidDataProvider(): array {
         return [
             'object' => [['a' => new StdClass]],
             'int'    => [['a' => 1]],

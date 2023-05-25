@@ -83,6 +83,9 @@ final readonly class Templado {
     }
 
     public function asString(?Serializer $serializer = null): string {
+        if ($serializer === null) {
+            return $this->dom->saveXML();
+        }
         return $serializer->serialize($this->dom);
     }
 
@@ -105,7 +108,7 @@ final readonly class Templado {
     }
 
     public function applyViewModel(object $model, ?Selector $selector = null): self {
-        $selection = $selector ? $selector->select($this->dom) : [$this->dom->documentElement];
+        $selection = $selector ? $selector->select($this->dom->documentElement) : [$this->dom->documentElement];
 
         $renderer = new ViewModelRenderer();
 

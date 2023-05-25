@@ -36,20 +36,20 @@ use DOMNode;
 use DOMXPath;
 
 class ViewModelRenderer {
-    /** @var array */
-    private $stack = [];
 
-    /** @var string[] */
-    private $stackNames = [];
+    /** @psalm-var list<mixed> */
+    private array $stack = [];
 
-    /** @var SnapshotDOMNodelist[] */
-    private $listStack = [];
+    /** @psalm-var list<string> */
+    private array $stackNames = [];
 
-    /** @var object */
-    private $resourceModel;
+    /** @psalm-var list<SnapshotDOMNodelist> */
+    private array $listStack = [];
 
-    /** @var array */
-    private $prefixes = [];
+    private object $resourceModel;
+
+    /** @psalm-var array<string,string> */
+    private array $prefixes = [];
 
     /**
      * @throws ViewModelRendererException
@@ -150,7 +150,7 @@ class ViewModelRenderer {
         );
     }
 
-    private function current() {
+    private function current(): mixed {
         return end($this->stack);
     }
 
@@ -424,7 +424,7 @@ class ViewModelRenderer {
      *
      * @psalm-suppress MissingParamType
      */
-    private function selectMatchingWorkContext(DOMElement $context, $entry): DOMElement {
+    private function selectMatchingWorkContext(DOMElement $context, mixed $entry): DOMElement {
         if (!$context->hasAttribute('typeof')) {
             return $context;
         }

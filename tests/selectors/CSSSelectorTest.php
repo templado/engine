@@ -53,7 +53,7 @@ class CSSSelectorTest extends TestCase {
         $selector->select($dom->documentElement);
     }
 
-    public function invalidXPathQueryStringsProvider(): array {
+    public static function invalidXPathQueryStringsProvider(): array {
         return [
             'empty'          => [''],
             'syntax-error'   => ['//*['],

@@ -2,12 +2,13 @@
 namespace Templado\Engine;
 
 use PHPUnit\Framework\TestCase;
+use function libxml_get_errors;
 
-class TempladoExceptionTest extends TestCase {
+class TempladoParsingExceptionTest extends TestCase {
     public function testLibXMLErrorsCanBeRetrieved(): void {
         \libxml_use_internal_errors(true);
         (new \DOMDocument())->loadXML('<?xml version="1.0" ?><parseerror>');
-        $exception = new TempladoException('test');
-        $this->assertCount(1, $exception->getErrorList());
+        $exception = new TempladoParsingException(...libxml_get_errors());
+        $this->assertCount(1, $exception->errors());
     }
 }

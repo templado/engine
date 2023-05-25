@@ -39,9 +39,9 @@ readonly class Id {
                    "\u{000C}" . //"FF"
                    "\u{000D}"; // "CR"
 
-        if (preg_match('/*[' . $invalid . ']/', $id)) {
+        if (preg_match('/^[' . $invalid . ']+$/u', $id)) {
             throw new InvalidArgumentException(
-                'ID must not contain space type charectars (https://www.w3.org/TR/html5-author/global-attributes.html#the-id-attribute)'
+                'ID must not contain space type character (https://www.w3.org/TR/html5-author/global-attributes.html#the-id-attribute)'
             );
         }
     }

@@ -8,12 +8,12 @@
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     findUnusedBaselineEntry="true"
     findUnusedCode="true"
-    errorBaseline="psalm.baseline"
 >
     <projectFiles>
         <directory name="src" />
         <ignoreFiles>
             <directory name="vendor" />
+            <directory name="tests" />
         </ignoreFiles>
     </projectFiles>
 </psalm>

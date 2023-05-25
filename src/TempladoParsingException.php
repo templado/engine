@@ -9,10 +9,9 @@
  */
 namespace Templado\Engine;
 
-use Exception;
 use LibXMLError;
 
-final class TempladoParsingException extends Exception {
+final class TempladoParsingException extends TempladoException {
     /** @psalm-param list<LibXMLError> */
     private readonly array $errors;
 
