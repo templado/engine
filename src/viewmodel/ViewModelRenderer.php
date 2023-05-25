@@ -1,13 +1,41 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
+/*
+ * This file is part of Templado\Engine.
+ *
+ * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Templado\Engine;
 
+use function array_key_exists;
+use function array_pop;
+use function array_walk;
+use function count;
+use function end;
+use function explode;
+use function get_class;
+use function gettype;
+use function implode;
+use function is_array;
+use function is_iterable;
+use function is_object;
+use function is_string;
+use function method_exists;
+use function rtrim;
+use function sprintf;
+use function strpos;
+use function substr_count;
+use function ucfirst;
+use Countable;
 use DOMAttr;
 use DOMDocumentFragment;
 use DOMElement;
 use DOMNode;
+use DOMXPath;
 
 class ViewModelRenderer {
-
     /** @var array */
     private $stack = [];
 
@@ -69,7 +97,7 @@ class ViewModelRenderer {
                 /* @var \DOMNode $childNode */
                 $this->walk($childNode);
             }
-            \array_pop($this->listStack);
+            array_pop($this->listStack);
         }
 
         while ($stackAdded > 0) {
@@ -85,11 +113,11 @@ class ViewModelRenderer {
         $model    = $this->current();
         $property = $context->getAttribute('property');
 
-        if (\substr_count($property, ':') === 1) {
-            [$prefix, $property] = \explode(':', $property);
+        if (substr_count($property, ':') === 1) {
+            [$prefix, $property] = explode(':', $property);
 
-            if (!\array_key_exists($prefix, $this->prefixes)) {
-                throw new ViewModelRendererException(\sprintf('Undefined prefix %s', $prefix));
+            if (!array_key_exists($prefix, $this->prefixes)) {
+                throw new ViewModelRendererException(sprintf('Undefined prefix %s', $prefix));
             }
 
             $model = $this->prefixes[$prefix];
@@ -103,32 +131,32 @@ class ViewModelRenderer {
 
         $this->stackNames[] = $property;
 
-        foreach ([$property, 'get' . \ucfirst($property)] as $method) {
-            if (\method_exists($model, $method)) {
+        foreach ([$property, 'get' . ucfirst($property)] as $method) {
+            if (method_exists($model, $method)) {
                 $this->stack[] = $model->{$method}($context->nodeValue);
 
                 return;
             }
         }
 
-        if (\method_exists($model, '__call')) {
+        if (method_exists($model, '__call')) {
             $this->stack[] = $model->{$property}($context->nodeValue);
 
             return;
         }
 
         throw new ViewModelRendererException(
-            \sprintf('Viewmodel method missing: $model->%s', \implode('()->', $this->stackNames) . '()')
+            sprintf('Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
         );
     }
 
     private function current() {
-        return \end($this->stack);
+        return end($this->stack);
     }
 
     private function dropFromStack(): void {
-        \array_pop($this->stack);
-        \array_pop($this->stackNames);
+        array_pop($this->stack);
+        array_pop($this->stackNames);
     }
 
     /**
@@ -138,7 +166,7 @@ class ViewModelRenderer {
         /** @psalm-suppress MixedAssignment */
         $model = $this->current();
 
-        switch (\gettype($model)) {
+        switch (gettype($model)) {
             case 'boolean': {
                 /** @var bool $model */
                 return $this->processBoolean($context, $model);
@@ -160,10 +188,10 @@ class ViewModelRenderer {
 
             default: {
                 throw new ViewModelRendererException(
-                    \sprintf(
+                    sprintf(
                         'Value returned by $model->%s must not be of type %s',
-                        \implode('()->', $this->stackNames) . '()',
-                        \gettype($model)
+                        implode('()->', $this->stackNames) . '()',
+                        gettype($model)
                     )
                 );
             }
@@ -198,10 +226,10 @@ class ViewModelRenderer {
     /**
      * @throws ViewModelRendererException
      *
-     * @return \DOMDocumentFragment|\DOMElement
+     * @return DOMDocumentFragment|DOMElement
      */
     private function processObject(DOMElement $context, object $model) {
-        if (\is_iterable($model)) {
+        if (is_iterable($model)) {
             /** @var iterable $model */
             return $this->processArray($context, $model);
         }
@@ -216,18 +244,18 @@ class ViewModelRenderer {
         $container   = $this->moveToContainer($context, false);
         $workContext = $this->selectMatchingWorkContext($container->firstChild, $model);
 
-        if (\method_exists($model, 'asString') ||
-            \method_exists($model, '__call')
+        if (method_exists($model, 'asString') ||
+            method_exists($model, '__call')
         ) {
             /** @psalm-suppress MixedAssignment */
             $value = $model->asString($workContext->nodeValue);
 
-            if ($value !== null && !\is_string($value)) {
+            if ($value !== null && !is_string($value)) {
                 throw new ViewModelRendererException(
-                    \sprintf(
+                    sprintf(
                         "Method \$model->%s must return 'null' or 'string', got '%s'",
-                        \implode('()->', $this->stackNames) . '()->asString()',
-                        \gettype($value)
+                        implode('()->', $this->stackNames) . '()->asString()',
+                        gettype($value)
                     )
                 );
             }
@@ -269,6 +297,7 @@ class ViewModelRenderer {
 
         /**
          * @psalm-suppress MixedAssignment
+         *
          * @psalm-var int $pos
          */
         foreach ($model as $pos => $entry) {
@@ -289,6 +318,7 @@ class ViewModelRenderer {
 
     /**
      * @throws ViewModelRendererException
+     *
      * @psalm-suppress MissingParamType
      */
     private function processArrayEntry(DOMElement $context, $entry, int $pos): DOMElement {
@@ -306,7 +336,7 @@ class ViewModelRenderer {
             while ($list->hasNext()) {
                 $this->walk($list->getNext());
             }
-            \array_pop($this->listStack);
+            array_pop($this->listStack);
         }
         $this->dropFromStack();
 
@@ -319,19 +349,19 @@ class ViewModelRenderer {
     private function processAttribute(DOMAttr $attribute, object $model): void {
         $attributeName = $attribute->nodeName;
 
-        if (\strpos($attributeName, '-') !== false) {
-            $parts = \explode('-', $attributeName);
-            \array_walk(
+        if (strpos($attributeName, '-') !== false) {
+            $parts = explode('-', $attributeName);
+            array_walk(
                 $parts,
                 static function (string &$value, int $pos): void {
-                    $value = \ucfirst($value);
+                    $value = ucfirst($value);
                 }
             );
-            $attributeName = \implode('', $parts);
+            $attributeName = implode('', $parts);
         }
 
-        foreach ([$attributeName, 'get' . \ucfirst($attributeName), '__call'] as $method) {
-            if (!\method_exists($model, $method)) {
+        foreach ([$attributeName, 'get' . ucfirst($attributeName), '__call'] as $method) {
+            if (!method_exists($model, $method)) {
                 continue;
             }
 
@@ -355,12 +385,12 @@ class ViewModelRenderer {
                 return;
             }
 
-            if (!\is_string($value)) {
+            if (!is_string($value)) {
                 throw new ViewModelRendererException(
-                    \sprintf(
+                    sprintf(
                         'Attribute value must be string or boolean false - type %s received from $model->%s',
-                        \gettype($value),
-                        \implode('()->', $this->stackNames) . '()'
+                        gettype($value),
+                        implode('()->', $this->stackNames) . '()'
                     )
                 );
             }
@@ -373,17 +403,19 @@ class ViewModelRenderer {
 
     /**
      * @throws ViewModelRendererException
+     *
      * @psalm-assert object $mode
+     *
      * @psalm-suppress MissingParamType
      */
     private function ensureIsObject($model, string $property): void {
-        if (!\is_object($model)) {
+        if (!is_object($model)) {
             throw new ViewModelRendererException(
-                \sprintf(
+                sprintf(
                     'Trying to add "%s" failed - Non object (%s) on stack: $%s',
                     $property,
-                    \gettype($model),
-                    \implode('()->', $this->stackNames) . '() '
+                    gettype($model),
+                    implode('()->', $this->stackNames) . '() '
                 )
             );
         }
@@ -391,6 +423,7 @@ class ViewModelRenderer {
 
     /**
      * @throws ViewModelRendererException
+     *
      * @psalm-suppress MissingParamType
      */
     private function selectMatchingWorkContext(DOMElement $context, $entry): DOMElement {
@@ -398,21 +431,21 @@ class ViewModelRenderer {
             return $context;
         }
 
-        if (!\is_object($entry)) {
+        if (!is_object($entry)) {
             throw new ViewModelRendererException(
-                \sprintf(
+                sprintf(
                     "Cannot call 'typeOf' on none object type '%s' returned from \$model->%s()",
-                    \gettype($entry),
-                    \implode('()->', $this->stackNames)
+                    gettype($entry),
+                    implode('()->', $this->stackNames)
                 )
             );
         }
 
-        if (!\method_exists($entry, 'typeOf')) {
+        if (!method_exists($entry, 'typeOf')) {
             throw new ViewModelRendererException(
-                \sprintf(
+                sprintf(
                     "No 'typeOf' method in model returned from \$model->%s() but current context is conditional",
-                    \implode('()->', $this->stackNames)
+                    implode('()->', $this->stackNames)
                 )
             );
         }
@@ -420,12 +453,12 @@ class ViewModelRenderer {
         /** @psalm-suppress MixedAssignment */
         $requestedTypeOf = $entry->typeOf();
 
-        if (!\is_string($requestedTypeOf)) {
+        if (!is_string($requestedTypeOf)) {
             throw new ViewModelRendererException(
-                \sprintf(
+                sprintf(
                     "Return value of \$model->%s()->typeOf() must be string, got '%s'",
-                    \implode('()->', $this->stackNames),
-                    \gettype($entry)
+                    implode('()->', $this->stackNames),
+                    gettype($entry)
                 )
             );
         }
@@ -434,9 +467,9 @@ class ViewModelRenderer {
             return $context;
         }
 
-        $xp   = new \DOMXPath($context->ownerDocument);
+        $xp   = new DOMXPath($context->ownerDocument);
         $list = $xp->query(
-            \sprintf(
+            sprintf(
                 '(following-sibling::*)[@property="%s" and @typeof="%s"]',
                 $context->getAttribute('property'),
                 $requestedTypeOf
@@ -448,7 +481,7 @@ class ViewModelRenderer {
 
         if (!$newContext instanceof DOMElement) {
             throw new ViewModelRendererException(
-                \sprintf(
+                sprintf(
                     "Context for type '%s' not found.",
                     $requestedTypeOf
                 )
@@ -469,9 +502,9 @@ class ViewModelRenderer {
             return $container;
         }
 
-        $xp   = new \DOMXPath($container->ownerDocument);
+        $xp   = new DOMXPath($container->ownerDocument);
         $list = $xp->query(
-            \sprintf('*[@property="%s"]', $context->getAttribute('property')),
+            sprintf('*[@property="%s"]', $context->getAttribute('property')),
             $context->parentNode
         );
 
@@ -484,7 +517,7 @@ class ViewModelRenderer {
     }
 
     private function removeNodeFromCurrentSnapshotList(DOMElement $context): void {
-        $stackList = \end($this->listStack);
+        $stackList = end($this->listStack);
 
         if ((!$stackList instanceof SnapshotDOMNodelist) || !$stackList->hasNode($context)) {
             return;
@@ -493,14 +526,14 @@ class ViewModelRenderer {
     }
 
     private function getElementCount(iterable $model): int {
-        if (\is_array($model) || $model instanceof \Countable) {
-            return \count($model);
+        if (is_array($model) || $model instanceof Countable) {
+            return count($model);
         }
 
         throw new ViewModelRendererException(
-            \sprintf(
+            sprintf(
                 'Class %s must implement \Countable to be used as array',
-                \get_class($model)
+                get_class($model)
             )
         );
     }
@@ -510,59 +543,59 @@ class ViewModelRenderer {
 
         $this->stackNames[] = $resource;
 
-        foreach ([$resource, 'get' . \ucfirst($resource)] as $method) {
-            if (\method_exists($this->resourceModel, $method)) {
+        foreach ([$resource, 'get' . ucfirst($resource)] as $method) {
+            if (method_exists($this->resourceModel, $method)) {
                 $this->stack[] = $this->resourceModel->{$method}();
 
                 return;
             }
         }
 
-        if (\method_exists($this->resourceModel, '__call')) {
+        if (method_exists($this->resourceModel, '__call')) {
             $this->stack[] = $this->resourceModel->{$resource}();
 
             return;
         }
 
         throw new ViewModelRendererException(
-            \sprintf('Resource Viewmodel method missing: $model->%s', \implode('()->', $this->stackNames) . '()')
+            sprintf('Resource Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
         );
     }
 
     private function resolvePrefixDefinition(string $prefixDefinition): void {
-        $parts = \explode(' ', $prefixDefinition);
+        $parts = explode(' ', $prefixDefinition);
 
-        if (\count($parts) !== 2) {
+        if (count($parts) !== 2) {
             throw new ViewModelRendererException(
-                \sprintf('Invalid prefix definition "%s" - must be of format "prefix resourcename"', $prefixDefinition)
+                sprintf('Invalid prefix definition "%s" - must be of format "prefix resourcename"', $prefixDefinition)
             );
         }
 
         [$prefix, $resource] = $parts;
-        $prefix              = \rtrim($prefix, ':');
+        $prefix              = rtrim($prefix, ':');
 
-        if (\strpos($resource, ':') !== false) {
+        if (strpos($resource, ':') !== false) {
             $this->prefixes[$prefix] = null;
 
             return;
         }
 
-        foreach ([$resource, 'get' . \ucfirst($resource)] as $method) {
-            if (\method_exists($this->resourceModel, $method)) {
+        foreach ([$resource, 'get' . ucfirst($resource)] as $method) {
+            if (method_exists($this->resourceModel, $method)) {
                 $this->prefixes[$prefix] = $this->resourceModel->{$method}();
 
                 return;
             }
         }
 
-        if (\method_exists($this->resourceModel, '__call')) {
+        if (method_exists($this->resourceModel, '__call')) {
             $this->prefixes[$prefix] = $this->resourceModel->{$resource}();
 
             return;
         }
 
         throw new ViewModelRendererException(
-            \sprintf('No method %s to resolve prefix %s', $resource, $prefix)
+            sprintf('No method %s to resolve prefix %s', $resource, $prefix)
         );
     }
 }

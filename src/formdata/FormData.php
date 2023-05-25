@@ -1,8 +1,21 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
+/*
+ * This file is part of Templado\Engine.
+ *
+ * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Templado\Engine;
 
-class FormData {
+use function array_key_exists;
+use function gettype;
+use function is_array;
+use function is_string;
+use function sprintf;
 
+class FormData {
     /** @var string */
     private $identifier;
 
@@ -22,7 +35,7 @@ class FormData {
     }
 
     public function hasKey(string $key): bool {
-        return \array_key_exists($key, $this->values);
+        return array_key_exists($key, $this->values);
     }
 
     /**
@@ -30,7 +43,7 @@ class FormData {
      */
     public function getValue(string $key): string {
         if (!$this->hasKey($key)) {
-            throw new FormDataException(\sprintf('No such key: %s', $key));
+            throw new FormDataException(sprintf('No such key: %s', $key));
         }
 
         /** @psalm-var string */
@@ -45,20 +58,20 @@ class FormData {
 
         /** @psalm-suppress MixedAssignment */
         foreach ($values as $key => $value) {
-            if (\is_string($value)) {
+            if (is_string($value)) {
                 $result[$key] = $value;
 
                 continue;
             }
 
-            if ($recursion === false && \is_array($value)) {
+            if ($recursion === false && is_array($value)) {
                 $result[$key] = $this->initValuesFromArray($value, true);
 
                 continue;
             }
 
             throw new FormDataException(
-                \sprintf('Data type "%s" in key "%s" not supported', \gettype($value), $key)
+                sprintf('Data type "%s" in key "%s" not supported', gettype($value), $key)
             );
         }
 

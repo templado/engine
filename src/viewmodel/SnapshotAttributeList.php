@@ -1,13 +1,25 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
+/*
+ * This file is part of Templado\Engine.
+ *
+ * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Templado\Engine;
 
+use function count;
+use function get_class;
+use function gettype;
+use function sprintf;
 use Countable;
 use DOMAttr;
 use DOMNamedNodeMap;
 use Iterator;
 
-class SnapshotAttributeList implements Iterator, Countable {
-
+/** @template-implements Iterator<int,DOMAttr> */
+class SnapshotAttributeList implements Countable, Iterator {
     /** @var DOMAttr[] */
     private $attributes = [];
 
@@ -18,8 +30,8 @@ class SnapshotAttributeList implements Iterator, Countable {
         $this->extractAttributeNodes($map);
     }
 
-    public function count() {
-        return \count($this->attributes);
+    public function count(): int {
+        return count($this->attributes);
     }
 
     public function current(): DOMAttr {
@@ -39,7 +51,7 @@ class SnapshotAttributeList implements Iterator, Countable {
     }
 
     public function valid(): bool {
-        $count = \count($this->attributes);
+        $count = count($this->attributes);
 
         return $count > 0 && $count > $this->pos;
     }
@@ -52,7 +64,7 @@ class SnapshotAttributeList implements Iterator, Countable {
         foreach ($map as $attr) {
             if (!$attr instanceof DOMAttr) {
                 throw new SnapshotAttributeListException(
-                    \sprintf('%s is not an attribute node type (%s given)', $attr->localName, \get_class($attr))
+                    sprintf('%s is not an attribute node type (%s given)', $attr->localName, (get_class($attr) ?? gettype($attr)))
                 );
             }
             $this->attributes[] = $attr;

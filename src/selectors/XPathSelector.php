@@ -1,12 +1,24 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
+/*
+ * This file is part of Templado\Engine.
+ *
+ * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Templado\Engine;
 
+use function libxml_clear_errors;
+use function libxml_get_last_error;
+use function libxml_use_internal_errors;
+use function sprintf;
+use function trim;
 use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 
 class XPathSelector implements Selector {
-
     /** @var string */
     private $queryString;
 
@@ -29,13 +41,13 @@ class XPathSelector implements Selector {
         );
 
         if (!$result instanceof DOMNodeList) {
-            $error = \libxml_get_last_error();
+            $error = libxml_get_last_error();
             $this->toggleErrorHandling($backup);
 
             throw new XPathSelectorException(
-                \sprintf(
+                sprintf(
                     '%s: "%s"',
-                    \trim($error->message),
+                    trim($error->message),
                     $this->queryString
                 ),
                 $error->code
@@ -62,8 +74,8 @@ class XPathSelector implements Selector {
     }
 
     private function toggleErrorHandling(bool $mode): bool {
-        $backup = \libxml_use_internal_errors($mode);
-        \libxml_clear_errors();
+        $backup = libxml_use_internal_errors($mode);
+        libxml_clear_errors();
 
         return $backup;
     }

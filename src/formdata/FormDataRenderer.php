@@ -1,11 +1,19 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
+/*
+ * This file is part of Templado\Engine.
+ *
+ * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Templado\Engine;
 
+use function sprintf;
 use DOMElement;
 use DOMXPath;
 
 class FormDataRenderer {
-
     /**
      * @throws FormDataRendererException
      */
@@ -35,6 +43,7 @@ class FormDataRenderer {
                 $this->toggleInput($input, $value);
 
                 return;
+
             default:
                 $input->setAttribute('value', $value);
         }
@@ -70,13 +79,12 @@ class FormDataRenderer {
         if ($context->localName === 'form' &&
             ($context->getAttribute('id') === $identifier ||
              $context->getAttribute('name') === $identifier)) {
-
             return $context;
         }
 
-        $xp = new DOMXPath($context->ownerDocument);
+        $xp     = new DOMXPath($context->ownerDocument);
         $result = $xp->query(
-            \sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
+            sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
             $context
         );
 
@@ -87,14 +95,14 @@ class FormDataRenderer {
             }
             case 0: {
                 throw new FormDataRendererException(
-                    \sprintf('No form with name or id "%s" found', $identifier)
+                    sprintf('No form with name or id "%s" found', $identifier)
                 );
             }
+
             default: {
                 throw new FormDataRendererException(
-                    \sprintf('Multiple forms found with name or id "%s"', $identifier)
+                    sprintf('Multiple forms found with name or id "%s"', $identifier)
                 );
-
             }
         }
     }

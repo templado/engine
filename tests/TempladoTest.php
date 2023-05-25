@@ -1,0 +1,48 @@
+<?php declare(strict_types = 1);
+namespace Templado\Engine;
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @covers \Templado\Engine\Templado
+ */
+class TempladoTest extends TestCase {
+
+    /**
+     * @uses \Templado\Engine\Html
+     */
+    public function testCanBeConstructedFromString(): void {
+        $this->assertInstanceOf(
+            Html::class,
+            Templado::parseHtmlString('<?xml version="1.0" ?><root />')
+        );
+    }
+
+    /**
+     * @uses \Templado\Engine\TempladoException
+     */
+    public function testTryingToParseInvalidMarkupStringThrowsException(): void {
+        $this->expectException(TempladoException::class);
+        Templado::parseHtmlString('<?xml version="1.0" ?><root>');
+    }
+
+    /**
+     * @uses \Templado\Engine\TempladoException
+     * @uses \Templado\Engine\Filename
+     */
+    public function testTryingToLoadBrokenFileThrowsException(): void {
+        $this->expectException(TempladoException::class);
+        Templado::loadHtmlFile(new Filename(__DIR__ . '/_data/broken.txt'));
+    }
+
+    /**
+     * @uses \Templado\Engine\Filename
+     * @uses \Templado\Engine\Html
+     */
+    public function testCanBeConstructedFromFile(): void {
+        $this->assertInstanceOf(
+            Html::class,
+            Templado::loadHtmlFile(new Filename(__DIR__ . '/_data/viewmodel/source.html'))
+        );
+    }
+}

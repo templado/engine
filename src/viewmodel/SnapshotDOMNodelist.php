@@ -1,6 +1,16 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
+/*
+ * This file is part of Templado\Engine.
+ *
+ * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Templado\Engine;
 
+use function array_splice;
+use function count;
 use DOMNode;
 use DOMNodeList;
 
@@ -10,7 +20,6 @@ use DOMNodeList;
  * takes a snapshot of the list first and then allows iterating over it.
  */
 class SnapshotDOMNodelist {
-
     /** @var DOMNode[] */
     private $items = [];
 
@@ -32,7 +41,7 @@ class SnapshotDOMNodelist {
     }
 
     public function hasNext(): bool {
-        $count = \count($this->items);
+        $count = count($this->items);
 
         return $count > 0 && $this->pos < $count;
     }
@@ -48,7 +57,7 @@ class SnapshotDOMNodelist {
         /** @psalm-var int $pos */
         foreach ($this->items as $pos => $item) {
             if ($item->isSameNode($node)) {
-                \array_splice($this->items, $pos, 1);
+                array_splice($this->items, $pos, 1);
 
                 if ($this->pos > 0 && $pos <= $this->pos) {
                     $this->pos--;
@@ -70,7 +79,7 @@ class SnapshotDOMNodelist {
     }
 
     private function valid(): bool {
-        $count = \count($this->items);
+        $count = count($this->items);
 
         return $count > 0 && $count > $this->pos;
     }

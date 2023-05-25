@@ -16,6 +16,7 @@
     "php" : "^8.2",
     "ext-dom" : "*",
     "ext-libxml": "*",
+    "ext-fileinfo": "*",
     "theseer/css2xpath": "^2.0"
   },
   "autoload": {

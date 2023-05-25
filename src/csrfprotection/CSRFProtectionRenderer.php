@@ -1,12 +1,20 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
+/*
+ * This file is part of Templado\Engine.
+ *
+ * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Templado\Engine;
 
+use function sprintf;
 use DOMElement;
 use DOMXPath;
 
 /** @psalm-suppress MissingConstructor */
 class CSRFProtectionRenderer {
-
     /** @var CSRFProtection */
     private $protection;
 
@@ -27,7 +35,7 @@ class CSRFProtectionRenderer {
 
     private function getCSRFField(DOMElement $form): DOMElement {
         $nodeList = $this->xp->query(
-            \sprintf('.//*[local-name() = "input" and @name="%s"]', $this->protection->getFieldName()),
+            sprintf('.//*[local-name() = "input" and @name="%s"]', $this->protection->getFieldName()),
             $form
         );
 
@@ -35,8 +43,10 @@ class CSRFProtectionRenderer {
             return $this->createField($form);
         }
 
-        /** @psalm-var \DOMElement */
-        return $nodeList->item(0);
+        $fieldNode = $nodeList->item(0);
+        assert($fieldNode instanceof DOMElement);
+
+        return $fieldNode;
     }
 
     private function createField(DOMElement $form): DOMElement {

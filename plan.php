@@ -5,7 +5,7 @@ use DOMDocument;
 use DOMElement;
 use DOMNode;
 use Templado\Engine\CSRFProtection;
-use Templado\Engine\FileName;
+use Templado\Engine\Filename;
 use Templado\Engine\FormData;
 use Templado\Engine\Selector;
 use Templado\Engine\Snippet;
@@ -18,7 +18,7 @@ use Templado\Engine\Transformation;
 class TempladoSnippet implements Snippet{
     use Engine;
 
-    public static function fromFile(FileName $fileName): static {
+    public static function fromFile(Filename $fileName): static {
     }
 
     public static function fromString(string $string): static {
@@ -27,7 +27,7 @@ class TempladoSnippet implements Snippet{
     public static function fromDomDocument(DOMDocument $dom): static {
     }
 
-    public function toFile(FileName $name): void {
+    public function toFile(Filename $name): void {
     }
 
     public function toString(): string {
@@ -43,7 +43,7 @@ class TempladoSnippet implements Snippet{
 
 class TextSnippet implements Snippet {
 
-    public static function fromFile(FileName $fileName): static {
+    public static function fromFile(Filename $fileName): static {
     }
 
     public static function fromString(): static {
