@@ -62,7 +62,6 @@ class FormDataRenderer {
 
     private function setSelectValue(DOMElement $select, string $value): void {
         foreach ($select->getElementsByTagName('option') as $option) {
-            /** @var DOMElement $option */
             if ($option->getAttribute('value') === $value) {
                 $option->setAttribute('selected', 'selected');
 
@@ -112,7 +111,6 @@ class FormDataRenderer {
      */
     private function processInputElements(FormData $form, DOMElement $formElement): void {
         foreach ($formElement->getElementsByTagName('input') as $input) {
-            /** @var DOMElement $input */
             $name = $input->getAttribute('name');
 
             if (!$form->hasKey($name)) {
@@ -132,7 +130,6 @@ class FormDataRenderer {
      */
     private function processSelectElements(FormData $form, DOMElement $formElement): void {
         foreach ($formElement->getElementsByTagName('select') as $select) {
-            /** @var DOMElement $select */
             $name = $select->getAttribute('name');
 
             if (!$form->hasKey($name)) {
@@ -152,7 +149,6 @@ class FormDataRenderer {
      */
     private function processTextareaElement(FormData $form, DOMElement $formElement): void {
         foreach ($formElement->getElementsByTagName('textarea') as $textarea) {
-            /** @var DOMElement $textarea */
             $name = $textarea->getAttribute('name');
 
             if (!$form->hasKey($name)) {

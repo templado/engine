@@ -172,7 +172,6 @@ class ViewModelRenderer {
                 return $this->processBoolean($context, $model);
             }
             case 'string': {
-                /** @var string $model */
                 $this->processString($context, $model);
 
                 return $context;
@@ -260,7 +259,6 @@ class ViewModelRenderer {
                 );
             }
 
-            /** @psalm-var null|string $value */
             if ($value !== null) {
                 $workContext->nodeValue   = '';
                 $workContext->textContent = $value;
@@ -280,7 +278,7 @@ class ViewModelRenderer {
     /**
      * @throws ViewModelRendererException
      */
-    private function processArray(DOMElement $context, iterable $model): DOMDocumentFragment {
+    private function processArray(DOMElement $context, iterable $model): DOMDocumentFragment|DOMElement {
         $count = $this->getElementCount($model);
 
         if ($count > 1 && $context->isSameNode($context->ownerDocument->documentElement)) {
