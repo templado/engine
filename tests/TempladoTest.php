@@ -24,6 +24,8 @@ use Templado\Engine\Example\ViewModel;
 #[UsesClass(ViewModelRenderer::class)]
 #[UsesClass(FormData::class)]
 #[UsesClass(FormDataRenderer::class)]
+#[UsesClass(SnapshotAttributeList::class)]
+#[UsesClass(SnapshotDOMNodelist::class)]
 class TempladoTest extends TestCase {
     use DomDocumentsEqualTrait;
 
@@ -139,7 +141,7 @@ class TempladoTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load($path . '/expected.html');
 
-        $page = new Html($dom);
+        $page = Templado::fromDomDocument($dom);
         $page->applyFormData($formdata);
 
         $this->assertResultMatches(
@@ -165,7 +167,7 @@ class TempladoTest extends TestCase {
             <html><body><form><input type="hidden" name="csrf" value="secure"/></form></body></html>'
         );
 
-        $page = new Html($dom);
+        $page = Templado::fromDomDocument($dom);
         $page->applyCSRFProtection($protection);
 
         $this->assertResultMatches(

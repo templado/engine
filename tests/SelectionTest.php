@@ -8,8 +8,13 @@ use PHPUnit\Framework\TestCase;
  * @covers \Templado\Engine\Selection
  */
 class SelectionTest extends TestCase {
+    public function testCountReturnsCorrectNumberOfItemsInSelection(): void {
+        $this->assertCount(1, $this->setupTestSelection());
+    }
+
     public function testIsEmptyReturnsTrueOnEmptySelection(): void {
         $selection = new Selection(new \DOMNodeList());
+        $this->assertCount(0, $selection);
         $this->assertTrue($selection->isEmpty());
     }
 
