@@ -71,7 +71,7 @@ final readonly class Templado {
             return new self($exportDom, $id);
         }
 
-        $exportDom->loadXML('<templado:document xmlns:templado="https://templado.io/document/1.0" />');
+        $exportDom->loadXML('<templado:document xmlns="http://www.w3.org/1999/xhtml" xmlns:templado="https://templado.io/document/1.0" />');
 
         foreach ($selection as $node) {
             $exportDom->documentElement->appendChild(
