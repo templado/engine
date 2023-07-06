@@ -10,5 +10,5 @@
 namespace Templado\Engine;
 
 interface FileWriter {
-    public function toFile(Templado $document, Filename $filename): void;
+    public function toFile(Document $document, Filename $filename): void;
 }

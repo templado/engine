@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of Templado\Engine.
+ * This file is part of Document\Engine.
  *
  * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
  *
@@ -15,7 +15,7 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
 
-#[CoversClass(Templado::class)]
+#[CoversClass(Document::class)]
 #[UsesClass(Id::class)]
 #[UsesClass(TempladoParsingException::class)]
 #[UsesClass(XPathSelector::class)]
@@ -31,16 +31,16 @@ class TempladoTest extends TestCase {
 
     public function testCanBeConstructedFromString(): void {
         $this->assertInstanceOf(
-            Templado::class,
-            Templado::fromString('<?xml version="1.0" ?><root />')
+            Document::class,
+            Document::fromString('<?xml version="1.0" ?><root />')
         );
     }
 
     public function testCanBeConstructedFromStringWithId(): void {
         $id       = new Id('abc');
-        $instance = Templado::fromString('<?xml version="1.0" ?><root />', $id);
+        $instance = Document::fromString('<?xml version="1.0" ?><root />', $id);
         $this->assertInstanceOf(
-            Templado::class,
+            Document::class,
             $instance
         );
 
@@ -49,33 +49,33 @@ class TempladoTest extends TestCase {
 
     public function testTryingToParseInvalidMarkupStringThrowsException(): void {
         $this->expectException(TempladoParsingException::class);
-        Templado::fromString('<?xml version="1.0" ?><root>');
+        Document::fromString('<?xml version="1.0" ?><root>');
     }
 
     public function testSelectionOfSingleNodeCanBeExtracted(): void {
         $id     = new Id('test');
-        $result = (Templado::fromString('<?xml version="1.0" ?><root><child /></root>'))->extract(
+        $result = (Document::fromString('<?xml version="1.0" ?><root><child /></root>'))->extract(
             new XPathSelector('//child'),
             $id
         );
 
-        $this->assertInstanceOf(Templado::class, $result);
+        $this->assertInstanceOf(Document::class, $result);
         $this->assertEquals($id, $result->id());
     }
 
     public function testExtractingEmptySelectionThrowsException(): void {
         $this->expectException(TempladoException::class);
-        (Templado::fromString('<?xml version="1.0" ?><root><child /></root>'))->extract(
+        (Document::fromString('<?xml version="1.0" ?><root><child /></root>'))->extract(
             new XPathSelector('//invalid')
         );
     }
 
     public function testSelectionOfMultiNodesCanBeExtracted(): void {
-        $result = (Templado::fromString('<?xml version="1.0" ?><root><child /><child /></root>'))->extract(
+        $result = (Document::fromString('<?xml version="1.0" ?><root><child /><child /></root>'))->extract(
             new XPathSelector('//child')
         );
 
-        $this->assertInstanceOf(Templado::class, $result);
+        $this->assertInstanceOf(Document::class, $result);
 
         $result->asString(new class($this) implements Serializer {
 
@@ -97,7 +97,7 @@ class TempladoTest extends TestCase {
         $dom       = new DOMDocument();
         $dom->load(__DIR__ . '/_data/viewmodel/source.html');
 
-        $page = Templado::fromDomDocument($dom);
+        $page = Document::fromDomDocument($dom);
         $page->applyViewModel($viewModel);
 
         $expected = new DOMDocument();
@@ -123,10 +123,10 @@ class TempladoTest extends TestCase {
         $selector->method('select')->willReturn($selection);
 
         $transformation = $this->createMock(Transformation::class);
-        $transformation->expects($this->once())->method('getSelector')->willReturn($selector);
+        $transformation->expects($this->once())->method('selector')->willReturn($selector);
         $transformation->expects($this->once())->method('apply')->with($dom->documentElement->firstChild);
 
-        $page = Templado::fromDomDocument($dom);
+        $page = Document::fromDomDocument($dom);
         $page->applyTransformation($transformation);
     }
 
@@ -141,7 +141,7 @@ class TempladoTest extends TestCase {
         $expected = new DOMDocument();
         $expected->load($path . '/expected.html');
 
-        $page = Templado::fromDomDocument($dom);
+        $page = Document::fromDomDocument($dom);
         $page->applyFormData($formdata);
 
         $this->assertResultMatches(
@@ -167,7 +167,7 @@ class TempladoTest extends TestCase {
             <html><body><form><input type="hidden" name="csrf" value="secure"/></form></body></html>'
         );
 
-        $page = Templado::fromDomDocument($dom);
+        $page = Document::fromDomDocument($dom);
         $page->applyCSRFProtection($protection);
 
         $this->assertResultMatches(

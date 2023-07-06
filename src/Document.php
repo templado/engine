@@ -9,14 +9,14 @@
  */
 namespace Templado\Engine;
 
-use function iterator_to_array;
+use RuntimeException;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_get_last_error;
 use function libxml_use_internal_errors;
 use DOMDocument;
 
-final readonly class Templado {
+final readonly class Document {
     public static function fromString(string $markup, ?Id $id = null): self {
         libxml_use_internal_errors(true);
         libxml_clear_errors();
@@ -86,23 +86,41 @@ final readonly class Templado {
         if ($serializer === null) {
             return $this->dom->saveXML();
         }
+
         return $serializer->serialize($this->dom);
     }
 
-    public function mergeIn(self|TempladoCollection ...$toMerge): self {
-        $documents = [];
+    public function merge(self|DocumentCollection ...$toMerge): self {
+        $mergeList = new MergeList();
 
         foreach ($toMerge as $item) {
             if ($item instanceof self) {
-                $documents[] = $item;
+                $id = $item->id();
+                if ($id === null) {
+                    throw new RuntimeException('Document must have an ID to be merged.');
+                }
+
+                $mergeList->add(
+                    $id,
+                    $item->dom
+                );
 
                 continue;
             }
 
-            $documents += iterator_to_array($item);
+            foreach ($item as $single) {
+                $id = $single->id();
+                if ($id === null) {
+                    throw new RuntimeException('Document must have an ID to be merged.');
+                }
+                $mergeList->add(
+                    $id,
+                    $single->dom
+                );
+            }
         }
 
-        (new Merger())->merge($this, ...$documents);
+        (new Merger())->merge($this->dom, $mergeList);
 
         return $this;
     }
@@ -120,8 +138,9 @@ final readonly class Templado {
     }
 
     public function applyTransformation(Transformation $transformation, ?Selector $selector = null): self {
-        $processor = new TransformationProcessor();
         $selection = $selector !== null ? $selector->select($this->dom) : [$this->dom->documentElement];
+
+        $processor = new TransformationProcessor();
 
         foreach ($selection as $ctx) {
             $processor->process($ctx, $transformation);

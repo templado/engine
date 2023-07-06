@@ -13,7 +13,7 @@ use DOMElement;
 
 class TransformationProcessor {
     public function process(DOMElement $context, Transformation $transformation): void {
-        $selection = $transformation->getSelector()->select($context);
+        $selection = $transformation->selector()->select($context);
 
         if ($selection->isEmpty()) {
             return;

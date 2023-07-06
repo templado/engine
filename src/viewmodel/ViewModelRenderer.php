@@ -36,7 +36,6 @@ use DOMNode;
 use DOMXPath;
 
 class ViewModelRenderer {
-
     /** @psalm-var list<mixed> */
     private array $stack = [];
 

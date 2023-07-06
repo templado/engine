@@ -17,7 +17,7 @@ class StripRDFaAttributesTransformation implements Transformation {
     /** @var string[] */
     private $attributes = ['property', 'resource', 'prefix', 'typeof'];
 
-    public function getSelector(): Selector {
+    public function selector(): Selector {
         return new XPathSelector('//*[@' . implode(' or @', $this->attributes) . ']');
     }
 

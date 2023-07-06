@@ -10,5 +10,5 @@
 namespace Templado\Engine;
 
 interface FileReader {
-    public function fromFile(Filename $filename, ?Id $id = null): Templado;
+    public function fromFile(Filename $filename, ?Id $id = null): Document;
 }

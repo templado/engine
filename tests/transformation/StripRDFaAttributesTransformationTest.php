@@ -9,7 +9,7 @@ class StripRDFaAttributesTransformationTest extends TestCase {
 
     public function testTransformationRemovedExpectedAttributes(): void {
         $transformation = new StripRDFaAttributesTransformation();
-        $selector       = $transformation->getSelector();
+        $selector       = $transformation->selector();
 
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="p" resource="r" prefix="p" typeof="t" />');

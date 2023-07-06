@@ -19,7 +19,7 @@ class TransformationProcessorTest extends TestCase {
         $selector->method('select')->willReturn($selection);
 
         $transformation = $this->createMock(Transformation::class);
-        $transformation->expects($this->any())->method('getSelector')->willReturn($selector);
+        $transformation->expects($this->any())->method('selector')->willReturn($selector);
         $transformation->expects($this->once())->method('apply')->with($dom->documentElement->firstChild);
 
         (new TransformationProcessor($dom->documentElement, $transformation))->process(
@@ -36,7 +36,7 @@ class TransformationProcessorTest extends TestCase {
         $selector->method('select')->willReturn($selection);
 
         $transformation = $this->createMock(Transformation::class);
-        $transformation->expects($this->any())->method('getSelector')->willReturn($selector);
+        $transformation->expects($this->any())->method('selector')->willReturn($selector);
         $transformation->expects($this->never())->method('apply');
 
         (new TransformationProcessor(new \DOMElement('foo'), $transformation))->process(
