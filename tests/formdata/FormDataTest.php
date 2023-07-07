@@ -17,7 +17,7 @@ class FormDataTest extends TestCase {
         $this->assertInstanceOf(FormData::class, $formdata);
     }
 
-    public function validDataProvider(): array {
+    public static function validDataProvider(): array {
         return [
             'string' => [['a' => 'a']],
             'array'  => [['a' => ['a', 'b']]]

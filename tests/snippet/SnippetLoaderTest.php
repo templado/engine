@@ -112,7 +112,7 @@ class SnippetLoaderTest extends TestCase {
         $this->assertEquals('simple', $snippet->getTargetId());
     }
 
-    public function textFileFilenameProvider(): array {
+    public static function textFileFilenameProvider(): array {
         return [
             'text' => ['simple.txt', 'text/plain'],
             'php'  => ['simple.php', 'text/x-php']

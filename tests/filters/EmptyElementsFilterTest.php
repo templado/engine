@@ -18,7 +18,7 @@ class EmptyElementsFilterTest extends TestCase {
         );
     }
 
-    public function selfContainedElementsProvider(): array {
+    public static function selfContainedElementsProvider(): array {
         $tagList = [
             'base', 'br', 'meta', 'link', 'img', 'input', 'button', 'hr', 'embed',
             'param', 'source', 'track', 'area', 'keygen',
@@ -59,7 +59,7 @@ class EmptyElementsFilterTest extends TestCase {
         );
     }
 
-    public function nestedElementsProvider(): array {
+    public static function nestedElementsProvider(): array {
         return [
             'issue#26' => [
                 '<body><button id="foo">some text<span>bla</span></button></body>'
