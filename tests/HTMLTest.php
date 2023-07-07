@@ -150,12 +150,12 @@ class HTMLTest extends TestCase {
     }
 
     /**
-     * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
+     * @uses \Templado\Engine\ClearRedundantHtmlNamespaceDefinitionsFilter
      * @uses \Templado\Engine\EmptyElementsFilter
      */
     public function testCanBeConvertedToString(): void {
         $dom = new DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><html><head><link rel="stylesheet"></link></head><body><p>test</p></body></html>');
+        $dom->loadXML('<?xml version="1.0" ?><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet"></link></head><body><p>test</p></body></html>');
 
         $expected = [
             '<html xmlns="http://www.w3.org/1999/xhtml">',
@@ -176,12 +176,12 @@ class HTMLTest extends TestCase {
     }
 
     /**
-     * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
+     * @uses \Templado\Engine\ClearRedundantHtmlNamespaceDefinitionsFilter
      * @uses \Templado\Engine\EmptyElementsFilter
      */
     public function testCanBeConvertedToStringWithDoctype(): void {
         $dom = new DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><!DOCTYPE html><html><head><link rel="stylesheet"></link></head><body><p>test</p></body></html>');
+        $dom->loadXML('<?xml version="1.0" ?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><link rel="stylesheet"></link></head><body><p>test</p></body></html>');
 
         $expected = [
             '<!DOCTYPE html>',
@@ -203,7 +203,7 @@ class HTMLTest extends TestCase {
     }
 
     /**
-     * @uses \Templado\Engine\ClearNamespaceDefinitionsFilter
+     * @uses \Templado\Engine\ClearRedundantHtmlNamespaceDefinitionsFilter
      * @uses \Templado\Engine\EmptyElementsFilter
      */
     public function testPassedFilterGetsCalledAfterSerializing(): void {
@@ -212,7 +212,7 @@ class HTMLTest extends TestCase {
         $page = new Html($dom);
 
         $filter = $this->createMock(Filter::class);
-        $filter->expects($this->once())->method('apply')->with('<root xmlns="http://www.w3.org/1999/xhtml"></root>');
+        $filter->expects($this->once())->method('apply')->with('<root></root>');
 
         $page->asString($filter);
     }
