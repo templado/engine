@@ -17,6 +17,9 @@ use function libxml_use_internal_errors;
 use DOMDocument;
 
 final readonly class Document {
+
+    public const XMLNS = 'https://templado.io/document/1.0';
+
     public static function fromString(string $markup, ?Id $id = null): self {
         libxml_use_internal_errors(true);
         libxml_clear_errors();
@@ -29,7 +32,7 @@ final readonly class Document {
             $errors = libxml_get_errors();
             libxml_clear_errors();
 
-            throw new TempladoParsingException(...$errors);
+            throw new ParsingException(...$errors);
         }
 
         return self::fromDomDocument($dom, $id);
@@ -57,7 +60,7 @@ final readonly class Document {
         $selection = $selector->select($this->dom->documentElement);
 
         if ($selection->isEmpty()) {
-            throw new TempladoException('Selection cannot be empty');
+            throw new DocumentException('Selection cannot be empty');
         }
 
         if (count($selection) === 1) {
@@ -111,7 +114,7 @@ final readonly class Document {
             foreach ($item as $single) {
                 $id = $single->id();
                 if ($id === null) {
-                    throw new RuntimeException('Document must have an ID to be merged.');
+                    throw new RuntimeException('All documents in collection must have an ID to be merged.');
                 }
                 $mergeList->add(
                     $id,

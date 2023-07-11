@@ -25,7 +25,7 @@ class MergeList {
 
     public function get(string $id): ArrayIterator {
         if (!$this->has($id)) {
-            throw new RuntimeException(
+            throw new MergeListException(
                 sprintf('Empty List for id %s', $id)
             );
         }

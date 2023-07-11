@@ -9,6 +9,9 @@
  */
 namespace Templado\Engine;
 
+use ArrayIterator;
+use IteratorAggregate;
+use Traversable;
 use function array_splice;
 use function count;
 use DOMNode;
@@ -19,7 +22,7 @@ use DOMNodeList;
  * changes during the iteration process. This Wrapper around NodeList
  * takes a snapshot of the list first and then allows iterating over it.
  */
-class SnapshotDOMNodelist {
+class SnapshotDOMNodelist implements IteratorAggregate {
     /** @var DOMNode[] */
     private $items = [];
 
@@ -88,5 +91,9 @@ class SnapshotDOMNodelist {
         foreach ($list as $item) {
             $this->items[] = $item;
         }
+    }
+
+    public function getIterator(): Traversable {
+        return new ArrayIterator($this->items);
     }
 }

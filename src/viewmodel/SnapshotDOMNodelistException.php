@@ -9,7 +9,5 @@
  */
 namespace Templado\Engine;
 
-use Exception;
-
 class SnapshotDOMNodelistException extends Exception {
 }

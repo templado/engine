@@ -9,8 +9,6 @@
  */
 namespace Templado\Engine;
 
-use Exception;
-
 class XPathSelectorException extends Exception {
     public const InvalidExpression    = 1207;
     public const UnregisteredFunction = 1209;

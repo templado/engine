@@ -9,7 +9,5 @@
  */
 namespace Templado\Engine;
 
-use Exception;
-
-class TempladoException extends Exception {
+class DocumentException extends Exception {
 }

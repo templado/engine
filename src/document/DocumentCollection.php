@@ -11,21 +11,20 @@ namespace Templado\Engine;
 
 use ArrayIterator;
 use IteratorAggregate;
-use Traversable;
 
 /** @template-implements IteratorAggregate<int,Document> */
 class DocumentCollection implements IteratorAggregate {
     /** @psalm-type list<int,Document> */
     private array $documents = [];
 
+    public function __construct(Document ...$documents) {
+        $this->documents = $documents;
+    }
+
+    public function add(Document ...$documents): void {
+        $this->documents += $documents;
+    }
     public function getIterator(): ArrayIterator {
         return new ArrayIterator($this->documents);
-    }
-
-    public function has(string $id): bool {
-        return false;
-    }
-
-    public function get(string $id): Traversable {
     }
 }

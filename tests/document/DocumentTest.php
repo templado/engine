@@ -17,7 +17,7 @@ use Templado\Engine\Example\ViewModel;
 
 #[CoversClass(Document::class)]
 #[UsesClass(Id::class)]
-#[UsesClass(TempladoParsingException::class)]
+#[UsesClass(ParsingException::class)]
 #[UsesClass(XPathSelector::class)]
 #[UsesClass(Selection::class)]
 #[UsesClass(ViewModel::class)]
@@ -26,7 +26,7 @@ use Templado\Engine\Example\ViewModel;
 #[UsesClass(FormDataRenderer::class)]
 #[UsesClass(SnapshotAttributeList::class)]
 #[UsesClass(SnapshotDOMNodelist::class)]
-class TempladoTest extends TestCase {
+class DocumentTest extends TestCase {
     use DomDocumentsEqualTrait;
 
     public function testCanBeConstructedFromString(): void {
@@ -47,8 +47,14 @@ class TempladoTest extends TestCase {
         $this->assertSame($id, $instance->id());
     }
 
+    public function testCanBeSerializedBackToStringWithoutSerializer(): void {
+        $xml = "<?xml version=\"1.0\"?>\n<root/>\n";
+        $instance = Document::fromString($xml);
+        $this->assertEquals($xml, $instance->asString());
+    }
+
     public function testTryingToParseInvalidMarkupStringThrowsException(): void {
-        $this->expectException(TempladoParsingException::class);
+        $this->expectException(ParsingException::class);
         Document::fromString('<?xml version="1.0" ?><root>');
     }
 
@@ -64,7 +70,7 @@ class TempladoTest extends TestCase {
     }
 
     public function testExtractingEmptySelectionThrowsException(): void {
-        $this->expectException(TempladoException::class);
+        $this->expectException(DocumentException::class);
         (Document::fromString('<?xml version="1.0" ?><root><child /></root>'))->extract(
             new XPathSelector('//invalid')
         );
@@ -95,13 +101,13 @@ class TempladoTest extends TestCase {
     public function testViewModelCanBeApplied(): void {
         $viewModel = new ViewModel();
         $dom       = new DOMDocument();
-        $dom->load(__DIR__ . '/_data/viewmodel/source.html');
+        $dom->load(__DIR__ . '/../_data/viewmodel/source.html');
 
         $page = Document::fromDomDocument($dom);
         $page->applyViewModel($viewModel);
 
         $expected = new DOMDocument();
-        $expected->load(__DIR__ . '/_data/viewmodel/expected.html');
+        $expected->load(__DIR__ . '/../_data/viewmodel/expected.html');
 
         $this->assertResultMatches(
             $expected->documentElement,
@@ -131,7 +137,7 @@ class TempladoTest extends TestCase {
     }
 
     public function testFormDataCanBeApplied(): void {
-        $path = __DIR__ . '/_data/formdata/text';
+        $path = __DIR__ . '/../_data/formdata/text';
 
         $formdata = include $path . '/formdata.php';
 

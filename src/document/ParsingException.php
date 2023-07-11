@@ -11,7 +11,7 @@ namespace Templado\Engine;
 
 use LibXMLError;
 
-final class TempladoParsingException extends TempladoException {
+final class ParsingException extends DocumentException {
     /** @psalm-param list<LibXMLError> */
     private readonly array $errors;
 

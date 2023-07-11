@@ -9,7 +9,5 @@
  */
 namespace Templado\Engine;
 
-use Exception;
-
 class SnapshotAttributeListException extends Exception {
 }
