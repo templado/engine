@@ -100,7 +100,7 @@ final readonly class Document {
             if ($item instanceof self) {
                 $id = $item->id();
                 if ($id === null) {
-                    throw new RuntimeException('Document must have an ID to be merged.');
+                    throw new DocumentException('Document must have an ID to be merged.');
                 }
 
                 $mergeList->add(
@@ -114,7 +114,7 @@ final readonly class Document {
             foreach ($item as $single) {
                 $id = $single->id();
                 if ($id === null) {
-                    throw new RuntimeException('All documents in collection must have an ID to be merged.');
+                    throw new DocumentException('All documents in collection must have an ID to be merged.');
                 }
                 $mergeList->add(
                     $id,

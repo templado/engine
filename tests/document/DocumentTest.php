@@ -26,6 +26,9 @@ use Templado\Engine\Example\ViewModel;
 #[UsesClass(FormDataRenderer::class)]
 #[UsesClass(SnapshotAttributeList::class)]
 #[UsesClass(SnapshotDOMNodelist::class)]
+#[UsesClass(MergeList::class)]
+#[UsesClass(Merger::class)]
+#[UsesClass(DocumentCollection::class)]
 class DocumentTest extends TestCase {
     use DomDocumentsEqualTrait;
 
@@ -180,6 +183,49 @@ class DocumentTest extends TestCase {
             $expected->documentElement,
             $dom->documentElement
         );
+    }
+
+    public function testDocumentsCanBeMerged(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<html xmlns="http://www.w3.org/1999/xhtml"><body><span id="a" /><span id="b" /><span id="c" /></body></html>');
+
+        $target = Document::fromDomDocument($dom);
+
+        $snipA = Document::fromString('<templado:document xmlns="http://www.w3.org/1999/xhtml" xmlns:templado="https://templado.io/document/1.0"><div id="d" /><div id="e" /></templado:document>', new Id('a'));
+
+        $list = new DocumentCollection(
+            Document::fromString('<templado:document xmlns="http://www.w3.org/1999/xhtml" xmlns:templado="https://templado.io/document/1.0" id="c"><div id="f" /><div id="g" /></templado:document>', new Id('c')),
+            Document::fromString('<templado:document xmlns="http://www.w3.org/1999/xhtml" xmlns:templado="https://templado.io/document/1.0"><div id="h" /><div id="i" /></templado:document>', new Id('d'))
+        );
+
+        $target->merge(
+            $snipA,
+            $list
+        );
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0"?><html xmlns="http://www.w3.org/1999/xhtml"><body><span id="a"><div id="d"><div id="h"/><div id="i"/></div><div id="e"/></span><span id="b"/><div id="f"/><div id="g"/></body></html>');
+
+        $this->assertResultMatches(
+            $expected->documentElement,
+            $dom->documentElement
+        );
+    }
+
+    public function testTryingToMergeDocumentWithoutIdThrowsException(): void {
+        $target = Document::fromString('<?xml version="1.0" ?><root />');
+
+        $this->expectException(DocumentException::class);
+        $target->merge($target);
+    }
+
+    public function testTryingToMergeDocumentCollectionWithDocumentWithoutIdThrowsException(): void {
+        $target = Document::fromString('<?xml version="1.0" ?><root />');
+
+        $list = new DocumentCollection($target);
+
+        $this->expectException(DocumentException::class);
+        $target->merge($list);
     }
 
 }

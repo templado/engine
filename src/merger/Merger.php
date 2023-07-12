@@ -23,12 +23,17 @@ final class Merger {
     private array $seen;
 
     public function merge(DOMDocument $target, MergeList $toMerge): void {
+        if ($target->documentElement === null) {
+            throw new MergerException('Cannot merge into a document without a root element', MergerException::EmptyDocument);
+        }
+
+        if ($toMerge->isEmpty()) {
+            throw new MergerException('MergeList must not be empty', MergerException::EmptyList);
+        }
+
         $this->documents = $toMerge;
         $this->seen = [];
 
-        if ($target->documentElement === null) {
-            throw new MergerException('Cannot merge into a document without a root element');
-        }
 
         $this->processContext($target->documentElement);
     }
@@ -47,17 +52,18 @@ final class Merger {
                 continue;
             }
 
-            $id = $contextChild->getAttribute('id');
+            $id = new Id($contextChild->getAttribute('id'));
             if (!$this->documents->has($id)) {
                 continue;
             }
 
-            if (isset($this->seen[$id])) {
-                throw new RuntimeException(
-                    sprintf('Duplicate id "%s" in document detected - bailing out.', $id)
+            if (isset($this->seen[$id->asString()])) {
+                throw new MergerException(
+                    sprintf('Duplicate id "%s" in document detected - bailing out.', $id->asString()),
+                    MergerException::DuplicateId
                 );
             }
-            $this->seen[$id] = true;
+            $this->seen[$id->asString()] = true;
 
             foreach($this->documents->get($id) as $childDocument) {
                 assert($childDocument instanceof DOMDocument);

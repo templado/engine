@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use DOMNode;
 use PHPUnit\Framework\TestCase;
 
 class SnapshotDOMNodelistTest extends TestCase {
@@ -95,6 +96,17 @@ class SnapshotDOMNodelistTest extends TestCase {
         $this->assertSame($root->firstChild, $node);
     }
 
+    public function testCanBeIteratedOver(): void {
+        $root = $this->dom->documentElement;
+        $list = new SnapshotDOMNodelist($root->childNodes);
+
+        foreach($list as $node) {
+            $this->assertInstanceOf(DOMNode::class, $node);
+        }
+
+        $this->assertCount(2, $list);
+    }
+
     public function testHasNextReturnsTrueAtBeginning(): void {
         $root = $this->dom->documentElement;
         $list = new SnapshotDOMNodelist($root->childNodes);
@@ -117,4 +129,5 @@ class SnapshotDOMNodelistTest extends TestCase {
         $list->removeNode($root->firstChild);
         $this->assertSame($root->firstChild->nextSibling, $list->getNext());
     }
+
 }

@@ -9,6 +9,10 @@ class MergeList {
 
     private array $documents = [];
 
+    public function isEmpty(): bool {
+        return count($this->documents) === 0;
+    }
+
     public function add(Id $id, DOMDocument $dom) {
         $idString = $id->asString();
 
@@ -19,17 +23,17 @@ class MergeList {
         $this->documents[$idString][] = $dom;
     }
 
-    public function has(string $id): bool {
-        return isset($this->documents[$id]);
+    public function has(Id $id): bool {
+        return isset($this->documents[$id->asString()]);
     }
 
-    public function get(string $id): ArrayIterator {
+    public function get(Id $id): ArrayIterator {
         if (!$this->has($id)) {
             throw new MergeListException(
-                sprintf('Empty List for id %s', $id)
+                sprintf('Empty List for id %s', $id->asString())
             );
         }
 
-        return new ArrayIterator($this->documents[$id]);
+        return new ArrayIterator($this->documents[$id->asString()]);
     }
 }
