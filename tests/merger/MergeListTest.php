@@ -55,6 +55,16 @@ class MergeListTest extends TestCase {
         }
     }
 
+    public function testCanAddMultipleDocumentsForSameId(): void {
+        $list = new MergeList();
+        $id = new Id('foo');
+        $list->add($id, new DOMDocument());
+        $list->add($id, new DOMDocument());
+
+        $this->assertFalse($list->isEmpty());
+        $this->assertCount(2, $list->get($id));
+    }
+
     public function testRequestingNonExistingIdThrowsException(): void {
         $this->expectException(MergeListException::class);
         (new MergeList())->get(new Id('not-existing'));
