@@ -9,3 +9,5 @@ cache.properties
 .php_cs.cache
 .phpunit.result.cache
 .phpunit.cache
+.phpunit.cache
+.php-cs-fixer.cache
