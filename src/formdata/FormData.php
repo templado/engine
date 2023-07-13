@@ -41,7 +41,7 @@ class FormData {
     /**
      * @throws FormDataException
      */
-    public function getValue(string $key): string {
+    public function getValue(string $key): string|array {
         if (!$this->hasKey($key)) {
             throw new FormDataException(sprintf('No such key: %s', $key));
         }
