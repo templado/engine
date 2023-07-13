@@ -33,13 +33,15 @@ readonly class Id {
     private function ensureFollowsHtml5Rules(string $id): void {
         // https://www.w3.org/TR/html5-author/global-attributes.html#the-id-attribute
         // https://www.w3.org/TR/2012/WD-html5-20121025/single-page.html#space-character
-        $invalid = "\u{0020}" . // SPACE
-                   "\u{0009}" . // TAB
-                   "\u{000A}" . // LF
-                   "\u{000C}" . //"FF"
-                   "\u{000D}"; // "CR"
+        $invalid = [
+            "\u{0020}", // SPACE
+            "\u{0009}", // TAB
+            "\u{000A}", // LF
+            "\u{000C}", //"FF"
+            "\u{000D}" // "CR"
+        ];
 
-        if (preg_match('/^[' . $invalid . ']+$/u', $id)) {
+        if (preg_match('/^[' . implode('', $invalid) . ']+$/u', $id)) {
             throw new InvalidArgumentException(
                 'ID must not contain space type character (https://www.w3.org/TR/html5-author/global-attributes.html#the-id-attribute)'
             );

@@ -16,7 +16,7 @@ class sIdTest extends \PHPUnit\Framework\TestCase {
     }
 
     #[DataProvider('invalidIdProvider')]
-    public function testThrowsExceptionForInvalidInput(string $input): void{
+    public function testThrowsExceptionForInvalidInput(string $input): void {
         $this->expectException(InvalidArgumentException::class);
 
         (new Id($input));

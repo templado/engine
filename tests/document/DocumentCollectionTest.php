@@ -37,8 +37,10 @@ class DocumentCollectionTest extends TestCase {
 
         $collection = new DocumentCollection();
         $collection->add($document);
+        $collection->add($document);
 
         $this->assertContains($document, $collection);
+        $this->assertCount(2, $collection);
     }
 
 }

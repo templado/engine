@@ -10,5 +10,6 @@ class ParsingExceptionTest extends TestCase {
         (new \DOMDocument())->loadXML('<?xml version="1.0" ?><parseerror>');
         $exception = new ParsingException(...libxml_get_errors());
         $this->assertCount(1, $exception->errors());
+        $this->assertEquals('Error(s) during parse', $exception->getMessage());
     }
 }

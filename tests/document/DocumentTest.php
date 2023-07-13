@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * This file is part of Document\Engine.
+ * This file is part of Templado\Engine.
  *
  * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
  *
@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use function libxml_get_errors;
+use ArrayIterator;
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -39,6 +41,18 @@ class DocumentTest extends TestCase {
         );
     }
 
+    public function testExistingLibxmlErrorStateGetsClearedOnConstruct(): void {
+        libxml_use_internal_errors(true);
+        $dummy = new DOMDocument();
+        $dummy->loadXML('parsing-this-will-cause-libxml-errors');
+        libxml_use_internal_errors(false);
+
+        $this->assertInstanceOf(
+            Document::class,
+            Document::fromString('<?xml version="1.0" ?><root />')
+        );
+    }
+
     public function testCanBeConstructedFromStringWithId(): void {
         $id       = new Id('abc');
         $instance = Document::fromString('<?xml version="1.0" ?><root />', $id);
@@ -51,25 +65,44 @@ class DocumentTest extends TestCase {
     }
 
     public function testCanBeSerializedBackToStringWithoutSerializer(): void {
-        $xml = "<?xml version=\"1.0\"?>\n<root/>\n";
+        $xml      = "<?xml version=\"1.0\"?>\n<root/>\n";
         $instance = Document::fromString($xml);
         $this->assertEquals($xml, $instance->asString());
     }
 
     public function testTryingToParseInvalidMarkupStringThrowsException(): void {
-        $this->expectException(ParsingException::class);
-        Document::fromString('<?xml version="1.0" ?><root>');
+        $caught = null;
+        try {
+            Document::fromString('<?xml version="1.0" ?><root>');
+        } catch (\Throwable $t) {
+            $caught = $t;
+        }
+
+        $this->assertInstanceOf(ParsingException::class, $caught);
+        $this->assertEmpty(libxml_get_errors());
     }
 
     public function testSelectionOfSingleNodeCanBeExtracted(): void {
         $id     = new Id('test');
-        $result = (Document::fromString('<?xml version="1.0" ?><root><child /></root>'))->extract(
+        $result = (Document::fromString('<?xml version="1.0" ?><root><child><p>text</p></child></root>'))->extract(
             new XPathSelector('//child'),
             $id
         );
 
         $this->assertInstanceOf(Document::class, $result);
         $this->assertEquals($id, $result->id());
+
+        $result->asString(new class($this) implements Serializer {
+            public function __construct(
+                private TestCase $testCase
+            ) {
+            }
+            public function serialize(DOMDocument $document): string {
+                $this->testCase->assertEquals('child', $document->documentElement->nodeName);
+                $this->testCase->assertTrue($document->documentElement->hasChildNodes());
+                return '';
+            }
+        });
     }
 
     public function testExtractingEmptySelectionThrowsException(): void {
@@ -80,21 +113,20 @@ class DocumentTest extends TestCase {
     }
 
     public function testSelectionOfMultiNodesCanBeExtracted(): void {
-        $result = (Document::fromString('<?xml version="1.0" ?><root><child /><child /></root>'))->extract(
+        $result = (Document::fromString('<?xml version="1.0" ?><root><child><p>text</p></child><child /></root>'))->extract(
             new XPathSelector('//child')
         );
 
         $this->assertInstanceOf(Document::class, $result);
 
         $result->asString(new class($this) implements Serializer {
-
             public function __construct(
                 private TestCase $testCase
-            ){
-
+            ) {
             }
             public function serialize(DOMDocument $document): string {
                 $this->testCase->assertCount(2, $document->getElementsByTagName('child'));
+                $this->testCase->assertTrue($document->documentElement->firstElementChild->hasChildNodes());
 
                 return '';
             }
@@ -126,7 +158,7 @@ class DocumentTest extends TestCase {
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
 
         $selection = $this->createMock(Selection::class);
-        $selection->method('getIterator')->willReturn(new \ArrayIterator([$dom->documentElement->firstChild]));
+        $selection->method('getIterator')->willReturn(new ArrayIterator([$dom->documentElement->firstChild]));
 
         $selector = $this->createMock(Selector::class);
         $selector->method('select')->willReturn($selection);
@@ -228,4 +260,33 @@ class DocumentTest extends TestCase {
         $target->merge($list);
     }
 
+    public function testBlankWhitespaceGetsRemoved(): void {
+        $document = Document::fromString(
+            implode("\n",[
+                '<?xml version="1.0" ?>',
+                '<root>',
+                '    <p>text</p>',
+                '</root>'
+            ])
+        );
+
+        $document->asString(new class($this) implements Serializer {
+            public function __construct(
+                private TestCase $testCase
+            ) {
+            }
+            public function serialize(DOMDocument $document): string {
+                $this->testCase->assertCount(1, $document->documentElement->childNodes);
+                return '';
+            }
+        });
+    }
+
+    public function testNonFatalWarningsFromParsingAreCaught(): void {
+        $this->expectException(ParsingException::class);
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'
+        .'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+        .'<body>&nbsp;</body>';
+        (Document::fromString($xml));
+    }
 }
