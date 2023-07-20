@@ -12,7 +12,6 @@ namespace Templado\Engine;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use function sizeof;
 
 /** @template-implements IteratorAggregate<int,Document> */
 class DocumentCollection implements Countable, IteratorAggregate {
@@ -24,11 +23,11 @@ class DocumentCollection implements Countable, IteratorAggregate {
     }
 
     public function count(): int {
-        return sizeof($this->documents);
+        return count($this->documents);
     }
 
     public function add(Document ...$documents): void {
-        array_push($this->documents,  ...$documents);
+        array_push($this->documents, ...$documents);
     }
     public function getIterator(): ArrayIterator {
         return new ArrayIterator($this->documents);

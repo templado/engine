@@ -13,10 +13,8 @@ use DOMDocument;
 use DOMElement;
 use DOMNode;
 use DOMXPath;
-use RuntimeException;
 
 final class Merger {
-
     private MergeList $documents;
 
     /** @var array<string, DOMNode> */
@@ -32,19 +30,18 @@ final class Merger {
         }
 
         $this->documents = $toMerge;
-        $this->seen = [];
-
+        $this->seen      = [];
 
         $this->processContext($target->documentElement);
     }
 
-    private function processContext(DOMElement $context) {
+    private function processContext(DOMElement $context): void {
         $owner = $context->ownerDocument;
         $nodes = new SnapshotDOMNodelist(
             (new DOMXPath($owner))->query('.//*[@id]', $context)
         );
 
-        while($nodes->hasNext()) {
+        while ($nodes->hasNext()) {
             $contextChild = $nodes->getNext();
             assert($contextChild instanceof DOMElement);
 
@@ -53,6 +50,7 @@ final class Merger {
             }
 
             $id = new Id($contextChild->getAttribute('id'));
+
             if (!$this->documents->has($id)) {
                 continue;
             }
@@ -65,7 +63,7 @@ final class Merger {
             }
             $this->seen[$id->asString()] = true;
 
-            foreach($this->documents->get($id) as $childDocument) {
+            foreach ($this->documents->get($id) as $childDocument) {
                 assert($childDocument instanceof DOMDocument);
 
                 $import = $owner->importNode($childDocument->documentElement, true);
@@ -75,13 +73,14 @@ final class Merger {
                 $this->mergeIn($contextChild, $import);
             }
         }
-
     }
 
     private function isConnected(DOMElement $context, DOMElement $contextChild) {
         $current = $contextChild;
+
         while ($current->parentNode !== null) {
             $current = $current->parentNode;
+
             if ($current->isSameNode($context)) {
                 return true;
             }
@@ -92,6 +91,7 @@ final class Merger {
 
     private function mergeIn(DOMElement $contextChild, DOMElement $import): DOMElement {
         $workContext = [$import];
+
         if ($import->namespaceURI === Document::XMLNS) {
             $workContext = new SnapshotDOMNodelist($import->childNodes);
         }
@@ -111,5 +111,4 @@ final class Merger {
     private function shouldReplaceCurrent(DOMElement $import, DOMElement $contextChild): bool {
         return $import->hasAttribute('id') && $import->getAttribute('id') === $contextChild->getAttribute('id');
     }
-
 }

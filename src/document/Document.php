@@ -9,7 +9,6 @@
  */
 namespace Templado\Engine;
 
-use RuntimeException;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_get_last_error;
@@ -17,7 +16,6 @@ use function libxml_use_internal_errors;
 use DOMDocument;
 
 final readonly class Document {
-
     public const XMLNS = 'https://templado.io/document/1.0';
 
     public static function fromString(string $markup, ?Id $id = null): self {
@@ -87,6 +85,9 @@ final readonly class Document {
 
     public function asString(?Serializer $serializer = null): string {
         if ($serializer === null) {
+            $this->dom->formatOutput       = true;
+            $this->dom->preserveWhiteSpace = false;
+
             return $this->dom->saveXML();
         }
 
@@ -99,6 +100,7 @@ final readonly class Document {
         foreach ($toMerge as $item) {
             if ($item instanceof self) {
                 $id = $item->id();
+
                 if ($id === null) {
                     throw new DocumentException('Document must have an ID to be merged.');
                 }
@@ -113,6 +115,7 @@ final readonly class Document {
 
             foreach ($item as $single) {
                 $id = $single->id();
+
                 if ($id === null) {
                     throw new DocumentException('All documents in collection must have an ID to be merged.');
                 }

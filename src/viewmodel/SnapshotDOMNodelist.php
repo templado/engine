@@ -9,13 +9,13 @@
  */
 namespace Templado\Engine;
 
-use ArrayIterator;
-use IteratorAggregate;
-use Traversable;
 use function array_splice;
 use function count;
+use ArrayIterator;
 use DOMNode;
 use DOMNodeList;
+use IteratorAggregate;
+use Traversable;
 
 /**
  * Iterating over a DOMNodeList in PHP does not work when the list
@@ -73,6 +73,10 @@ class SnapshotDOMNodelist implements IteratorAggregate {
         throw new SnapshotDOMNodelistException('Node not found in list');
     }
 
+    public function getIterator(): Traversable {
+        return new ArrayIterator($this->items);
+    }
+
     private function current(): DOMNode {
         if (!$this->valid()) {
             throw new SnapshotDOMNodelistException('No current node available');
@@ -91,9 +95,5 @@ class SnapshotDOMNodelist implements IteratorAggregate {
         foreach ($list as $item) {
             $this->items[] = $item;
         }
-    }
-
-    public function getIterator(): Traversable {
-        return new ArrayIterator($this->items);
     }
 }
