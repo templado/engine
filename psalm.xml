@@ -8,6 +8,7 @@
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     findUnusedBaselineEntry="true"
     findUnusedCode="true"
+    autoloader="src/autoload.php"
 >
     <projectFiles>
         <directory name="src" />
