@@ -2,6 +2,8 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
 use Templado\Engine\PrefixModel\PrefixCallViewModel;
@@ -9,12 +11,9 @@ use Templado\Engine\PrefixModel\PrefixViewModel;
 use Templado\Engine\ResourceModel\ResourceCallViewModel;
 use Templado\Engine\ResourceModel\ResourceViewModel;
 
-/**
- * @covers \Templado\Engine\ViewModelRenderer
- *
- * @uses \Templado\Engine\SnapshotDOMNodelist
- * @uses \Templado\Engine\SnapshotAttributeList
- */
+#[CoversClass(ViewModelRenderer::class)]
+#[UsesClass(Signal::class)]
+#[UsesClass(StaticNodeList::class)]
 class ViewModelRendererTest extends TestCase {
     use DomDocumentsEqualTrait;
 
@@ -418,41 +417,6 @@ class ViewModelRendererTest extends TestCase {
             $source->documentElement,
             true
         );
-    }
-
-    public function testViewModelIteratorWithoutCountableThrowsException(): void {
-        $dom = new DOMDocument();
-        $dom->loadXML('<?xml version="1.0" ?><root><child property="test" /></root>');
-
-        $renderer = new ViewModelRenderer();
-        $this->expectException(ViewModelRendererException::class);
-        $renderer->render($dom->documentElement, new class {
-            public function getTest() {
-                return new class implements \Iterator {
-                    private $valid = true;
-
-                    public function current(): mixed {
-                        return 'a';
-                    }
-
-                    public function next(): void {
-                        $this->valid = false;
-                    }
-
-                    public function key():int {
-                        return 0;
-                    }
-
-                    public function valid():bool {
-                        return $this->valid;
-                    }
-
-                    public function rewind(): void {
-                        $this->valid = true;
-                    }
-                };
-            }
-        });
     }
 
     public function testResourceViewModelGetsAppliedAsExcepted(): void {

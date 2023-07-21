@@ -31,6 +31,8 @@ use Templado\Engine\Example\ViewModel;
 #[UsesClass(MergeList::class)]
 #[UsesClass(Merger::class)]
 #[UsesClass(DocumentCollection::class)]
+#[UsesClass(Signal::class)]
+#[UsesClass(StaticNodeList::class)]
 class DocumentTest extends TestCase {
     use DomDocumentsEqualTrait;
 

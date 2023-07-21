@@ -10,589 +10,405 @@
 namespace Templado\Engine;
 
 use function array_key_exists;
-use function array_pop;
-use function array_walk;
-use function count;
-use function end;
-use function explode;
-use function get_class;
 use function gettype;
-use function implode;
-use function is_array;
 use function is_iterable;
 use function is_object;
 use function is_string;
+use function lcfirst;
 use function method_exists;
-use function rtrim;
-use function sprintf;
-use function strpos;
-use function substr_count;
+use function property_exists;
+use function str_contains;
 use function ucfirst;
-use Countable;
-use DOMAttr;
-use DOMDocumentFragment;
 use DOMElement;
 use DOMNode;
 use DOMXPath;
 
 class ViewModelRenderer {
-    /** @psalm-var list<mixed> */
-    private array $stack = [];
+    private ?object $rootModel = null;
+    private ?DOMNode $pointer;
+    private array $prefixModels = [];
 
-    /** @psalm-var list<string> */
-    private array $stackNames = [];
+    private ?DOMXPath $xp;
 
-    /** @psalm-var list<SnapshotDOMNodelist> */
-    private array $listStack = [];
-
-    private object $resourceModel;
-
-    /** @psalm-var array<string,string> */
-    private array $prefixes = [];
-
-    /**
-     * @throws ViewModelRendererException
-     */
     public function render(DOMNode $context, object $model): void {
-        $this->resourceModel = $model;
-        $this->stack         = [$model];
-        $this->stackNames    = [];
-        $this->listStack     = [];
-        $this->prefixes      = [];
-        $this->walk($context);
+        $this->rootModel = $model;
+        $this->pointer   = $context->ownerDocument->createComment('templado pointer node');
+        $this->xp        = new DOMXPath($context->ownerDocument);
+
+        $this->walk($context, $model);
     }
 
-    /**
-     * @throws ViewModelRendererException
-     */
-    private function walk(DOMNode $context): void {
+    private function walk(DOMNode $context, object $model): void {
         if (!$context instanceof DOMElement) {
             return;
         }
 
-        $stackAdded = 0;
+        $parent = $context->parentNode;
+
+        // echo "walk: " . $context->nodeName . "\n";
+        // echo " --> Model is: " . (is_object($model) ? \get_class($model) : \gettype($model)) . "\n";
 
         if ($context->hasAttribute('prefix')) {
-            $this->resolvePrefixDefinition($context->getAttribute('prefix'));
+            $this->registerPrefix($context->getAttribute('prefix'));
         }
 
         if ($context->hasAttribute('resource')) {
-            $this->addResourceToStack($context);
-            $stackAdded++;
+            $model = $this->resolveResource($context->getAttribute('resource'));
         }
 
-        if ($context->hasAttribute('property')) {
-            $this->addToStack($context);
-            $stackAdded++;
-            $context = $this->applyCurrent($context);
+        $supported = true;
+
+        if ($context->hasAttribute('vocab')) {
+            $supported = $this->modelSupportsVocab($model, $context->getAttribute('vocab'));
+        }
+
+        if ($supported && $context->hasAttribute('property')) {
+            // echo " --> Property found: " . $context->getAttribute('property') . "\n";
+            $model = $this->processProperty($context, $model);
+            // echo " --> Model now: " . (is_object($model) ? \get_class($model) : \gettype($model)) . "\n";
+        }
+
+        if (!$this->isConnected($parent, $context)) {
+            // echo " ---> no longer connected - skipping\n";
+            return;
         }
 
         if ($context->hasChildNodes()) {
-            $list              = new SnapshotDOMNodelist($context->childNodes);
-            $this->listStack[] = $list;
+            $children = StaticNodeList::fromNodeList($context->childNodes);
 
-            while ($list->hasNext()) {
-                $childNode = $list->getNext();
-                /* @var \DOMNode $childNode */
-                $this->walk($childNode);
+            foreach ($children as $child) {
+                if (!$this->isConnected($context, $child)) {
+                    // echo " ---> no longer connected - skipping\n";
+                    continue;
+                }
+                $this->walk($child, $model);
             }
-            array_pop($this->listStack);
-        }
-
-        while ($stackAdded > 0) {
-            $this->dropFromStack();
-            $stackAdded--;
         }
     }
 
-    /**
-     * @throws ViewModelRendererException
-     */
-    private function addToStack(DOMElement $context): void {
-        $model    = $this->current();
-        $property = $context->getAttribute('property');
+    private function registerPrefix(string $prefixString): void {
+        $parts = explode(': ', $prefixString, 2);
 
-        if (substr_count($property, ':') === 1) {
-            [$prefix, $property] = explode(':', $property);
-
-            if (!array_key_exists($prefix, $this->prefixes)) {
-                throw new ViewModelRendererException(sprintf('Undefined prefix %s', $prefix));
-            }
-
-            $model = $this->prefixes[$prefix];
-
-            if ($model === null) {
-                return;
-            }
+        if (count($parts) !== 2) {
+            throw new ViewModelRendererException('Invalid prefix definition');
         }
 
-        $this->ensureIsObject($model, $property);
+        [$prefix, $method] = $parts;
 
-        $this->stackNames[] = $property;
-
-        foreach ([$property, 'get' . ucfirst($property)] as $method) {
-            if (method_exists($model, $method)) {
-                $this->stack[] = $model->{$method}($context->nodeValue);
-
-                return;
-            }
-        }
-
-        if (method_exists($model, '__call')) {
-            $this->stack[] = $model->{$property}($context->nodeValue);
+        if (str_contains($method, ':')) {
+            $this->prefixModels[$prefix] = null;
 
             return;
         }
 
-        throw new ViewModelRendererException(
-            sprintf('Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
-        );
-    }
+        $result = match (true) {
+            // method variants
+            method_exists($this->rootModel, $method)                  => $this->rootModel->{$method}(),
+            method_exists($this->rootModel, 'get' . ucfirst($method)) => $this->rootModel->{'get' . ucfirst($method)}(),
+            method_exists($this->rootModel, '__call')                 => $this->rootModel->{$method}(),
 
-    private function current(): mixed {
-        return end($this->stack);
-    }
+            // property variants
+            property_exists($this->rootModel, $method) => $this->rootModel->{$method},
+            method_exists($this->rootModel, '__get')   => $this->rootModel->{$method},
 
-    private function dropFromStack(): void {
-        array_pop($this->stack);
-        array_pop($this->stackNames);
-    }
+            default => throw new ViewModelRendererException(sprintf('Cannot resolve prefix request for "%s"', $method))
+        };
 
-    /**
-     * @throws ViewModelRendererException
-     */
-    private function applyCurrent(DOMElement $context): DOMNode {
-        /** @psalm-suppress MixedAssignment */
-        $model = $this->current();
-
-        switch (gettype($model)) {
-            case 'boolean': {
-                /** @var bool $model */
-                return $this->processBoolean($context, $model);
-            }
-            case 'string': {
-                $this->processString($context, $model);
-
-                return $context;
-            }
-            case 'object': {
-                /** @var object $model */
-                return $this->processObject($context, $model);
-            }
-
-            case 'array': {
-                return $this->processArray($context, $model);
-            }
-
-            default: {
-                throw new ViewModelRendererException(
-                    sprintf(
-                        'Value returned by $model->%s must not be of type %s',
-                        implode('()->', $this->stackNames) . '()',
-                        gettype($model)
-                    )
-                );
-            }
-        }
-    }
-
-    /**
-     * @throws ViewModelRendererException
-     *
-     * @return DOMDocumentFragment|DOMElement
-     */
-    private function processBoolean(DOMElement $context, bool $model) {
-        if ($model === true) {
-            return $context;
+        if (!is_object($result)) {
+            throw new ViewModelRendererException('Prefix type must be an object');
         }
 
-        if ($context->isSameNode($context->ownerDocument->documentElement)) {
-            throw new ViewModelRendererException('Cannot remove root element');
+        $this->prefixModels[$prefix] = $result;
+    }
+
+    private function resolveResource(string $resource): object {
+        $model = $this->rootModel;
+
+        if (str_contains($resource, ':')) {
+            [$prefix, $resource] = explode(':', $resource);
+            $model               = $this->modelForPrefix($prefix);
         }
 
-        $this->removeNodeFromCurrentSnapshotList($context);
-        $context->parentNode->removeChild($context);
+        $result = match (true) {
+            // method variants
+            method_exists($model, $resource)                  => $model->{$resource}(),
+            method_exists($model, 'get' . ucfirst($resource)) => $model->{'get' . ucfirst($resource)}(),
+            method_exists($model, '__call')                   => $model->{$resource}(),
 
-        return $context->ownerDocument->createDocumentFragment();
-    }
+            // property variants
+            property_exists($model, $resource) => $model->{$resource},
+            method_exists($model, '__get')     => $model->{$resource},
 
-    private function processString(DOMElement $context, string $model): void {
-        $context->nodeValue   = '';
-        $context->textContent = $model;
-    }
+            default => throw new ViewModelRendererException(sprintf('Cannot resolve resource request for "%s"', $resource))
+        };
 
-    /**
-     * @throws ViewModelRendererException
-     *
-     * @return DOMDocumentFragment|DOMElement
-     */
-    private function processObject(DOMElement $context, object $model) {
-        if (is_iterable($model)) {
-            /** @var iterable $model */
-            return $this->processArray($context, $model);
+        if (!is_object($result)) {
+            throw new ViewModelRendererException('Resouce type must be a object');
         }
 
-        return $this->processObjectAsModel($context, $model);
+        return $result;
     }
 
-    /**
-     * @throws ViewModelRendererException
-     */
-    private function processObjectAsModel(DOMElement $context, object $model): DOMElement {
-        $container   = $this->moveToContainer($context, false);
-        $workContext = $this->selectMatchingWorkContext($container->firstChild, $model);
+    private function modelForPrefix(string $prefix): ?object {
+        if (!array_key_exists($prefix, $this->prefixModels)) {
+            throw new ViewModelRendererException('No modell set for prefix');
+        }
 
-        if (method_exists($model, 'asString') ||
-            method_exists($model, '__call')
-        ) {
-            /** @psalm-suppress MixedAssignment */
-            $value = $model->asString($workContext->nodeValue);
+        return $this->prefixModels[$prefix];
+    }
 
-            if ($value !== null && !is_string($value)) {
-                throw new ViewModelRendererException(
-                    sprintf(
-                        "Method \$model->%s must return 'null' or 'string', got '%s'",
-                        implode('()->', $this->stackNames) . '()->asString()',
-                        gettype($value)
-                    )
-                );
-            }
+    private function modelSupportsVocab(object $model, string $requiredVocab): bool {
+        return true;
+    }
 
-            if ($value !== null) {
-                $workContext->nodeValue   = '';
-                $workContext->textContent = $value;
+    private function isConnected(DOMNode $context, DOMNode $contextChild): bool {
+        $current = $contextChild;
+
+        while ($current->parentNode !== null) {
+            $current = $current->parentNode;
+
+            if ($current->isSameNode($context)) {
+                return true;
             }
         }
 
-        foreach (new SnapshotAttributeList($workContext->attributes) as $attribute) {
-            $this->processAttribute($attribute, $model);
-        }
-
-        $container->parentNode->insertBefore($workContext, $container);
-        $container->parentNode->removeChild($container);
-
-        return $workContext;
+        return false;
     }
 
-    /**
-     * @throws ViewModelRendererException
-     */
-    private function processArray(DOMElement $context, iterable $model): DOMDocumentFragment|DOMElement {
-        $count = $this->getElementCount($model);
+    private function processProperty(DOMElement $context, object $model): object {
+        $property = $context->getAttribute('property');
 
-        if ($count > 1 && $context->isSameNode($context->ownerDocument->documentElement)) {
-            throw new ViewModelRendererException(
-                'Cannot render multiple copies of root element'
+        if (str_contains($property, ':')) {
+            [$prefix, $property] = explode(':', $property);
+            $prefixModel         = $this->modelForPrefix($prefix);
+
+            if ($prefixModel === null) {
+                return $model;
+            }
+
+            $model = $prefixModel;
+        }
+
+        $result = match (true) {
+            // method variants
+            method_exists($model, $property)                  => $model->{$property}($context->textContent),
+            method_exists($model, 'get' . ucfirst($property)) => $model->{'get' . ucfirst($property)}($context->textContent),
+            method_exists($model, '__call')                   => $model->{$property}($context->textContent),
+
+            // property variants
+            property_exists($model, $property) => $model->{$property},
+            method_exists($model, '__get')     => $model->{$property},
+
+            default => throw new ViewModelRendererException(sprintf('Cannot resolve property request for "%s"', $property))
+        };
+
+        if ($context->hasAttribute('typeof')) {
+            if (!is_iterable($result) && !is_object($result)) {
+                throw new ViewModelRendererException('TypeOf handling requires object / list of objects');
+            }
+
+            $this->conditionalApply($context, $result);
+
+            return $model;
+        }
+
+        if (is_iterable($result)) {
+            $this->iterableApply($context, $result);
+
+            return $model;
+        }
+
+        if (is_string($result)) {
+            $context->nodeValue   = '';
+            $context->textContent = $result;
+
+            return $model;
+        }
+
+        if ($result instanceof Remove || $result === false) {
+            $context->remove();
+
+            return $model;
+        }
+
+        if ($result instanceof Ignore || $result === true || $result === null) {
+            return $model;
+        }
+
+        if (is_object($result)) {
+            $this->objectApply($context, $result);
+
+            return $result;
+        }
+
+        throw new ViewModelRendererException('Unsupported type');
+    }
+
+    private function conditionalApply(DOMElement $context, object|iterable $model): void {
+        if (!is_iterable($model)) {
+            $model = [$model];
+        }
+
+        $myPointer = $context->parentNode->insertBefore($this->pointer->cloneNode(), $context);
+
+        foreach ($model as $current) {
+            if (!is_object($current)) {
+                throw new ViewModelRendererException('Model must be an object when used for type of checks');
+            }
+
+            if (!method_exists($current, 'typeOf')) {
+                throw new ViewModelRendererException('Model must provide method typeOf for type of checks');
+            }
+
+            $matches = $this->xp->query(
+                sprintf(
+                    'following-sibling::*[@property="%s" and @typeof="%s"]',
+                    $context->getAttribute('property'),
+                    $current->typeOf()
+                ),
+                $myPointer
             );
-        }
 
-        if ($count === 0) {
-            return $this->processBoolean($context, false);
-        }
-
-        $container = $this->moveToContainer($context, true);
-
-        /**
-         * @psalm-suppress MixedAssignment
-         *
-         * @psalm-var int $pos
-         */
-        foreach ($model as $pos => $entry) {
-            $subcontext = $container->cloneNode(true);
-            $container->parentNode->insertBefore($subcontext, $container);
-
-            $result = $this->processArrayEntry($subcontext->firstChild, $entry, $pos);
-
-            $container->parentNode->insertBefore($result, $subcontext);
-            $container->parentNode->removeChild($subcontext);
-        }
-
-        $fragment = $container->ownerDocument->createDocumentFragment();
-        $container->parentNode->removeChild($container);
-
-        return $fragment;
-    }
-
-    /**
-     * @throws ViewModelRendererException
-     *
-     * @psalm-suppress MissingParamType
-     */
-    private function processArrayEntry(DOMElement $context, $entry, int $pos): DOMElement {
-        $workContext = $this->selectMatchingWorkContext($context, $entry);
-        /* @var DOMElement $clone */
-        $this->stack[]      = $entry;
-        $this->stackNames[] = (string)$pos;
-
-        $this->applyCurrent($workContext);
-
-        if ($workContext->hasChildNodes()) {
-            $list              = new SnapshotDOMNodelist($workContext->childNodes);
-            $this->listStack[] = $list;
-
-            while ($list->hasNext()) {
-                $this->walk($list->getNext());
+            if ($matches->count() === 0) {
+                throw new ViewModelRendererException('No matching types found');
             }
-            array_pop($this->listStack);
-        }
-        $this->dropFromStack();
 
-        return $workContext;
-    }
+            $clone = $matches->item(0)->cloneNode(true);
+            $context->parentNode->insertBefore($clone, $myPointer);
 
-    /**
-     * @throws ViewModelRendererException
-     */
-    private function processAttribute(DOMAttr $attribute, object $model): void {
-        $attributeName = $attribute->nodeName;
+            assert($clone instanceof DOMElement);
+            $this->objectApply($clone, $current);
 
-        if (strpos($attributeName, '-') !== false) {
-            $parts = explode('-', $attributeName);
-            array_walk(
-                $parts,
-                static function (string &$value, int $pos): void {
-                    $value = ucfirst($value);
+            if ($clone->hasChildNodes()) {
+                $list = StaticNodeList::fromNodeList($clone->childNodes);
+
+                foreach ($list as $child) {
+                    if (!$this->isConnected($clone, $child)) {
+                        continue;
+                    }
+                    $this->walk($child, $current);
                 }
-            );
-            $attributeName = implode('', $parts);
+            }
         }
 
-        foreach ([$attributeName, 'get' . ucfirst($attributeName), '__call'] as $method) {
-            if (!method_exists($model, $method)) {
+        $list = StaticNodeList::fromNodeList($this->xp->query(
+            sprintf('following-sibling::*[@property="%s"]', $context->getAttribute('property')),
+            $myPointer
+        ));
+
+        foreach ($list as $node) {
+            assert($node instanceof DOMElement);
+
+            $node->remove();
+        }
+
+        $myPointer->parentNode->removeChild($myPointer);
+    }
+
+    private function iterableApply(DOMElement $context, iterable $list): void {
+        if ($context->isSameNode($context->ownerDocument->documentElement)) {
+            throw new ViewModelRendererException('Cannot apply multiple on root element');
+        }
+
+        $myPointer = $context->parentNode->insertBefore($this->pointer->cloneNode(), $context);
+
+        foreach ($list as $model) {
+            $clone = $context->cloneNode(true);
+            $context->parentNode->insertBefore($clone, $myPointer);
+
+            if (is_string($model)) {
+                $clone->nodeValue   = '';
+                $clone->textContent = $model;
+
                 continue;
             }
 
-            if ($method === '__call') {
-                $method = $attribute->name;
+            if (is_object($model) && !$model instanceof Signal) {
+                $this->objectApply($clone, $model);
+
+                if ($clone->hasChildNodes()) {
+                    $list = StaticNodeList::fromNodeList($clone->childNodes);
+
+                    foreach ($list as $child) {
+                        if (!$this->isConnected($clone, $child)) {
+                            continue;
+                        }
+                        $this->walk($child, $model);
+                    }
+                }
+
+                continue;
             }
 
-            /** @psalm-var null|bool|string $value */
-            $value = $model->{$method}($attribute->value);
-
-            if ($value === null) {
-                return;
-            }
-
-            /** @var DOMElement $parent */
-            $parent = $attribute->parentNode;
-
-            if ($value === false) {
-                $parent->removeAttribute($attribute->name);
-
-                return;
-            }
-
-            if (!is_string($value)) {
-                throw new ViewModelRendererException(
-                    sprintf(
-                        'Attribute value must be string or boolean false - type %s received from $model->%s',
-                        gettype($value),
-                        implode('()->', $this->stackNames) . '()'
-                    )
-                );
-            }
-
-            $parent->setAttribute($attribute->name, $value);
-
-            return;
-        }
-    }
-
-    /**
-     * @throws ViewModelRendererException
-     *
-     * @psalm-assert object $mode
-     *
-     * @psalm-suppress MissingParamType
-     */
-    private function ensureIsObject($model, string $property): void {
-        if (!is_object($model)) {
-            throw new ViewModelRendererException(
-                sprintf(
-                    'Trying to add "%s" failed - Non object (%s) on stack: $%s',
-                    $property,
-                    gettype($model),
-                    implode('()->', $this->stackNames) . '() '
-                )
-            );
-        }
-    }
-
-    /**
-     * @throws ViewModelRendererException
-     *
-     * @psalm-suppress MissingParamType
-     */
-    private function selectMatchingWorkContext(DOMElement $context, mixed $entry): DOMElement {
-        if (!$context->hasAttribute('typeof')) {
-            return $context;
+            throw new ViewModelRendererException('Unsupported type of model in list');
         }
 
-        if (!is_object($entry)) {
-            throw new ViewModelRendererException(
-                sprintf(
-                    "Cannot call 'typeOf' on none object type '%s' returned from \$model->%s()",
-                    gettype($entry),
-                    implode('()->', $this->stackNames)
-                )
-            );
-        }
-
-        if (!method_exists($entry, 'typeOf')) {
-            throw new ViewModelRendererException(
-                sprintf(
-                    "No 'typeOf' method in model returned from \$model->%s() but current context is conditional",
-                    implode('()->', $this->stackNames)
-                )
-            );
-        }
-
-        /** @psalm-suppress MixedAssignment */
-        $requestedTypeOf = $entry->typeOf();
-
-        if (!is_string($requestedTypeOf)) {
-            throw new ViewModelRendererException(
-                sprintf(
-                    "Return value of \$model->%s()->typeOf() must be string, got '%s'",
-                    implode('()->', $this->stackNames),
-                    gettype($entry)
-                )
-            );
-        }
-
-        if ($context->getAttribute('typeof') === $requestedTypeOf) {
-            return $context;
-        }
-
-        $xp   = new DOMXPath($context->ownerDocument);
-        $list = $xp->query(
-            sprintf(
-                '(following-sibling::*)[@property="%s" and @typeof="%s"]',
-                $context->getAttribute('property'),
-                $requestedTypeOf
-            ),
-            $context
-        );
-
-        $newContext = $list->item(0);
-
-        if (!$newContext instanceof DOMElement) {
-            throw new ViewModelRendererException(
-                sprintf(
-                    "Context for type '%s' not found.",
-                    $requestedTypeOf
-                )
-            );
-        }
-
-        return $newContext;
-    }
-
-    private function moveToContainer(DOMElement $context, bool $greedy = true): DOMElement {
-        $container = $context->ownerDocument->createElement('container');
-        $context->parentNode->insertBefore($container, $context);
-
-        if (!$greedy && !$context->hasAttribute('typeof')) {
-            $container->appendChild($context);
-            $this->removeNodeFromCurrentSnapshotList($context);
-
-            return $container;
-        }
-
-        $xp   = new DOMXPath($container->ownerDocument);
-        $list = $xp->query(
-            sprintf('*[@property="%s"]', $context->getAttribute('property')),
-            $context->parentNode
-        );
+        $list = StaticNodeList::fromNodeList($this->xp->query(
+            sprintf('following-sibling::*[@property="%s"]', $context->getAttribute('property')),
+            $myPointer
+        ));
 
         foreach ($list as $node) {
-            $container->appendChild($node);
-            $this->removeNodeFromCurrentSnapshotList($node);
+            assert($node instanceof DOMElement);
+
+            $node->remove();
         }
 
-        return $container;
+        $myPointer->parentNode->removeChild($myPointer);
     }
 
-    private function removeNodeFromCurrentSnapshotList(DOMElement $context): void {
-        $stackList = end($this->listStack);
+    private function objectApply(DOMElement $context, object $model): void {
+        if (method_exists($model, 'asString') || method_exists($model, '__call')) {
+            $context->nodeValue = '';
+            $textContent        = $model->asString($context->textContent);
 
-        if ((!$stackList instanceof SnapshotDOMNodelist) || !$stackList->hasNode($context)) {
-            return;
-        }
-        $stackList->removeNode($context);
-    }
-
-    private function getElementCount(iterable $model): int {
-        if (is_array($model) || $model instanceof Countable) {
-            return count($model);
-        }
-
-        throw new ViewModelRendererException(
-            sprintf(
-                'Class %s must implement \Countable to be used as array',
-                get_class($model)
-            )
-        );
-    }
-
-    private function addResourceToStack(DOMElement $context): void {
-        $resource = $context->getAttribute('resource');
-
-        $this->stackNames[] = $resource;
-
-        foreach ([$resource, 'get' . ucfirst($resource)] as $method) {
-            if (method_exists($this->resourceModel, $method)) {
-                $this->stack[] = $this->resourceModel->{$method}();
-
-                return;
+            if (!is_string($textContent)) {
+                throw new ViewModelRendererException('Cannot use non string type for text content');
             }
+            $context->textContent = $textContent;
+        } elseif (method_exists($model, '__toString')) {
+            $context->nodeValue   = '';
+            $context->textContent = (string)$model;
         }
 
-        if (method_exists($this->resourceModel, '__call')) {
-            $this->stack[] = $this->resourceModel->{$resource}();
+        $attributes = StaticNodeList::fromNamedNodeMap($context->attributes);
 
-            return;
-        }
-
-        throw new ViewModelRendererException(
-            sprintf('Resource Viewmodel method missing: $model->%s', implode('()->', $this->stackNames) . '()')
-        );
-    }
-
-    private function resolvePrefixDefinition(string $prefixDefinition): void {
-        $parts = explode(' ', $prefixDefinition);
-
-        if (count($parts) !== 2) {
-            throw new ViewModelRendererException(
-                sprintf('Invalid prefix definition "%s" - must be of format "prefix resourcename"', $prefixDefinition)
+        foreach ($attributes as $attribute) {
+            $name = lcfirst(
+                str_replace(['-', ':'], '', ucwords($attribute->nodeName, '-:'))
             );
-        }
 
-        [$prefix, $resource] = $parts;
-        $prefix              = rtrim($prefix, ':');
+            $result = match (true) {
+                // method variants
+                method_exists($model, $name)                  => $model->{$name}($attribute->nodeValue),
+                method_exists($model, 'get' . ucfirst($name)) => $model->{'get' . ucfirst($name)}($attribute->nodeValue),
+                method_exists($model, '__call')               => $model->{$name}($attribute->nodeValue),
 
-        if (strpos($resource, ':') !== false) {
-            $this->prefixes[$prefix] = null;
+                // property variants
+                property_exists($model, $name) => $model->{$name},
+                method_exists($model, '__get') => $model->{$name},
 
-            return;
-        }
+                default => Signal::ignore()
+            };
 
-        foreach ([$resource, 'get' . ucfirst($resource)] as $method) {
-            if (method_exists($this->resourceModel, $method)) {
-                $this->prefixes[$prefix] = $this->resourceModel->{$method}();
-
-                return;
+            if ($result instanceof Ignore || $result === true || $result === null) {
+                continue;
             }
+
+            if ($result instanceof Remove || $result === false) {
+                $attribute->parentNode->removeChild($attribute);
+
+                continue;
+            }
+
+            if (is_string($result)) {
+                $attribute->nodeValue   = '';
+                $attribute->textContent = $result;
+
+                continue;
+            }
+
+            throw new ViewModelRendererException(\sprintf('Unsupported type "%s" for attribute', gettype($result)));
         }
-
-        if (method_exists($this->resourceModel, '__call')) {
-            $this->prefixes[$prefix] = $this->resourceModel->{$resource}();
-
-            return;
-        }
-
-        throw new ViewModelRendererException(
-            sprintf('No method %s to resolve prefix %s', $resource, $prefix)
-        );
     }
 }
