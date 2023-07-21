@@ -45,9 +45,6 @@ class ViewModelRenderer {
 
         $parent = $context->parentNode;
 
-        // echo "walk: " . $context->nodeName . "\n";
-        // echo " --> Model is: " . (is_object($model) ? \get_class($model) : \gettype($model)) . "\n";
-
         if ($context->hasAttribute('prefix')) {
             $this->registerPrefix($context->getAttribute('prefix'));
         }
@@ -63,13 +60,10 @@ class ViewModelRenderer {
         }
 
         if ($supported && $context->hasAttribute('property')) {
-            // echo " --> Property found: " . $context->getAttribute('property') . "\n";
             $model = $this->processProperty($context, $model);
-            // echo " --> Model now: " . (is_object($model) ? \get_class($model) : \gettype($model)) . "\n";
         }
 
         if (!$this->isConnected($parent, $context)) {
-            // echo " ---> no longer connected - skipping\n";
             return;
         }
 
@@ -78,7 +72,6 @@ class ViewModelRenderer {
 
             foreach ($children as $child) {
                 if (!$this->isConnected($context, $child)) {
-                    // echo " ---> no longer connected - skipping\n";
                     continue;
                 }
                 $this->walk($child, $model);
