@@ -25,8 +25,10 @@ use DOMXPath;
 
 class ViewModelRenderer {
     private ?object $rootModel = null;
-    private ?DOMNode $pointer;
+    private ?DOMNode $pointer = null;
     private array $prefixModels = [];
+
+    private bool $supported;
 
     private ?DOMXPath $xp;
 
@@ -34,6 +36,7 @@ class ViewModelRenderer {
         $this->rootModel = $model;
         $this->pointer   = $context->ownerDocument->createComment('templado pointer node');
         $this->xp        = new DOMXPath($context->ownerDocument);
+        $this->supported = true;
 
         $this->walk($context, $model);
     }
@@ -53,13 +56,13 @@ class ViewModelRenderer {
             $model = $this->resolveResource($context->getAttribute('resource'));
         }
 
-        $supported = true;
-
+        $supportedBackup = null;
         if ($context->hasAttribute('vocab')) {
-            $supported = $this->modelSupportsVocab($model, $context->getAttribute('vocab'));
+            $supportedBackup = $this->supported;
+            $this->modelSupportsVocab($model, $context->getAttribute('vocab'));
         }
 
-        if ($supported && $context->hasAttribute('property')) {
+        if ($this->supported && $context->hasAttribute('property')) {
             $model = $this->processProperty($context, $model);
         }
 
@@ -76,6 +79,10 @@ class ViewModelRenderer {
                 }
                 $this->walk($child, $model);
             }
+        }
+
+        if ($supportedBackup !== null) {
+            $this->supported = $supportedBackup;
         }
     }
 
@@ -150,8 +157,25 @@ class ViewModelRenderer {
         return $this->prefixModels[$prefix];
     }
 
-    private function modelSupportsVocab(object $model, string $requiredVocab): bool {
-        return true;
+    private function modelSupportsVocab(object $model, string $requiredVocab): void {
+        $modelVocab = match (true) {
+            // method variants
+            method_exists($model, 'vocab')    => $model->vocab(),
+            method_exists($model, 'getVocab') => $model->getVocab(),
+            method_exists($model, '__call')   => $model->vocab(),
+
+            // property variants
+            property_exists($model, 'vocab')  => $model->vocab,
+            method_exists($model, '__get')     => $model->vocab,
+
+            default => $requiredVocab
+        };
+
+        if (!is_string($modelVocab)) {
+            throw new ViewModelRendererException('Result of vocab query must be of type string');
+        }
+
+        $this->supported = $modelVocab === $requiredVocab;
     }
 
     private function isConnected(DOMNode $context, DOMNode $contextChild): bool {
