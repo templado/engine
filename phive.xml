@@ -4,5 +4,4 @@
   <phar name="phpab" version="^1.25" installed="1.28.0" location="./tools/phpab" copy="false"/>
   <phar name="php-cs-fixer" version="^3.16.0" installed="3.22.0" location="./tools/php-cs-fixer" copy="false"/>
   <phar name="psalm" version="^5.9.0" installed="5.13.1" location="./tools/psalm" copy="false"/>
-  <phar name="ergebnis/phpunit-slow-test-detector" version="^2.3.0" installed="2.3.0" location="./tools/phpunit.d/slowtest.phar/phpunit-slow-test-detector" copy="false"/>
 </phive>
