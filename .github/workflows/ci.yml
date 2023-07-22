@@ -40,7 +40,7 @@ jobs:
   tests:
     name: "Tests"
 
-    runs-on: "${{ matrix.operating-system }}"
+    runs-on: "${{ matrix.php-versions }}"
 
     strategy:
       matrix:
