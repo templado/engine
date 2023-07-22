@@ -16,11 +16,9 @@ use function is_string;
 use function sprintf;
 
 class FormData {
-    /** @var string */
-    private $identifier;
+    private readonly string $identifier;
 
-    /** @var array */
-    private $values;
+    private readonly array $values;
 
     /**
      * @throws FormDataException

@@ -10,11 +10,10 @@
 namespace Templado\Engine;
 
 class CSRFProtection {
-    /** @var string */
-    private $fieldName;
 
-    /** @var string */
-    private $tokenValue;
+    private readonly string $fieldName;
+
+    private readonly string $tokenValue;
 
     public function __construct(string $fieldName, string $tokenValue) {
         $this->fieldName  = $fieldName;
