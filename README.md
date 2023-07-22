@@ -4,8 +4,11 @@
 
 A pragmatic approach to templating for PHP 8.2+
 
-<small>(Use Templado [4.x](https://github.com/templado/engine/tree/4.x) for PHP 7+)</small>
+(Use Templado [4.x](https://github.com/templado/engine/tree/4.x) for PHP 7+)
 
+## Templado 5.x is under development.
+
+Templado 5.0, developed in `main` is, in major parts, a rewrite from Templad 4.x and under current development. If you want to try 5.x already, please be aware of the fact the current API is subject to change and it is not yet feature complete.
 
 ### Motivation
 
