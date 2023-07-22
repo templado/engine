@@ -1,5 +1,5 @@
 # Templado
-A pragmatic approach to templating for PHP 8.2 (Use Templado [https://github.com/templado/engine/tree/4.x](4.x) for PHP 7+)
+A pragmatic approach to templating for PHP 8.2+ (Use Templado [https://github.com/templado/engine/tree/4.x](4.x) for PHP 7+)
 
 [![Integrate](https://github.com/templado/engine/workflows/Integrate/badge.svg)](https://github.com/templado/engine/actions)
 
