@@ -65,6 +65,7 @@
 
     <target name="tools">
         <exec executable="phive" failonerror="true">
+            <arg line="--no-progress" />
             <arg line="install" />
             <arg line="--trust-gpg-keys" />
             <!-- phpunit -->     <!-- phpab -->   <!-- php-cs-fixer --> <!-- psalm -->

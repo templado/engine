@@ -32,7 +32,7 @@ jobs:
         run: "ant tools"
 
       - name: "Run php-cs-fixer"
-        run: "ant cs"
+        run: "ant cs-check"
 
       - name: "Run psalm"
         run: "ant qa"
