@@ -13,7 +13,7 @@ use ArrayIterator;
 use DOMDocument;
 
 final class MergeList {
-    /** @psalm-var list<Document> */
+    /** @psalm-var array<string, list<DOMDocument>> */
     private array $documents = [];
 
     public function isEmpty(): bool {

@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use DOMDocument;
 use function array_key_exists;
 use function gettype;
 use function is_iterable;
@@ -24,16 +25,25 @@ use DOMNode;
 use DOMXPath;
 
 final class ViewModelRenderer {
-    private ?object $rootModel  = null;
-    private ?DOMNode $pointer   = null;
-    private array $prefixModels = [];
+    /**  @psalm-suppress PropertyNotSetInConstructor */
+    private object $rootModel;
+    /**  @psalm-suppress PropertyNotSetInConstructor */
+    private DOMNode $pointer;
+    /**  @psalm-suppress PropertyNotSetInConstructor */
     private bool $supported;
-    private ?DOMXPath $xp;
+    /**  @psalm-suppress PropertyNotSetInConstructor */
+    private DOMXPath $xp;
+    private array $prefixModels = [];
 
     public function render(DOMNode $context, object $model): void {
         $this->rootModel = $model;
-        $this->pointer   = $context->ownerDocument->createComment('templado pointer node');
-        $this->xp        = new DOMXPath($context->ownerDocument);
+        $document = $context->ownerDocument;
+        if ($document === null) {
+            throw new ViewModelRendererException('Given context node must be connected to a document');
+        }
+
+        $this->pointer   = $document->createComment('templado pointer node');
+        $this->xp        = new DOMXPath($document);
         $this->supported = true;
 
         $this->walk($context, $model);
@@ -45,6 +55,7 @@ final class ViewModelRenderer {
         }
 
         $parent = $context->parentNode;
+        assert($parent instanceof DOMNode);
 
         if ($context->hasAttribute('prefix')) {
             $this->registerPrefix($context->getAttribute('prefix'));
@@ -55,6 +66,7 @@ final class ViewModelRenderer {
         }
 
         $supportedBackup = null;
+
         if ($context->hasAttribute('vocab')) {
             $supportedBackup = $this->supported;
             $this->modelSupportsVocab($model, $context->getAttribute('vocab'));
@@ -125,6 +137,10 @@ final class ViewModelRenderer {
         if (str_contains($resource, ':')) {
             [$prefix, $resource] = explode(':', $resource);
             $model               = $this->modelForPrefix($prefix);
+
+            if ($model === null) {
+                throw new ViewModelRendererException(sprintf('Cannot resolve resource request for "%s" using prefix "%s"', $resource, $prefix));
+            }
         }
 
         $result = match (true) {
@@ -264,7 +280,10 @@ final class ViewModelRenderer {
             $model = [$model];
         }
 
-        $myPointer = $context->parentNode->insertBefore($this->pointer->cloneNode(), $context);
+        $parent = $context->parentNode;
+        assert($parent instanceof DOMNode);
+
+        $myPointer = $parent->insertBefore($this->pointer->cloneNode(), $context);
 
         foreach ($model as $current) {
             if (!is_object($current)) {
@@ -289,7 +308,7 @@ final class ViewModelRenderer {
             }
 
             $clone = $matches->item(0)->cloneNode(true);
-            $context->parentNode->insertBefore($clone, $myPointer);
+            $parent->insertBefore($clone, $myPointer);
 
             assert($clone instanceof DOMElement);
             $this->objectApply($clone, $current);
@@ -317,19 +336,25 @@ final class ViewModelRenderer {
             $node->remove();
         }
 
-        $myPointer->parentNode->removeChild($myPointer);
+        $parent->removeChild($myPointer);
     }
 
     private function iterableApply(DOMElement $context, iterable $list): void {
-        if ($context->isSameNode($context->ownerDocument->documentElement)) {
+        $ownerDocument = $context->ownerDocument;
+        assert($ownerDocument instanceof DOMDocument);
+
+        if ($context->isSameNode($ownerDocument->documentElement)) {
             throw new ViewModelRendererException('Cannot apply multiple on root element');
         }
 
-        $myPointer = $context->parentNode->insertBefore($this->pointer->cloneNode(), $context);
+        $parent = $context->parentNode;
+        assert($parent instanceof DOMNode);
+
+        $myPointer = $parent->insertBefore($this->pointer->cloneNode(), $context);
 
         foreach ($list as $model) {
             $clone = $context->cloneNode(true);
-            $context->parentNode->insertBefore($clone, $myPointer);
+            $parent->insertBefore($clone, $myPointer);
 
             if (is_string($model)) {
                 $clone->nodeValue   = '';
@@ -339,6 +364,7 @@ final class ViewModelRenderer {
             }
 
             if (is_object($model) && !$model instanceof Signal) {
+                assert($clone instanceof DOMElement);
                 $this->objectApply($clone, $model);
 
                 if ($clone->hasChildNodes()) {
@@ -369,7 +395,7 @@ final class ViewModelRenderer {
             $node->remove();
         }
 
-        $myPointer->parentNode->removeChild($myPointer);
+        $parent->removeChild($myPointer);
     }
 
     private function objectApply(DOMElement $context, object $model): void {
@@ -380,6 +406,7 @@ final class ViewModelRenderer {
             if (!is_string($textContent)) {
                 throw new ViewModelRendererException('Cannot use non string type for text content');
             }
+
             $context->textContent = $textContent;
         } elseif (method_exists($model, '__toString')) {
             $context->nodeValue   = '';
@@ -411,7 +438,7 @@ final class ViewModelRenderer {
             }
 
             if ($result instanceof Remove || $result === false) {
-                $attribute->parentNode->removeChild($attribute);
+                $context->removeChild($attribute);
 
                 continue;
             }

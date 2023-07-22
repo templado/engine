@@ -26,7 +26,7 @@ final readonly class StaticNodeList implements Countable, IteratorAggregate {
         return new self(...$list);
     }
 
-    public static function fromNamedNodeMap(DOMNamedNodeMap $attributes) {
+    public static function fromNamedNodeMap(DOMNamedNodeMap $attributes): self {
         return new self(...$attributes);
     }
 

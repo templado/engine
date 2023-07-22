@@ -15,10 +15,11 @@ use DOMNode;
 use DOMXPath;
 
 final class Merger {
+    /**  @psalm-suppress PropertyNotSetInConstructor */
     private MergeList $documents;
 
-    /** @var array<string, DOMNode> */
-    private array $seen;
+    /** @var array<string, bool> */
+    private array $seen = [];
 
     public function merge(DOMDocument $target, MergeList $toMerge): void {
         if ($target->documentElement === null) {
@@ -37,6 +38,8 @@ final class Merger {
 
     private function processContext(DOMElement $context): void {
         $owner = $context->ownerDocument;
+        assert($owner instanceof DOMDocument);
+
         $nodes = StaticNodeList::fromNodeList(
             (new DOMXPath($owner))->query('.//*[@id]', $context)
         );
@@ -74,7 +77,7 @@ final class Merger {
         }
     }
 
-    private function isConnected(DOMElement $context, DOMElement $contextChild) {
+    private function isConnected(DOMElement $context, DOMElement $contextChild): bool {
         $current = $contextChild;
 
         while ($current->parentNode !== null) {

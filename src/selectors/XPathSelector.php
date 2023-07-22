@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use DOMDocument;
 use function libxml_clear_errors;
 use function libxml_get_last_error;
 use function libxml_use_internal_errors;
@@ -59,7 +60,10 @@ class XPathSelector implements Selector {
     }
 
     private function getXPath(DOMNode $node): DOMXPath {
-        $xp = new DOMXPath($node->ownerDocument);
+        $dom = $node->ownerDocument;
+        assert($dom instanceof DOMDocument);
+
+        $xp = new DOMXPath($dom);
         $xp->registerPhpFunctions();
 
         if (empty($this->prefixMap) || isset($this->prefixMap['html'])) {

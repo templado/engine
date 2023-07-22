@@ -9,6 +9,7 @@ spl_autoload_register(
             $classes = array(
                 'templado\\engine\\csrfprotection' => '/csrfprotection/CSRFProtection.php',
                 'templado\\engine\\csrfprotectionrenderer' => '/csrfprotection/CSRFProtectionRenderer.php',
+                'templado\\engine\\csrfprotectionrendererexception' => '/csrfprotection/CSRFProtectionRendererException.php',
                 'templado\\engine\\cssselector' => '/selectors/CSSSelector.php',
                 'templado\\engine\\document' => '/document/Document.php',
                 'templado\\engine\\documentcollection' => '/document/DocumentCollection.php',

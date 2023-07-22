@@ -10,6 +10,7 @@
 namespace Templado\Engine;
 
 use function sprintf;
+use DOMDocument;
 use DOMElement;
 use DOMXPath;
 
@@ -17,11 +18,17 @@ use DOMXPath;
 final class CSRFProtectionRenderer {
     private CSRFProtection $protection;
 
+    private DOMDocument $dom;
     private DOMXPath$xp;
 
     public function render(DOMElement $context, CSRFProtection $protection): void {
         $this->protection = $protection;
-        $this->xp         = new DOMXPath($context->ownerDocument);
+
+        if ($context->ownerDocument === null) {
+            throw new CSRFProtectionRendererException('Context element must be part of a document');
+        }
+        $this->dom = $context->ownerDocument;
+        $this->xp  = new DOMXPath($this->dom);
 
         foreach ($context->getElementsByTagName('form') as $form) {
             $this->getCSRFField($form)->setAttribute(
@@ -49,9 +56,9 @@ final class CSRFProtectionRenderer {
 
     private function createField(DOMElement $form): DOMElement {
         if ($form->namespaceURI !== null) {
-            $input = $form->ownerDocument->createElementNS($form->namespaceURI, 'input');
+            $input = $this->dom->createElementNS($form->namespaceURI, 'input');
         } else {
-            $input = $form->ownerDocument->createElement('input');
+            $input = $this->dom->createElement('input');
         }
 
         $form->insertBefore($input, $form->firstChild);

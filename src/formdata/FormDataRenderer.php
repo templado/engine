@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use DOMDocument;
 use function sprintf;
 use DOMElement;
 use DOMXPath;
@@ -81,7 +82,10 @@ final class FormDataRenderer {
             return $context;
         }
 
-        $xp     = new DOMXPath($context->ownerDocument);
+        $dom = $context->ownerDocument;
+        assert($dom instanceof DOMDocument);
+
+        $xp     = new DOMXPath($dom);
         $result = $xp->query(
             sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
             $context
@@ -89,8 +93,9 @@ final class FormDataRenderer {
 
         switch ($result->length) {
             case 1: {
-                /** @psalm-var DOMElement */
-                return $result->item(0);
+                $node = $result->item(0);
+                assert($node instanceof DOMElement);
+                return $node;
             }
             case 0: {
                 throw new FormDataRendererException(
@@ -148,6 +153,9 @@ final class FormDataRenderer {
      * @throws FormDataException
      */
     private function processTextareaElement(FormData $form, DOMElement $formElement): void {
+        $owner = $formElement->ownerDocument;
+        assert($owner instanceof  DOMDocument);
+
         foreach ($formElement->getElementsByTagName('textarea') as $textarea) {
             $name = $textarea->getAttribute('name');
 
@@ -156,7 +164,7 @@ final class FormDataRenderer {
             }
             $textarea->nodeValue = '';
             $textarea->appendChild(
-                $textarea->ownerDocument->createTextNode(
+                $owner->createTextNode(
                     $form->getValue(
                         $textarea->getAttribute('name')
                     )
