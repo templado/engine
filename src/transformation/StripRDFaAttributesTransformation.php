@@ -14,8 +14,8 @@ use DOMElement;
 use DOMNode;
 
 final class StripRDFaAttributesTransformation implements Transformation {
-    /** @var string[] */
-    private $attributes = ['property', 'resource', 'prefix', 'typeof'];
+    /** @psalm-var list<string> */
+    private array $attributes = ['property', 'resource', 'prefix', 'typeof'];
 
     public function selector(): Selector {
         return new XPathSelector('//*[@' . implode(' or @', $this->attributes) . ']');

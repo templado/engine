@@ -15,11 +15,9 @@ use DOMXPath;
 
 /** @psalm-suppress MissingConstructor */
 final class CSRFProtectionRenderer {
-    /** @var CSRFProtection */
-    private $protection;
+    private CSRFProtection $protection;
 
-    /** @var DOMXPath */
-    private $xp;
+    private DOMXPath$xp;
 
     public function render(DOMElement $context, CSRFProtection $protection): void {
         $this->protection = $protection;

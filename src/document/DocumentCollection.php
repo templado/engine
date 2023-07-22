@@ -16,7 +16,7 @@ use IteratorAggregate;
 /** @template-implements IteratorAggregate<int,Document> */
 final class DocumentCollection implements Countable, IteratorAggregate {
     /** @psalm-type list<int,Document> */
-    private array $documents = [];
+    private array $documents;
 
     public function __construct(Document ...$documents) {
         $this->documents = $documents;

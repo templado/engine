@@ -14,6 +14,5 @@ use DOMNode;
 interface Transformation {
     public function selector(): Selector;
 
-    /** @psalm-suppress MissingReturnType Adding void here would qualify as a BC break :-/ */
-    public function apply(DOMNode $context);
+    public function apply(DOMNode $context): void;
 }

@@ -27,9 +27,7 @@ final class ViewModelRenderer {
     private ?object $rootModel = null;
     private ?DOMNode $pointer = null;
     private array $prefixModels = [];
-
     private bool $supported;
-
     private ?DOMXPath $xp;
 
     public function render(DOMNode $context, object $model): void {

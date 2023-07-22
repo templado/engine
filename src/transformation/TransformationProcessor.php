@@ -10,6 +10,7 @@
 namespace Templado\Engine;
 
 use DOMElement;
+use DOMNode;
 
 final class TransformationProcessor {
     public function process(DOMElement $context, Transformation $transformation): void {
@@ -19,8 +20,8 @@ final class TransformationProcessor {
             return;
         }
 
-        /** @psalm-var \DOMNode $node */
         foreach ($selection as $node) {
+            assert($node instanceof DOMNode);
             $transformation->apply($node);
         }
     }
