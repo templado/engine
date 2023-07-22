@@ -24,8 +24,8 @@ use DOMNode;
 use DOMXPath;
 
 final class ViewModelRenderer {
-    private ?object $rootModel = null;
-    private ?DOMNode $pointer = null;
+    private ?object $rootModel  = null;
+    private ?DOMNode $pointer   = null;
     private array $prefixModels = [];
     private bool $supported;
     private ?DOMXPath $xp;
@@ -163,8 +163,8 @@ final class ViewModelRenderer {
             method_exists($model, '__call')   => $model->vocab(),
 
             // property variants
-            property_exists($model, 'vocab')  => $model->vocab,
-            method_exists($model, '__get')     => $model->vocab,
+            property_exists($model, 'vocab') => $model->vocab,
+            method_exists($model, '__get')   => $model->vocab,
 
             default => $requiredVocab
         };

@@ -10,7 +10,6 @@
 namespace Templado\Engine;
 
 class CSRFProtection {
-
     private readonly string $fieldName;
 
     private readonly string $tokenValue;

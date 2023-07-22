@@ -41,7 +41,7 @@ final class Merger {
             (new DOMXPath($owner))->query('.//*[@id]', $context)
         );
 
-        foreach($nodes as $contextChild) {
+        foreach ($nodes as $contextChild) {
             assert($contextChild instanceof DOMElement);
 
             if (!$this->isConnected($context, $contextChild)) {
