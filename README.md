@@ -1,5 +1,5 @@
 # Templado
-A pragmatic approach to templating for PHP 7.x
+A pragmatic approach to templating for PHP 8.2 (Use Templado [https://github.com/templado/engine/tree/4.x](4.x) for PHP 7+)
 
 [![Integrate](https://github.com/templado/engine/workflows/Integrate/badge.svg)](https://github.com/templado/engine/actions)
 
@@ -17,12 +17,6 @@ and triggered by the view model when it's applied to the Page.
 As a Templado template is plain HTML, previewing is as easy as opening the HTML file with a browser - example data can
 and should be included as the engine will clean it up based on the view model upon rendering.
 
-### No markup duplication
- 
-Templado features asset support, mapping a list of assets based on their ID into a given HTML Page. To automate this
-process [Templado CLI](https://github.com/theseer/templado-cli) can be used. Combined with a File watcher in your IDE,
-you can have an always up-to-date set of HTML pages without ever writing a block twice.
-
 ### Form handling included
 
 To make form handling even more easy, Templado comes with explicit HTML Form support. Based on supplied Input data,
@@ -33,6 +27,3 @@ Templado will repopulate the HTML form and even include your CSRF protection cod
 Templado allows for custom transformations, like adding a class to every ```a``` tag and string based replacements upon
 serialization.
 
-## Examples
-
-Usage examples can be found in the [example project](https://github.com/templado/examples)
