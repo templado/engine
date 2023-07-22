@@ -67,10 +67,8 @@
         <exec executable="phive" failonerror="true">
             <arg line="install" />
             <arg line="--trust-gpg-keys" />
-            <arg line="4AA394086372C20A," /><!-- phpunit -->
-            <arg line="2A8299CE842DD38C," /><!-- phpab -->
-            <arg line="E82B2FB314E9906E," /><!-- php-cs-fixer -->
-            <arg line="8A03EA3B385DBAA1" /><!-- psalm -->
+            <!-- phpunit -->     <!-- phpab -->   <!-- php-cs-fixer --> <!-- psalm -->
+            <arg value="4AA394086372C20A,2A8299CE842DD38C,E82B2FB314E9906E,8A03EA3B385DBAA1" />
         </exec>
     </target>
 
