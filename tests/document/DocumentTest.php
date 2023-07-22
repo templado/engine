@@ -26,7 +26,6 @@ use Templado\Engine\Example\ViewModel;
 #[UsesClass(ViewModelRenderer::class)]
 #[UsesClass(FormData::class)]
 #[UsesClass(FormDataRenderer::class)]
-#[UsesClass(SnapshotAttributeList::class)]
 #[UsesClass(MergeList::class)]
 #[UsesClass(Merger::class)]
 #[UsesClass(DocumentCollection::class)]

@@ -33,8 +33,6 @@ spl_autoload_register(
                 'templado\\engine\\selector' => '/selectors/Selector.php',
                 'templado\\engine\\serializer' => '/Serializer.php',
                 'templado\\engine\\signal' => '/viewmodel/Signal.php',
-                'templado\\engine\\snapshotattributelist' => '/viewmodel/SnapshotAttributeList.php',
-                'templado\\engine\\snapshotattributelistexception' => '/viewmodel/SnapshotAttributeListException.php',
                 'templado\\engine\\staticnodelist' => '/StaticNodeList.php',
                 'templado\\engine\\striprdfaattributestransformation' => '/transformation/StripRDFaAttributesTransformation.php',
                 'templado\\engine\\transformation' => '/transformation/Transformation.php',
