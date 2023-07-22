@@ -11,7 +11,7 @@ namespace Templado\Engine;
 
 use DOMElement;
 
-class TransformationProcessor {
+final class TransformationProcessor {
     public function process(DOMElement $context, Transformation $transformation): void {
         $selection = $transformation->selector()->select($context);
 

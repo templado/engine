@@ -9,7 +9,7 @@
  */
 namespace Templado\Engine;
 
-abstract class Signal {
+abstract readonly class Signal {
     public static function ignore(): Ignore {
         return new Ignore;
     }

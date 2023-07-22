@@ -9,5 +9,5 @@
  */
 namespace Templado\Engine;
 
-class ViewModelRendererException extends Exception {
+final class ViewModelRendererException extends Exception {
 }

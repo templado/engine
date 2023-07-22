@@ -9,7 +9,7 @@
  */
 namespace Templado\Engine;
 
-class Ignore extends Signal {
+final readonly class Ignore extends Signal {
     public function isIgnore(): bool {
         return true;
     }

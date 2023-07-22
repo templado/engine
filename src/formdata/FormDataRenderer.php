@@ -13,7 +13,7 @@ use function sprintf;
 use DOMElement;
 use DOMXPath;
 
-class FormDataRenderer {
+final class FormDataRenderer {
     /**
      * @throws FormDataRendererException
      */

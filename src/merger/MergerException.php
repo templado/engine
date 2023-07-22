@@ -9,7 +9,7 @@
  */
 namespace Templado\Engine;
 
-class MergerException extends Exception {
+final class MergerException extends Exception {
     public const EmptyDocument = 1;
     public const EmptyList     = 2;
     public const DuplicateId   = 3;

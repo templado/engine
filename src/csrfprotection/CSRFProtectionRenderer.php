@@ -14,7 +14,7 @@ use DOMElement;
 use DOMXPath;
 
 /** @psalm-suppress MissingConstructor */
-class CSRFProtectionRenderer {
+final class CSRFProtectionRenderer {
     /** @var CSRFProtection */
     private $protection;
 

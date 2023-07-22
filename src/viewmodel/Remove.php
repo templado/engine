@@ -9,7 +9,7 @@
  */
 namespace Templado\Engine;
 
-class Remove extends Signal {
+final readonly class Remove extends Signal {
     public function isRemove(): bool {
         return true;
     }

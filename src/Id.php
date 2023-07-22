@@ -11,7 +11,7 @@ namespace Templado\Engine;
 
 use InvalidArgumentException;
 
-readonly class Id {
+final readonly class Id {
     private string $id;
 
     public function __construct(string $id) {

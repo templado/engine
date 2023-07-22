@@ -18,7 +18,7 @@ use IteratorAggregate;
 use Traversable;
 
 /** @template-implements IteratorAggregate<int,DOMNode> */
-final class StaticNodeList implements Countable, IteratorAggregate {
+final readonly class StaticNodeList implements Countable, IteratorAggregate {
     /** @var DOMNode[] */
     private array $nodes;
 

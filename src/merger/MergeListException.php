@@ -9,5 +9,5 @@
  */
 namespace Templado\Engine;
 
-class MergeListException extends Exception {
+final class MergeListException extends Exception {
 }

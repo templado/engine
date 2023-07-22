@@ -13,7 +13,7 @@ use function implode;
 use DOMElement;
 use DOMNode;
 
-class StripRDFaAttributesTransformation implements Transformation {
+final class StripRDFaAttributesTransformation implements Transformation {
     /** @var string[] */
     private $attributes = ['property', 'resource', 'prefix', 'typeof'];
 

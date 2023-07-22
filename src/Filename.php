@@ -17,7 +17,7 @@ use function mime_content_type;
 use function pathinfo;
 use function realpath;
 
-class Filename {
+final class Filename {
     /** @var string */
     private $path;
 

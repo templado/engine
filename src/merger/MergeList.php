@@ -12,7 +12,7 @@ namespace Templado\Engine;
 use ArrayIterator;
 use DOMDocument;
 
-class MergeList {
+final class MergeList {
     private array $documents = [];
 
     public function isEmpty(): bool {

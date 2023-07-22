@@ -23,7 +23,7 @@ use DOMElement;
 use DOMNode;
 use DOMXPath;
 
-class ViewModelRenderer {
+final class ViewModelRenderer {
     private ?object $rootModel = null;
     private ?DOMNode $pointer = null;
     private array $prefixModels = [];

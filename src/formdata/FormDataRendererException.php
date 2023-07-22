@@ -9,5 +9,5 @@
  */
 namespace Templado\Engine;
 
-class FormDataRendererException extends Exception {
+final class FormDataRendererException extends Exception {
 }

@@ -14,7 +14,7 @@ use Countable;
 use IteratorAggregate;
 
 /** @template-implements IteratorAggregate<int,Document> */
-class DocumentCollection implements Countable, IteratorAggregate {
+final class DocumentCollection implements Countable, IteratorAggregate {
     /** @psalm-type list<int,Document> */
     private array $documents = [];
 
