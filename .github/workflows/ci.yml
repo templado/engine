@@ -40,11 +40,14 @@ jobs:
   tests:
     name: "Tests"
 
-    runs-on: "${{ matrix.php-versions }}"
+    runs-on: "${{ matrix.os }}"
 
     strategy:
       matrix:
-        php-versions:
+        os:
+          - ubuntu-latest
+
+        php-version:
           - "8.2"
           - "8.3"
 
