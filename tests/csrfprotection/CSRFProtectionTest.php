@@ -18,14 +18,14 @@ class CSRFProtectionTest extends TestCase {
     public function testFieldNameCanBeRetrieved(): void {
         $this->assertEquals(
             'fieldname',
-            $this->csrfprotection->getFieldName()
+            $this->csrfprotection->fieldName()
         );
     }
 
     public function testTokenValueCanBeRetrieved(): void {
         $this->assertEquals(
             'token-string',
-            $this->csrfprotection->getTokenValue()
+            $this->csrfprotection->tokenValue()
         );
     }
 }

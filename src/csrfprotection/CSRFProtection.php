@@ -20,11 +20,11 @@ class CSRFProtection {
         $this->tokenValue = $tokenValue;
     }
 
-    public function getFieldName(): string {
+    public function fieldName(): string {
         return $this->fieldName;
     }
 
-    public function getTokenValue(): string {
+    public function tokenValue(): string {
         return $this->tokenValue;
     }
 }

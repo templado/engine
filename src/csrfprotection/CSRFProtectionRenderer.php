@@ -28,14 +28,14 @@ final class CSRFProtectionRenderer {
         foreach ($context->getElementsByTagName('form') as $form) {
             $this->getCSRFField($form)->setAttribute(
                 'value',
-                $protection->getTokenValue()
+                $protection->tokenValue()
             );
         }
     }
 
     private function getCSRFField(DOMElement $form): DOMElement {
         $nodeList = $this->xp->query(
-            sprintf('.//*[local-name() = "input" and @name="%s"]', $this->protection->getFieldName()),
+            sprintf('.//*[local-name() = "input" and @name="%s"]', $this->protection->fieldName()),
             $form
         );
 
@@ -58,7 +58,7 @@ final class CSRFProtectionRenderer {
 
         $form->insertBefore($input, $form->firstChild);
         $input->setAttribute('type', 'hidden');
-        $input->setAttribute('name', $this->protection->getFieldName());
+        $input->setAttribute('name', $this->protection->fieldName());
 
         return $input;
     }

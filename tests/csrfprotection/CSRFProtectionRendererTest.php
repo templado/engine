@@ -21,8 +21,8 @@ class CSRFProtectionRendererTest extends TestCase {
 
     protected function setUp(): void {
         $protection = $this->createMock(CSRFProtection::class);
-        $protection->method('getFieldName')->willReturn('csrf');
-        $protection->method('getTokenValue')->willReturn('secure');
+        $protection->method('fieldName')->willReturn('csrf');
+        $protection->method('tokenValue')->willReturn('secure');
 
         $this->protection = $protection;
         $this->renderer   = new CSRFProtectionRenderer();

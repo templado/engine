@@ -199,8 +199,8 @@ class DocumentTest extends TestCase {
         $dom->loadXML('<?xml version="1.0" ?><html><body><form></form></body></html>');
 
         $protection = $this->createMock(CSRFProtection::class);
-        $protection->method('getFieldName')->willReturn('csrf');
-        $protection->method('getTokenValue')->willReturn('secure');
+        $protection->method('fieldName')->willReturn('csrf');
+        $protection->method('tokenValue')->willReturn('secure');
 
         $expected = new DOMDocument();
         $expected->loadXML(
