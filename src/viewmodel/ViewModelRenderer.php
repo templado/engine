@@ -9,7 +9,6 @@
  */
 namespace Templado\Engine;
 
-use DOMDocument;
 use function array_key_exists;
 use function gettype;
 use function is_iterable;
@@ -20,6 +19,7 @@ use function method_exists;
 use function property_exists;
 use function str_contains;
 use function ucfirst;
+use DOMDocument;
 use DOMElement;
 use DOMNode;
 use DOMXPath;
@@ -37,7 +37,8 @@ final class ViewModelRenderer {
 
     public function render(DOMNode $context, object $model): void {
         $this->rootModel = $model;
-        $document = $context->ownerDocument;
+        $document        = $context->ownerDocument;
+
         if ($document === null) {
             throw new ViewModelRendererException('Given context node must be connected to a document');
         }

@@ -11,7 +11,6 @@ namespace Templado\Engine;
 
 use DOMDocument;
 use DOMElement;
-use DOMNode;
 use DOMXPath;
 
 final class Merger {

@@ -9,8 +9,8 @@
  */
 namespace Templado\Engine;
 
-use DOMDocument;
 use function sprintf;
+use DOMDocument;
 use DOMElement;
 use DOMXPath;
 
@@ -95,6 +95,7 @@ final class FormDataRenderer {
             case 1: {
                 $node = $result->item(0);
                 assert($node instanceof DOMElement);
+
                 return $node;
             }
             case 0: {
@@ -154,7 +155,7 @@ final class FormDataRenderer {
      */
     private function processTextareaElement(FormData $form, DOMElement $formElement): void {
         $owner = $formElement->ownerDocument;
-        assert($owner instanceof  DOMDocument);
+        assert($owner instanceof DOMDocument);
 
         foreach ($formElement->getElementsByTagName('textarea') as $textarea) {
             $name = $textarea->getAttribute('name');

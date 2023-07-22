@@ -9,12 +9,12 @@
  */
 namespace Templado\Engine;
 
-use DOMDocument;
 use function libxml_clear_errors;
 use function libxml_get_last_error;
 use function libxml_use_internal_errors;
 use function sprintf;
 use function trim;
+use DOMDocument;
 use DOMNode;
 use DOMNodeList;
 use DOMXPath;
