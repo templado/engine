@@ -6,7 +6,7 @@ on:
   pull_request: null
   push:
     branches:
-      - "master"
+      - "main"
 
 jobs:
   tests:
@@ -17,11 +17,8 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "7.2"
-          - "7.3"
-          - "7.4"
-          - "8.0"
-          - "8.1"
+          - "8.2"
+          - "8.3"
 
     continue-on-error: true
 
@@ -60,10 +57,10 @@ jobs:
           restore-keys: "phive-"
 
       - name: "Install tools"
-        run: "ant install-tools-ci"
+        run: "ant tools"
 
       - name: "Generate autoloader with phpab"
-        run: "ant phpab"
+        run: "ant autoload"
 
       - name: "Run tests with phpunit"
-        run: "ant phpunit"
+        run: "ant test"
