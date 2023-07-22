@@ -8,7 +8,7 @@ A pragmatic approach to templating for PHP 8.2+
 
 ## Templado 5.x is under development.
 
-Templado 5.0, developed in `main` is, in major parts, a rewrite from Templad 4.x and under current development. If you want to try 5.x already, please be aware of the fact the current API is subject to change and it is not yet feature complete.
+Templado 5.0 - developed in `main` - is, in major parts, a rewrite from Templado 4.x and under current development. If you want to try 5.0 already, please be aware of the fact the current API is subject to change and it is not yet feature complete.
 
 ### Motivation
 
@@ -29,8 +29,12 @@ and should be included as the engine will clean it up based on the view model up
 To make form handling even more easy, Templado comes with explicit HTML Form support. Based on supplied Input data,
 Templado will repopulate the HTML form and even include your CSRF protection code.
 
-### Custom transformations and Filters
+### Merging of Documents
+
+Documents can be merged based on element ID values to combine multiple fragments - even recursively - into a final document.
+
+### Custom transformations, Filters and Serialization
 
 Templado allows for custom transformations, like adding a class to every ```a``` tag and string based replacements upon
-serialization.
+serialization. The full serialization can be customized, with some default variants shipping along.
 
