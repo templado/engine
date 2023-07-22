@@ -9,6 +9,7 @@
     findUnusedBaselineEntry="true"
     findUnusedCode="false"
     autoloader="src/autoload.php"
+    errorBaseline="build/psalm/baseline.xml"
 >
     <projectFiles>
         <directory name="src" />

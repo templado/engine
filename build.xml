@@ -7,12 +7,10 @@
         <delete dir="${basedir}/build/coverage"/>
         <delete dir="${basedir}/build/logs"/>
         <delete dir="${basedir}/build/phpab"/>
-        <delete dir="${basedir}/build/psalm"/>
 
         <mkdir dir="${basedir}/build/coverage"/>
         <mkdir dir="${basedir}/build/logs"/>
         <mkdir dir="${basedir}/build/phpab"/>
-        <mkdir dir="${basedir}/build/psalm"/>
     </target>
 
     <target name="lint">
@@ -75,7 +73,7 @@
 
     <target name="psalm">
         <exec executable="${tools}/psalm" failonerror="true">
-            <arg line="--no-cache --report=${basedir}/build/psalm/report.txt --show-info=true" />
+            <arg line="--no-cache --show-info=true" />
         </exec>
     </target>
 
