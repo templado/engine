@@ -2,6 +2,18 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.2.4] - 2023-07-07
+
+This release is the last scheduled feature release in the 4.x branch. New features will
+be implemented in Templad 5.x only. Updates to 4.x are going to be made to ensure compatibility
+with upcoming PHP versions as long as possible. For Bugfixes, please just open a ticket.
+
+### Changed
+* Replaced generic ClearNamespaceDefinitionsFilter
+  Replaced with a specifc one that only removes hopefully redundant xmlns defintions for xhtml.
+
+  This still has many potential issues but is a lot better than the previous approach.
+
 ## [4.2.3] - 2023-05-16
 
 ### Fixed
@@ -283,6 +295,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.2.4]: https://github.com/templado/engine/compare/4.2.3...4.2.4
 [4.2.3]: https://github.com/templado/engine/compare/4.2.2...4.2.3
 [4.2.2]: https://github.com/templado/engine/compare/4.2.1...4.2.2
 [4.2.1]: https://github.com/templado/engine/compare/4.2.0...4.2.1
