@@ -37,12 +37,11 @@ final class Merger {
 
     private function processContext(DOMElement $context): void {
         $owner = $context->ownerDocument;
-        $nodes = new SnapshotDOMNodelist(
+        $nodes = StaticNodeList::fromNodeList(
             (new DOMXPath($owner))->query('.//*[@id]', $context)
         );
 
-        while ($nodes->hasNext()) {
-            $contextChild = $nodes->getNext();
+        foreach($nodes as $contextChild) {
             assert($contextChild instanceof DOMElement);
 
             if (!$this->isConnected($context, $contextChild)) {
@@ -93,7 +92,7 @@ final class Merger {
         $workContext = [$import];
 
         if ($import->namespaceURI === Document::XMLNS) {
-            $workContext = new SnapshotDOMNodelist($import->childNodes);
+            $workContext = StaticNodeList::fromNodeList($import->childNodes);
         }
 
         if ($this->shouldReplaceCurrent($import, $contextChild)) {

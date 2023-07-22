@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 #[CoversClass(Merger::class)]
 #[UsesClass(Id::class)]
 #[UsesClass(MergeList::class)]
-#[UsesClass(SnapshotDOMNodelist::class)]
+#[UsesClass(StaticNodeList::class)]
 class MergerTest extends TestCase {
 
     use DomDocumentsEqualTrait;
