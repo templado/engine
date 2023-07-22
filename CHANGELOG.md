@@ -2,6 +2,56 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.2.4] - 2023-07-07
+
+This release is the last scheduled feature release in the 4.x branch. New features will
+be implemented in Templad 5.x only. Updates to 4.x are going to be made to ensure compatibility
+with upcoming PHP versions as long as possible. For Bugfixes, please just open a ticket.
+
+### Changed
+* Replaced generic ClearNamespaceDefinitionsFilter
+  Replaced with a specifc one that only removes hopefully redundant xmlns defintions for xhtml.
+
+  This still has many potential issues but is a lot better than the previous approach.
+
+## [4.2.3] - 2023-05-16
+
+### Fixed
+* CSRFProtectionRendererTest fails with PHP 8.3.0-dev due to invalid xmlns
+
+
+## [4.2.2] - 2022-11-08
+
+### Changed
+* ClearNamespaceDefinitionsFilter now supports an optional root node name that will get the xhtml xmlns set
+
+### Fixed
+* `Html::asString()` no longer has unexpected side effects on the working DOM (which may have lead to namespaces being unset)
+
+## [4.2.1] - 2022-08-24
+
+### Fixed
+* [#26](https://github.com/templado/engine/issues/26): `EmptyElementsFilter` can cause invalid markup
+
+
+## [4.2.0] - 2022-04-28
+
+### Changed
+
+* Include information from libxml_get_last_error() in TempladoException message (Thanks @sebastianbergmann)
+
+### Added
+
+* `Html::extractAsSnippets` to allow extraction of elements as snippets
+
+
+## [4.1.4] - 2022-01-25
+
+### Fixed
+
+* `SnapshotAttributeList`: PHP 8.1 deprecation notices
+
+
 ## [4.1.3] - 2021-09-07
 
 ### Added
@@ -48,7 +98,7 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 * Consecutive nodes with the same property got incorrectly always treated as if in array processing mode and thus the
   presumed redundant ones got removed.
 
-  
+
 ## [4.0.5] - 2021-01-09
 
 ### Fixed
@@ -82,8 +132,8 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 ### Changed
 
 * The `Iterator` returned by the `Selection` class is no longer based on `DOMNodeList` but on `ArrayIterator`. This is
-  necessary to not have the list reset on changes to the DOM but to provide a stable Snapshots of the selection result.   
-  
+  necessary to not have the list reset on changes to the DOM but to provide a stable Snapshots of the selection result.
+
 ## [4.0.0] - 2019-09-13
 
 ### Changed
@@ -99,10 +149,10 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 
 ## [3.0.1] - 2019-05-26
 
-### Changed 
+### Changed
 
-* The `SnippetFileLoader` now returns `TempladoSnippts` for templado type snippets rather than `SimpleSnippets`, 
-which never workd reliably due to DOMDocumentFragment issues.
+* The `SnippetFileLoader` now returns `TempladoSnippts` for templado type snippets rather than `SimpleSnippets`,
+  which never workd reliably due to DOMDocumentFragment issues.
 
 ### Fixed
 
@@ -119,7 +169,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 ### Fixed
 
 * Detect and prohibit potential endless recursion in SnippetRenderer (Thanks @spriebsch)
-  
+
 
 ## [2.3.2] - 2018-10-26
 
@@ -164,7 +214,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * ViewModelRenderer: An empty array will be treated as boolean false, leading to removal of context node
 * ViewModelRenderer: Trying to remove the document element now throws an exception
-* ViewModelRenderer: Trying to apply an array with multiple items on document element now throws an exception 
+* ViewModelRenderer: Trying to apply an array with multiple items on document element now throws an exception
 
 ## [2.2.4] - 2018-01-20
 
@@ -186,7 +236,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 ## [2.2.1] - 2017-11-27
 
-* ViewModelRenderer: Attributes with dashes are now explicitly mapped (e.g. data-foo to getDataFoo) 
+* ViewModelRenderer: Attributes with dashes are now explicitly mapped (e.g. data-foo to getDataFoo)
 
 ## [2.2.0] - 2017-11-24
 
@@ -209,7 +259,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 ### Added
 
-* ViewModel: Iterators are now supported as an alternative to array return types 
+* ViewModel: Iterators are now supported as an alternative to array return types
 
 ### Changed
 
@@ -225,7 +275,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Renamed Asset to Snippet, as that's what it truely is
 * Renamed Page to HTML
-* Snippet Interface changed: `applyTo()` now has to return a `\DOMNode` 
+* Snippet Interface changed: `applyTo()` now has to return a `\DOMNode`
 
 ### Fixed
 
@@ -245,6 +295,12 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.2.4]: https://github.com/templado/engine/compare/4.2.3...4.2.4
+[4.2.3]: https://github.com/templado/engine/compare/4.2.2...4.2.3
+[4.2.2]: https://github.com/templado/engine/compare/4.2.1...4.2.2
+[4.2.1]: https://github.com/templado/engine/compare/4.2.0...4.2.1
+[4.2.0]: https://github.com/templado/engine/compare/4.1.4...4.2.0
+[4.1.4]: https://github.com/templado/engine/compare/4.1.3...4.1.4
 [4.1.3]: https://github.com/templado/engine/compare/4.1.2...4.1.3
 [4.1.2]: https://github.com/templado/engine/compare/4.1.1...4.1.2
 [4.1.1]: https://github.com/templado/engine/compare/4.1.0...4.1.1
