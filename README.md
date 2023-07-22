@@ -1,14 +1,15 @@
-# Templado
+# Templado 5
+
+> __Templado 5.0 is currently under heavy development__
+>
+> Templado 5.0 - developed in `main` - is, in major parts, a rewrite from Templado 4.x and under current development. If you want to try 5.0 already, please be aware of the fact the current API is subject to change and it is not yet feature complete.
+
 
 [![Integrate](https://github.com/templado/engine/workflows/Integrate/badge.svg)](https://github.com/templado/engine/actions)
 
 A pragmatic approach to templating for PHP 8.2+
 
 (Use Templado [4.x](https://github.com/templado/engine/tree/4.x) for PHP 7+)
-
-## Templado 5.x is under development.
-
-Templado 5.0 - developed in `main` - is, in major parts, a rewrite from Templado 4.x and under current development. If you want to try 5.0 already, please be aware of the fact the current API is subject to change and it is not yet feature complete.
 
 ### Motivation
 
