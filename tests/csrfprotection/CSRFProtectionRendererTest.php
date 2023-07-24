@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use DOMElement;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -31,6 +32,14 @@ class CSRFProtectionRendererTest extends TestCase {
         $this->expected->loadXML(
             '<?xml version="1.0"?>
             <html><body><form><input type="hidden" name="csrf" value="secure"/></form></body></html>'
+        );
+    }
+
+    public function testUsingContextElementWithoutOwnerDocumentThrowsException(): void {
+        $this->expectException(CSRFProtectionRendererException::class);
+        (new CSRFProtectionRenderer())->render(
+            new DOMElement('dummmy'),
+            $this->createMock(CSRFProtection::class)
         );
     }
 

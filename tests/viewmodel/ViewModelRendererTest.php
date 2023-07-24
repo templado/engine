@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use DOMElement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
@@ -32,6 +33,14 @@ class ViewModelRendererTest extends TestCase {
             $expected->documentElement,
             $dom->documentElement,
             true
+        );
+    }
+
+    public function testUsingContextElementWithOwnerDocumentThrowsException(): void {
+        $this->expectException(ViewModelRendererException::class);
+        (new ViewModelRenderer())->render(
+            new DOMElement('foo'),
+            new class {}
         );
     }
 
@@ -87,7 +96,7 @@ class ViewModelRendererTest extends TestCase {
             public function __call($name, $args) {
                 switch ($name) {
                     case 'a': return $this;
-                    case 'property': return;
+                    case 'property': return null;
                     default: return 'text';
                 }
             }
@@ -461,6 +470,16 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
+    public function testResolvingResourceToNonObjectThrowsException(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root resource="foo" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new class { public function foo(): string { return 'crash'; }});
+    }
+
     public function testPrefixViewModelGetsAppliedAsExcepted(): void {
         $viewModel               = new PrefixViewModel();
         $dom                     = new DOMDocument();
@@ -511,12 +530,22 @@ class ViewModelRendererTest extends TestCase {
 
     public function testUsingAPrefixWithNoMethodToRequestItThrowsException(): void {
         $dom = new DOMDocument();
-        $dom->loadXML('<?xml version="1.0"?><root prefix="p foo" />');
+        $dom->loadXML('<?xml version="1.0"?><root prefix="p: foo" />');
 
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
         $renderer->render($dom->documentElement, new \stdClass());
+    }
+
+    public function testResolvingPrefixToNonObjectThrowsException(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0"?><root prefix="p: foo" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render($dom->documentElement, new class { public function foo(): string { return 'crash'; }});
     }
 
     public function testUsingAnUndefinedPrefixThrowsException(): void {
