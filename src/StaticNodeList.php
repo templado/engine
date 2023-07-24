@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use function iterator_to_array;
 use ArrayIterator;
 use Countable;
 use DOMNamedNodeMap;
@@ -27,7 +28,7 @@ final readonly class StaticNodeList implements Countable, IteratorAggregate {
     }
 
     public static function fromNamedNodeMap(DOMNamedNodeMap $attributes): self {
-        return new self(...$attributes);
+        return new self(...array_values(iterator_to_array($attributes)));
     }
 
     public function __construct(DOMNode ...$node) {
