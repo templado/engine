@@ -18,7 +18,6 @@ use function lcfirst;
 use function method_exists;
 use function property_exists;
 use function str_contains;
-use function ucfirst;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
@@ -114,9 +113,9 @@ final class ViewModelRenderer {
 
         $result = match (true) {
             // method variants
-            method_exists($this->rootModel, $method)                  => $this->rootModel->{$method}(),
-            method_exists($this->rootModel, 'get' . ucfirst($method)) => $this->rootModel->{'get' . ucfirst($method)}(),
-            method_exists($this->rootModel, '__call')                 => $this->rootModel->{$method}(),
+            method_exists($this->rootModel, $method)                 => $this->rootModel->{$method}(),
+            method_exists($this->rootModel, 'get' . $method) => $this->rootModel->{'get' . $method}(),
+            method_exists($this->rootModel, '__call')        => $this->rootModel->{$method}(),
 
             // property variants
             property_exists($this->rootModel, $method) => $this->rootModel->{$method},
@@ -146,13 +145,13 @@ final class ViewModelRenderer {
 
         $result = match (true) {
             // method variants
-            method_exists($model, $resource)                  => $model->{$resource}(),
-            method_exists($model, 'get' . ucfirst($resource)) => $model->{'get' . ucfirst($resource)}(),
-            method_exists($model, '__call')                   => $model->{$resource}(),
+            method_exists($model, $resource)                 => $model->{$resource}(),
+            method_exists($model, 'get' . $resource) => $model->{'get' . $resource}(),
+            method_exists($model, '__call')          => $model->{$resource}(),
 
             // property variants
-            property_exists($model, $resource) => $model->{$resource},
-            method_exists($model, '__get')     => $model->{$resource},
+            property_exists($model, $resource)                => $model->{$resource},
+            method_exists($model, '__get')            => $model->{$resource},
 
             default => throw new ViewModelRendererException(sprintf('Cannot resolve resource request for "%s"', $resource))
         };
@@ -175,9 +174,9 @@ final class ViewModelRenderer {
     private function modelSupportsVocab(object $model, string $requiredVocab): void {
         $modelVocab = match (true) {
             // method variants
-            method_exists($model, 'vocab')    => $model->vocab(),
-            method_exists($model, 'getVocab') => $model->getVocab(),
-            method_exists($model, '__call')   => $model->vocab(),
+            method_exists($model, 'vocab')    => $model->vocab($requiredVocab),
+            method_exists($model, 'getVocab') => $model->getVocab($requiredVocab),
+            method_exists($model, '__call')   => $model->vocab($requiredVocab),
 
             // property variants
             property_exists($model, 'vocab') => $model->vocab,
@@ -223,9 +222,9 @@ final class ViewModelRenderer {
 
         $result = match (true) {
             // method variants
-            method_exists($model, $property)                  => $model->{$property}($context->textContent),
-            method_exists($model, 'get' . ucfirst($property)) => $model->{'get' . ucfirst($property)}($context->textContent),
-            method_exists($model, '__call')                   => $model->{$property}($context->textContent),
+            method_exists($model, $property)                 => $model->{$property}($context->textContent),
+            method_exists($model, 'get' . $property) => $model->{'get' . $property}($context->textContent),
+            method_exists($model, '__call')          => $model->{$property}($context->textContent),
 
             // property variants
             property_exists($model, $property) => $model->{$property},
@@ -423,9 +422,9 @@ final class ViewModelRenderer {
 
             $result = match (true) {
                 // method variants
-                method_exists($model, $name)                  => $model->{$name}($attribute->nodeValue),
-                method_exists($model, 'get' . ucfirst($name)) => $model->{'get' . ucfirst($name)}($attribute->nodeValue),
-                method_exists($model, '__call')               => $model->{$name}($attribute->nodeValue),
+                method_exists($model, $name)                 => $model->{$name}($attribute->nodeValue),
+                method_exists($model, 'get' . $name) => $model->{'get' . $name}($attribute->nodeValue),
+                method_exists($model, '__call')      => $model->{$name}($attribute->nodeValue),
 
                 // property variants
                 property_exists($model, $name) => $model->{$name},
