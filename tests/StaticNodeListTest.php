@@ -33,10 +33,8 @@ class StaticNodeListTest extends TestCase {
         $list = StaticNodeList::fromNamedNodeMap($dom->documentElement->attributes);
 
         $this->assertCount(3, $list);
-        $pos = 0;
-        foreach($list as $attr) {
+        foreach($list as $pos => $attr) {
             $this->assertEquals($expected[$pos], $attr->nodeName);
-            $pos++;
         }
 
     }

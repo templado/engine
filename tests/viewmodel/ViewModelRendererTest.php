@@ -3,7 +3,9 @@ namespace Templado\Engine;
 
 use DOMDocument;
 use DOMElement;
+use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
@@ -728,4 +730,282 @@ class ViewModelRendererTest extends TestCase {
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
+
+    public function testUnsuportedVocabGetsIgnored(): void {
+        $markup = '<?xml version="1.0"?><root vocab="foo" property="bar" />';
+
+        $expected = new DOMDocument();
+        $expected->loadXML($markup);
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function vocab(): string {
+                    return 'other';
+                }
+            }
+        );
+
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
+
+    public function testNonStringResponseForVocabThrowsException(): void {
+        $markup = '<?xml version="1.0"?><root vocab="foo" property="bar" />';
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function vocab(): bool {
+                    return false;
+                }
+            }
+        );
+    }
+
+    public function testAttemptToUseNonObjectOrIterableModelForTypeOfThrowsException(): void {
+        $markup = '<?xml version="1.0"?><root typeof="foo" property="bar" />';
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function bar(): string {
+                    return 'will-not-work';
+                }
+            }
+        );
+    }
+
+    public function testUnsupportedModelTypeAsListItemThrowsException(): void {
+        $markup = '<?xml version="1.0"?><root><child property="foo" /></root>';
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function foo(): array {
+                    return [false];
+                }
+            }
+        );
+    }
+
+    public function testMagicToStringMethodGetsCalledOnModelForText(): void {
+        $markup = '<?xml version="1.0"?><root property="foo" />';
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function foo(): object {
+                    return new class {
+                        public function __toString(): string {
+                            return 'toString-Text';
+                        }
+                    };
+                }
+            }
+        );
+
+        $this->assertEquals('toString-Text', $dom->documentElement->textContent);
+    }
+
+    public function testResourceResolvingHonorsPrefixSetup(): void {
+        $markup = '<?xml version="1.0"?><root prefix="f: test" resource="f:foo" property="bar" />';
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function test(): object {
+                    return new class {
+                        public function foo(): object {
+                            return new class {
+                                public function bar(): string {
+                                    return 'resource-resolved-via-prefix';
+                                }
+                            };
+                        }
+                    };
+                }
+            }
+        );
+
+        $this->assertEquals('resource-resolved-via-prefix', $dom->documentElement->textContent);
+    }
+
+    public function testResourceResovlingUsingUndefinedPrefixThrowsException(): void {
+        $markup = '<?xml version="1.0"?><root prefix="f: external:other" resource="f:foo" />';
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $renderer->render(
+            $dom->documentElement,
+            new class {}
+        );
+    }
+
+    #[DataProvider('vocabAccess')]
+    public function testVocabCanBeResolvedViaAllSupportedAccessTypes(object $model, string $expected): void {
+        $markup = '<?xml version="1.0"?><root vocab="foo" property="test" />';
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render(
+            $dom->documentElement,
+            $model
+        );
+
+        $this->assertEquals($expected, $dom->documentElement->textContent);
+    }
+
+    #[DataProvider('vocabAccess')]
+    public function testVocabCanBeResolvedViaAllSupportedAccessTypesButIgnoresNonMatching(object $model): void {
+        $markup = '<?xml version="1.0"?><root vocab="bar" property="test">original</root>';
+
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render(
+            $dom->documentElement,
+            $model
+        );
+
+        $this->assertEquals('original', $dom->documentElement->textContent);
+    }
+
+    public static function vocabAccess():array {
+        return [
+            'method' => [new class {
+                public function vocab(): string {
+                    return 'foo';
+                }
+
+                public function test(): string {
+                    return 'vocab-based';
+                }
+            }, 'vocab-based'],
+            'method-__call' => [new class {
+                public function __call(string $key, $params): string {
+                    if ($key === 'vocab') return 'foo';
+
+                    throw new InvalidArgumentException();
+                }
+
+                public function test(): string {
+                    return 'vocab-based';
+                }
+            }, 'vocab-based'],
+            'method-get' => [new class {
+                public function getVocab(): string {
+                    return 'foo';
+                }
+
+                public function test(): string {
+                    return 'vocab-based';
+                }
+            }, 'vocab-based'],
+            'property-__get' => [new class {
+                public function __get(string $key): string {
+                    if ($key === 'vocab') return 'foo';
+
+                    throw new InvalidArgumentException();
+                }
+
+                public function test(): string {
+                    return 'vocab-based';
+                }
+            }, 'vocab-based'],
+            'property' => [new class {
+                public string $vocab = 'foo';
+
+                public function test(): string {
+                    return 'vocab-based';
+                }
+            }, 'vocab-based'],
+            'none' => [new class {
+                public function test(): string {
+                    return 'original';
+                }
+            }, 'original']
+        ];
+    }
+
+    public function testRemovedSubTreeNodeGetsIgnored(): void {
+        $markup = <<<EOF
+            <?xml version="1.0"?>
+            <root property="foo">
+                <child property="bar" typeof="a">org</child>
+                <child property="bar" typeof="b">removed</child>
+                <other property="survive" />
+            </root>
+            EOF;
+        $dom = new DOMDocument();
+        $dom->loadXML($markup);
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function foo(): object {
+                    return new class {
+
+                        public function bar(): object {
+                            return new class {
+                                public function typeOf(): string {
+                                    return 'a';
+                                }
+
+                                public function asString(): string {
+                                    return 'new-text-value';
+                                }
+                            };
+                        }
+
+                        public function survive(): string {
+                            return 'other-text';
+                        }
+                    };
+                }
+            }
+        );
+
+        $this->assertEquals('other-text', $dom->documentElement->lastElementChild->textContent);
+    }
+
 }
