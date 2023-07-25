@@ -113,7 +113,7 @@ final class ViewModelRenderer {
 
         $result = match (true) {
             // method variants
-            method_exists($this->rootModel, $method)                 => $this->rootModel->{$method}(),
+            method_exists($this->rootModel, $method)         => $this->rootModel->{$method}(),
             method_exists($this->rootModel, 'get' . $method) => $this->rootModel->{'get' . $method}(),
             method_exists($this->rootModel, '__call')        => $this->rootModel->{$method}(),
 
@@ -145,13 +145,13 @@ final class ViewModelRenderer {
 
         $result = match (true) {
             // method variants
-            method_exists($model, $resource)                 => $model->{$resource}(),
+            method_exists($model, $resource)         => $model->{$resource}(),
             method_exists($model, 'get' . $resource) => $model->{'get' . $resource}(),
             method_exists($model, '__call')          => $model->{$resource}(),
 
             // property variants
-            property_exists($model, $resource)                => $model->{$resource},
-            method_exists($model, '__get')            => $model->{$resource},
+            property_exists($model, $resource) => $model->{$resource},
+            method_exists($model, '__get')     => $model->{$resource},
 
             default => throw new ViewModelRendererException(sprintf('Cannot resolve resource request for "%s"', $resource))
         };
@@ -222,7 +222,7 @@ final class ViewModelRenderer {
 
         $result = match (true) {
             // method variants
-            method_exists($model, $property)                 => $model->{$property}($context->textContent),
+            method_exists($model, $property)         => $model->{$property}($context->textContent),
             method_exists($model, 'get' . $property) => $model->{'get' . $property}($context->textContent),
             method_exists($model, '__call')          => $model->{$property}($context->textContent),
 
@@ -422,7 +422,7 @@ final class ViewModelRenderer {
 
             $result = match (true) {
                 // method variants
-                method_exists($model, $name)                 => $model->{$name}($attribute->nodeValue),
+                method_exists($model, $name)         => $model->{$name}($attribute->nodeValue),
                 method_exists($model, 'get' . $name) => $model->{'get' . $name}($attribute->nodeValue),
                 method_exists($model, '__call')      => $model->{$name}($attribute->nodeValue),
 
