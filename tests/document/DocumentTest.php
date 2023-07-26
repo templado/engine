@@ -41,6 +41,26 @@ class DocumentTest extends TestCase {
         );
     }
 
+    public function testCanBeConstructFromDomDocument(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root />');
+
+        $this->assertInstanceOf(
+            Document::class,
+            Document::fromDomDocument($dom)
+        );
+    }
+
+    public function testDomDocumentCanBeRetrieved(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root />');
+
+        $this->assertSame(
+            $dom,
+            Document::fromDomDocument($dom)->asDomDocument()
+        );
+    }
+
     public function testExistingLibxmlErrorStateGetsClearedOnConstruct(): void {
         libxml_use_internal_errors(true);
         $dummy = new DOMDocument();

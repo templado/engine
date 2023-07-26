@@ -53,6 +53,10 @@ final readonly class Document {
         return $this->id;
     }
 
+    public function asDomDocument(): DOMDocument {
+        return $this->dom;
+    }
+
     public function extract(Selector $selector, ?Id $id = null): self {
         $exportDom = new DOMDocument;
         $selection = $selector->select($this->dom->documentElement);
