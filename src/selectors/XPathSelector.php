@@ -60,7 +60,6 @@ class XPathSelector implements Selector {
     }
 
     private function getXPath(DOMNode $node): DOMXPath {
-
         $dom = $node instanceof DOMDocument ? $node : $node->ownerDocument;
         assert($dom instanceof DOMDocument);
 

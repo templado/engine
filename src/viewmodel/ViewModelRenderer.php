@@ -426,7 +426,7 @@ final class ViewModelRenderer {
                 str_replace(['-', ':'], '', ucwords($attribute->nodeName, '-:'))
             );
 
-            if (in_array($name, ['property','prefix','vocab','resource'])) {
+            if (in_array($name, ['property', 'prefix', 'vocab', 'resource'], true)) {
                 continue;
             }
 
