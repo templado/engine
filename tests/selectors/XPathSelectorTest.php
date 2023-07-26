@@ -40,6 +40,41 @@ class XPathSelectorTest extends TestCase {
         }
     }
 
+    public function testHtmlPrefixIsImplicitlyRegistered(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><html xmlns="http://www.w3.org/1999/xhtml"><head /></html>');
+
+        $selector = new XPathSelector('//html:head');
+        $selection = $selector->select($dom->documentElement);
+
+        $this->assertInstanceOf(Selection::class, $selection);
+
+        foreach ($selection as $node) {
+            $this->assertSame(
+                $dom->documentElement->firstChild,
+                $node
+            );
+        }
+    }
+
+    public function testPHPFunctionsCanBeUsedInXPath(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head /></html>');
+
+        $selector = new XPathSelector('//html:html[php:functionString("substr", @lang, 0, 2) = "en"]/*');
+        $selector->registerPrefix("php", "http://php.net/xpath");
+        $selection = $selector->select($dom->documentElement);
+
+        $this->assertInstanceOf(Selection::class, $selection);
+
+        foreach ($selection as $node) {
+            $this->assertSame(
+                $dom->documentElement->firstChild,
+                $node
+            );
+        }
+    }
+
     /**
      * @dataProvider invalidXPathQueryStringsProvider
      */

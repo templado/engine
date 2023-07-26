@@ -309,4 +309,22 @@ class DocumentTest extends TestCase {
         .'<body>&nbsp;</body>';
         (Document::fromString($xml));
     }
+
+    public function testAsStringResultIsFormattedAsException(): void {
+        $expected = <<<EOF
+<?xml version="1.0"?>
+<root>
+  <child1/>
+  <child2/>
+</root>
+
+EOF;
+
+        $xml = new DOMDocument();
+        $xml->loadXML('<root><child1/><child2/></root>');
+
+        $this->assertEquals($expected, (Document::fromDomDocument($xml))->asString());
+    }
+
+
 }

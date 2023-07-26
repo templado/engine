@@ -1,6 +1,9 @@
 <?php declare(strict_types = 1);
 namespace Templado\Engine\Example;
 
+use Templado\Engine\Remove;
+use Templado\Engine\Signal;
+
 class Headline {
     public function asString() {
         return 'Hallo welt!';
@@ -32,6 +35,10 @@ class Email {
 
     public function class() {
         return false;
+    }
+
+    public function dataRemove(): Remove {
+        return Signal::remove();
     }
 }
 

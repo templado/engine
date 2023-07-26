@@ -1018,13 +1018,13 @@ class ViewModelRendererTest extends TestCase {
             $dom->documentElement,
             new class {
                 public function document(): Document {
-                    return Document::fromString('<child />');
+                    return Document::fromString('<child><sub /></child>');
                 }
             }
         );
 
         $expected = new DOMDocument();
-        $expected->loadXML('<root property="document"><child /></root>');
+        $expected->loadXML('<root property="document"><child><sub /></child></root>');
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
