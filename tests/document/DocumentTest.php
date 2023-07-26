@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use DOMNode;
 use function libxml_get_errors;
 use ArrayIterator;
 use DOMDocument;
@@ -31,6 +32,7 @@ use Templado\Engine\Example\ViewModel;
 #[UsesClass(DocumentCollection::class)]
 #[UsesClass(Signal::class)]
 #[UsesClass(StaticNodeList::class)]
+#[UsesClass(TransformationProcessor::class)]
 class DocumentTest extends TestCase {
     use DomDocumentsEqualTrait;
 
@@ -326,5 +328,43 @@ EOF;
         $this->assertEquals($expected, (Document::fromDomDocument($xml))->asString());
     }
 
+    public function testSelectorGetsUsedWhenViewModelGetsApplied(): void {
+        $target = Document::fromString('<root><child property="handle" /><child property="ignore" /></root>');
+
+        $target->applyViewModel(
+            new class {
+                public string $handle = 'text body';
+            },
+            new XPathSelector('//child[@property="handle"]')
+        );
+
+
+        $dom = new DomDocument();
+        $dom->loadXML('<root><child property="handle">text body</child><child property="ignore" /></root>');
+
+        $this->assertResultMatches($dom->documentElement, $target->asDomDocument()->documentElement);
+    }
+
+    public function testSelectorGetsUsedWhenTransformationGetsApplied(): void {
+        $target = Document::fromString('<root><child property="handle" /><child property="ignore" /></root>');
+
+        $target->applyTransformation(
+            new class implements Transformation {
+                public function selector() : Selector{
+                    return new XPathSelector('self::*');
+                }
+                public function apply(DOMNode $context) : void{
+                    $context->setAttribute('transformation', 'done');
+                }
+            },
+            new XPathSelector('//child[@property="handle"]')
+        );
+
+
+        $dom = new DomDocument();
+        $dom->loadXML('<root><child transformation="done" property="handle" /><child property="ignore" /></root>');
+
+        $this->assertResultMatches($dom->documentElement, $target->asDomDocument()->documentElement);
+    }
 
 }

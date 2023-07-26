@@ -10,8 +10,12 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
 use Templado\Engine\PrefixModel\PrefixCallViewModel;
+use Templado\Engine\PrefixModel\PrefixPropertyGetViewModel;
+use Templado\Engine\PrefixModel\PrefixPropertyViewModel;
 use Templado\Engine\PrefixModel\PrefixViewModel;
 use Templado\Engine\ResourceModel\ResourceCallViewModel;
+use Templado\Engine\ResourceModel\ResourcePropertyGetViewModel;
+use Templado\Engine\ResourceModel\ResourcePropertyViewModel;
 use Templado\Engine\ResourceModel\ResourceViewModel;
 
 #[CoversClass(ViewModelRenderer::class)]
@@ -431,8 +435,8 @@ class ViewModelRendererTest extends TestCase {
         );
     }
 
-    public function testResourceViewModelGetsAppliedAsExcepted(): void {
-        $viewModel               = new ResourceViewModel();
+    #[DataProvider('resourceViewModelProvider')]
+    public function testResourceViewModelGetsAppliedAsExcepted(object $viewModel): void {
         $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/resource/source.html');
@@ -447,20 +451,13 @@ class ViewModelRendererTest extends TestCase {
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
-    public function testResourceViewModelWithMagicCallGetsAppliedAsExcepted(): void {
-        $viewModel               = new ResourceCallViewModel();
-        $dom                     = new DOMDocument();
-        $dom->preserveWhiteSpace = false;
-        $dom->load(__DIR__ . '/../_data/viewmodel/resource/source.html');
-
-        $renderer = new ViewModelRenderer();
-        $renderer->render($dom->documentElement, $viewModel);
-
-        $expected                     = new DOMDocument();
-        $expected->preserveWhiteSpace = false;
-        $expected->load(__DIR__ . '/../_data/viewmodel/resource/expected.html');
-
-        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    public static function resourceViewModelProvider(): array {
+        return [
+            'method' => [new ResourceViewModel()],
+            'call' => [new ResourceCallViewModel()],
+            'property' => [new ResourcePropertyViewModel()],
+            'get' => [new ResourcePropertyGetViewModel()]
+        ];
     }
 
     public function testUsingAResourceWithNoMethodToRequestItThrowsException(): void {
@@ -483,8 +480,9 @@ class ViewModelRendererTest extends TestCase {
         $renderer->render($dom->documentElement, new class { public function foo(): string { return 'crash'; }});
     }
 
-    public function testPrefixViewModelGetsAppliedAsExcepted(): void {
-        $viewModel               = new PrefixViewModel();
+
+    #[DataProvider('prefixViewModelProvider')]
+    public function testPrefixViewModelGetsAppliedAsExcepted(object $viewModel): void {
         $dom                     = new DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->load(__DIR__ . '/../_data/viewmodel/prefix/source.html');
@@ -497,6 +495,15 @@ class ViewModelRendererTest extends TestCase {
         $expected->load(__DIR__ . '/../_data/viewmodel/prefix/expected.html');
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
+
+    public static function prefixViewModelProvider(): array {
+        return [
+            'method' => [new PrefixViewModel()],
+            'call' => [new PrefixCallViewModel()],
+            'property' => [new PrefixPropertyViewModel()],
+            'get' => [new PrefixPropertyGetViewModel()]
+        ];
     }
 
     public function testPrefixWithDoubleColonViewModelGetsAppliedAsExcepted(): void {
@@ -511,22 +518,6 @@ class ViewModelRendererTest extends TestCase {
         $expected                     = new DOMDocument();
         $expected->preserveWhiteSpace = false;
         $expected->load(__DIR__ . '/../_data/viewmodel/prefix/colon-expected.html');
-
-        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
-    }
-
-    public function testPrefixViewModelWithMagicCallGetsAppliedAsExcepted(): void {
-        $viewModel               = new PrefixCallViewModel();
-        $dom                     = new DOMDocument();
-        $dom->preserveWhiteSpace = false;
-        $dom->load(__DIR__ . '/../_data/viewmodel/prefix/source.html');
-
-        $renderer = new ViewModelRenderer();
-        $renderer->render($dom->documentElement, $viewModel);
-
-        $expected                     = new DOMDocument();
-        $expected->preserveWhiteSpace = false;
-        $expected->load(__DIR__ . '/../_data/viewmodel/prefix/expected.html');
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
@@ -1048,5 +1039,58 @@ class ViewModelRendererTest extends TestCase {
         $expected->loadXML('<root property="document"><c1 /><c2 /><c3 /></root>');
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
+
+    #[DataProvider('attributeViewModelProvider')]
+    public function testAttributesGetAppliedFromViewModelProperties(object $model, string $value): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="document" attr="default" />');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render(
+            $dom->documentElement,
+            $model
+        );
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<root property="document" attr="'.$value.'" />');
+
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
+
+    public static function attributeViewModelProvider(): array {
+        return [
+            'property' => [
+                new class {
+                    public function document(): object {
+                        return new class {
+                            public string $attr='changed';
+                        };
+                    }
+                },
+                'changed'
+            ],
+            'get' => [
+                new class {
+                    public function document(): object {
+                        return new class {
+                            public function __get(string $key): string|true {
+                                return $key === 'attr' ? 'changed' : true;
+                            }
+                        };
+                    }
+                },
+                'changed'
+            ],
+            'none' => [
+                new class {
+                    public function document(): object {
+                        return new class {
+                        };
+                    }
+                },
+                'default'
+            ]
+        ];
     }
 }

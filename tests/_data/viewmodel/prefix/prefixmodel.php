@@ -82,3 +82,22 @@ class PrefixCallViewModel {
         throw new \RuntimeException('FAIL:' . $method);
     }
 }
+
+class PrefixPropertyViewModel {
+
+    public function __construct(
+        public User $user = new User,
+        public Header $header = new Header
+    ) {}
+}
+
+class PrefixPropertyGetViewModel {
+    public function __get($method) {
+        switch ($method) {
+            case 'user': return new User();
+            case 'header': return new Header();
+        }
+
+        throw new \RuntimeException('FAIL:' . $method);
+    }
+}

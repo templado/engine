@@ -82,3 +82,23 @@ class ResourceCallViewModel {
         throw new \RuntimeException('FAIL:' . $method);
     }
 }
+
+class ResourcePropertyViewModel {
+
+    public function __construct(
+        public User $user = new User,
+        public Header $header = new Header,
+    ) {}
+
+}
+
+class ResourcePropertyGetViewModel {
+    public function __get(string $method) {
+        switch ($method) {
+            case 'user': return new User();
+            case 'header': return new Header();
+        }
+
+        throw new \RuntimeException('FAIL:' . $method);
+    }
+}

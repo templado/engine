@@ -22,6 +22,23 @@ class XPathSelectorTest extends TestCase {
         }
     }
 
+    public function testSelectReturnsExceptedNodeWhenDomDocuemtnIsUsed(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
+
+        $selector  = new XPathSelector('//child');
+        $selection = $selector->select($dom);
+
+        $this->assertInstanceOf(Selection::class, $selection);
+
+        foreach ($selection as $node) {
+            $this->assertSame(
+                $dom->documentElement->firstChild,
+                $node
+            );
+        }
+    }
+
     public function testRegisteredNamespacePrefixIsUsed(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root xmlns="foo:ns"><child /></root>');

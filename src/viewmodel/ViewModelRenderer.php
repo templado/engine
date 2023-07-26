@@ -426,6 +426,10 @@ final class ViewModelRenderer {
                 str_replace(['-', ':'], '', ucwords($attribute->nodeName, '-:'))
             );
 
+            if (in_array($name, ['property','prefix','vocab','resource'])) {
+                continue;
+            }
+
             $result = match (true) {
                 // method variants
                 method_exists($model, $name)         => $model->{$name}($attribute->nodeValue),
