@@ -66,7 +66,7 @@ class XPathSelector implements Selector {
         $xp = new DOMXPath($dom);
         $xp->registerPhpFunctions();
 
-        if (empty($this->prefixMap) || isset($this->prefixMap['html'])) {
+        if (empty($this->prefixMap) || !isset($this->prefixMap['html'])) {
             $this->prefixMap['html'] = 'http://www.w3.org/1999/xhtml';
         }
 
