@@ -17,6 +17,7 @@ use Templado\Engine\ResourceModel\ResourceViewModel;
 #[CoversClass(ViewModelRenderer::class)]
 #[UsesClass(Signal::class)]
 #[UsesClass(StaticNodeList::class)]
+#[UsesClass(Document::class)]
 class ViewModelRendererTest extends TestCase {
     use DomDocumentsEqualTrait;
 
@@ -1008,4 +1009,44 @@ class ViewModelRendererTest extends TestCase {
         $this->assertEquals('other-text', $dom->documentElement->lastElementChild->textContent);
     }
 
+    public function testViewModelReturningPlainDocumentGetsRenderedAsExcepted(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="document" />');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function document(): Document {
+                    return Document::fromString('<child />');
+                }
+            }
+        );
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<root property="document"><child /></root>');
+
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
+
+    public function testViewModelReturningTempladoWrappedDocumentGetsRenderedAsExcepted(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="document" />');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function document(): Document {
+                    return Document::fromString(
+                        '<t:d xmlns:t="https://templado.io/document/1.0"><c1 /><c2 /><c3 /></t:d>');
+                }
+            }
+        );
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<root property="document"><c1 /><c2 /><c3 /></root>');
+
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
 }

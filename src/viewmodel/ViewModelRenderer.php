@@ -399,6 +399,12 @@ final class ViewModelRenderer {
     }
 
     private function objectApply(DOMElement $context, object $model): void {
+        if ($model instanceof Document) {
+            $this->documentApply($context, $model);
+
+            return;
+        }
+
         if (method_exists($model, 'asString') || method_exists($model, '__call')) {
             $context->nodeValue = '';
             $textContent        = $model->asString($context->textContent);
@@ -451,6 +457,26 @@ final class ViewModelRenderer {
             }
 
             throw new ViewModelRendererException(\sprintf('Unsupported type "%s" for attribute', gettype($result)));
+        }
+    }
+
+    private function documentApply(DOMElement $context, Document $model): void {
+        $context->nodeValue = '';
+
+        $ownerDocument = $context->ownerDocument;
+        assert($ownerDocument instanceof DOMDocument);
+
+        $document = $model->asDomDocument();
+        $nodes    = [$document->documentElement];
+
+        if ($document->documentElement->namespaceURI === Document::XMLNS) {
+            $nodes = $document->documentElement->childNodes;
+        }
+
+        foreach ($nodes as $node) {
+            $context->appendChild(
+                $ownerDocument->importNode($node, true)
+            );
         }
     }
 }
