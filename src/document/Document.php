@@ -90,7 +90,6 @@ final readonly class Document {
     public function asString(?Serializer $serializer = null): string {
         if ($serializer === null) {
             $this->dom->formatOutput       = true;
-            $this->dom->preserveWhiteSpace = false;
 
             return $this->dom->saveXML();
         }
