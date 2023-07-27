@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use function libxml_use_internal_errors;
 
 #[CoversClass(XPathSelector::class)]
 #[UsesClass(Selection::class)]
@@ -114,7 +115,10 @@ class XPathSelectorTest extends TestCase {
 
     #[DataProvider('invalidXPathQueryStringsProvider')]
     public function testUsingInvalidXPathQueryThrowsException(string $queryString): void {
+        libxml_use_internal_errors(true);
         $dom = new DOMDocument();
+        $dom->loadXML('<trigger error to ensure we have proper error handling in place in the selector>');
+
         $dom->loadXML('<?xml version="1.0" ?><root xmlns="foo:ns"><child /></root>');
 
         $selector = new XPathSelector($queryString);
