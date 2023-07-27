@@ -17,7 +17,7 @@ final class Merger {
     /**  @psalm-suppress PropertyNotSetInConstructor */
     private MergeList $documents;
 
-    /** @var array<string, bool> */
+    /** @var array<string, Id> */
     private array $seen = [];
 
     public function merge(DOMDocument $target, MergeList $toMerge): void {
