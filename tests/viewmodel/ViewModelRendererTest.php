@@ -231,6 +231,23 @@ class ViewModelRendererTest extends TestCase {
         });
     }
 
+    public function testNonObjectResultForTypeOfMethodOnConditionContextThrowsException(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root property="test" typeof="A" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForTypeOf);
+        $renderer->render($dom->documentElement, new class {
+            public function getTest() {
+                return [
+                    'test'
+                ];
+            }
+        });
+    }
+
     public function testNoExsitingTypeForRequestedTypeOfMethodOnConditionContextThrowsException(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root property="test" typeof="A" />');
