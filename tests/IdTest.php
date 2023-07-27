@@ -2,9 +2,13 @@
 namespace Templado\tests;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Small;
 use Templado\Engine\Id;
 
+#[CoversClass(Id::class)]
+#[Small]
 class sIdTest extends \PHPUnit\Framework\TestCase {
 
     public function testCanBeCreatedForValidInput(): void {

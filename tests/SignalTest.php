@@ -2,11 +2,13 @@
 namespace Templado\Engine;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(Signal::class)]
 #[CoversClass(Ignore::class)]
 #[CoversClass(Remove::class)]
+#[Small]
 class SignalTest extends TestCase {
 
     public function testCanCreateIgnoreSignal(): void {

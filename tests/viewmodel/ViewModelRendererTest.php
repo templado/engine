@@ -6,6 +6,7 @@ use DOMElement;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
@@ -22,6 +23,7 @@ use Templado\Engine\ResourceModel\ResourceViewModel;
 #[UsesClass(Signal::class)]
 #[UsesClass(StaticNodeList::class)]
 #[UsesClass(Document::class)]
+#[Small]
 class ViewModelRendererTest extends TestCase {
     use DomDocumentsEqualTrait;
 

@@ -10,6 +10,7 @@
 namespace Templado\Engine;
 
 use DOMNode;
+use PHPUnit\Framework\Attributes\Small;
 use function libxml_get_errors;
 use ArrayIterator;
 use DOMDocument;
@@ -33,6 +34,7 @@ use Templado\Engine\Example\ViewModel;
 #[UsesClass(Signal::class)]
 #[UsesClass(StaticNodeList::class)]
 #[UsesClass(TransformationProcessor::class)]
+#[Small]
 class DocumentTest extends TestCase {
     use DomDocumentsEqualTrait;
 

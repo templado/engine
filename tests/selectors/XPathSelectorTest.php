@@ -2,8 +2,15 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(XPathSelector::class)]
+#[UsesClass(Selection::class)]
+#[Small]
 class XPathSelectorTest extends TestCase {
     public function testSelectReturnsExceptedNode(): void {
         $dom = new DOMDocument();
@@ -92,9 +99,7 @@ class XPathSelectorTest extends TestCase {
         }
     }
 
-    /**
-     * @dataProvider invalidXPathQueryStringsProvider
-     */
+    #[DataProvider('invalidXPathQueryStringsProvider')]
     public function testUsingInvalidXPathQueryThrowsException(string $queryString): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root xmlns="foo:ns"><child /></root>');

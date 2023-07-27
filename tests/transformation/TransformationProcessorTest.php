@@ -2,11 +2,15 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Templado\Engine\TransformationProcessor
  */
+#[CoversClass(TransformationProcessor::class)]
+#[Small]
 class TransformationProcessorTest extends TestCase {
     public function testProcessCallsTransformation(): void {
         $dom = new DOMDocument();

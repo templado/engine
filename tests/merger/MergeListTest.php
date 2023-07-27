@@ -3,6 +3,7 @@ namespace merger;
 
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Id;
@@ -11,6 +12,7 @@ use Templado\Engine\MergeListException;
 
 #[CoversClass(MergeList::class)]
 #[UsesClass(Id::class)]
+#[Small]
 class MergeListTest extends TestCase {
 
     public function testIsInitiallyEmpty(): void {

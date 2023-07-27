@@ -2,8 +2,10 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
+#[Small]
 class CSSSelectorTest extends TestCase {
     public function testSelectReturnsExceptedNode(): void {
         $dom = new DOMDocument();

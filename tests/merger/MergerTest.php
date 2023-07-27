@@ -3,6 +3,7 @@ namespace Templado\Engine;
 
 use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
@@ -10,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 #[UsesClass(Id::class)]
 #[UsesClass(MergeList::class)]
 #[UsesClass(StaticNodeList::class)]
+#[Small]
 class MergerTest extends TestCase {
 
     use DomDocumentsEqualTrait;

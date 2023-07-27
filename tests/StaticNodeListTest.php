@@ -4,10 +4,11 @@ namespace templado\engine;
 use DOMDocument;
 use DOMElement;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(StaticNodeList::class)]
+#[Small]
 class StaticNodeListTest extends TestCase {
 
     public function testCanBeCreatedFromNodeList(): void {

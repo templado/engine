@@ -2,8 +2,15 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(StripRDFaAttributesTransformation::class)]
+#[UsesClass(Selection::class)]
+#[UsesClass(XPathSelector::class)]
+#[Small]
 class StripRDFaAttributesTransformationTest extends TestCase {
     use DomDocumentsEqualTrait;
 
