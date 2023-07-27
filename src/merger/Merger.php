@@ -62,7 +62,7 @@ final class Merger {
                     MergerException::DuplicateId
                 );
             }
-            $this->seen[$id->asString()] = true;
+            $this->seen[$id->asString()] = $id;
 
             foreach ($this->documents->get($id) as $childDocument) {
                 assert($childDocument instanceof DOMDocument);
