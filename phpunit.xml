@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd" bootstrap="tests/bootstrap.php" backupGlobals="false" beStrictAboutOutputDuringTests="true" beStrictAboutTestsThatDoNotTestAnything="true" cacheDirectory=".phpunit.cache" beStrictAboutCoverageMetadata="true"
-extensionsDirectory="tools/phpunit.d">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         backupGlobals="false"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         enforceTimeLimit="true"
+         cacheDirectory=".phpunit.cache"
+         beStrictAboutCoverageMetadata="true"
+         extensionsDirectory="tools/phpunit.d">
   <coverage>
     <report>
       <html outputDirectory="build/coverage/html"/>
