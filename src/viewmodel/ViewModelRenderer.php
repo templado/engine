@@ -45,7 +45,7 @@ final class ViewModelRenderer {
             );
         }
 
-        $this->pointer   = $document->createComment('templado pointer node');
+        $this->pointer   = $document->createElementNS('urn:templado:viewmodelrenderer', 'pointer', 'templado pointer node');
         $this->xp        = new DOMXPath($document);
         $this->supported = true;
 
