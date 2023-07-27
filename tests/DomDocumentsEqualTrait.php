@@ -13,7 +13,7 @@ trait DomDocumentsEqualTrait {
 
         $ed = new DOMDocument();
         $ed->appendChild($ed->importNode($expectedElement, true));
-        $xmlStr = $ed->C14N();
+        $xmlStr = $ed->C14N(withComments: true);
 
         if (!$xmlStr) {
             $error = \libxml_get_last_error();
@@ -28,7 +28,7 @@ trait DomDocumentsEqualTrait {
 
         $ad = new DOMDocument();
         $ad->appendChild($ad->importNode($actualElement, true));
-        $xmlStr = $ad->C14N();
+        $xmlStr = $ad->C14N(withComments: true);
 
         if (!$xmlStr) {
             $error = \libxml_get_last_error();
