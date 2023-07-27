@@ -110,6 +110,6 @@ final class Merger {
     }
 
     private function shouldReplaceCurrent(DOMElement $import, DOMElement $contextChild): bool {
-        return $import->hasAttribute('id') && $import->getAttribute('id') === $contextChild->getAttribute('id');
+        return $import->getAttribute('id') === $contextChild->getAttribute('id');
     }
 }
