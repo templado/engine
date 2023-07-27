@@ -39,7 +39,10 @@ final class ViewModelRenderer {
         $document        = $context->ownerDocument;
 
         if ($document === null) {
-            throw new ViewModelRendererException('Given context node must be connected to a document');
+            throw new ViewModelRendererException(
+                'Given context node must be connected to a document',
+                ViewModelRendererException::NotInDocument
+            );
         }
 
         $this->pointer   = $document->createComment('templado pointer node');
@@ -100,7 +103,10 @@ final class ViewModelRenderer {
         $parts = explode(': ', $prefixString);
 
         if (count($parts) !== 2) {
-            throw new ViewModelRendererException('Invalid prefix definition');
+            throw new ViewModelRendererException(
+                'Invalid prefix definition',
+                ViewModelRendererException::InvalidPrefixDefinition
+            );
         }
 
         [$prefix, $method] = $parts;
@@ -121,11 +127,17 @@ final class ViewModelRenderer {
             property_exists($this->rootModel, $method) => $this->rootModel->{$method},
             method_exists($this->rootModel, '__get')   => $this->rootModel->{$method},
 
-            default => throw new ViewModelRendererException(sprintf('Cannot resolve prefix request for "%s"', $method))
+            default => throw new ViewModelRendererException(
+                sprintf('Cannot resolve prefix request for "%s"', $method),
+                ViewModelRendererException::PrefixResolvingFailed
+            )
         };
 
         if (!is_object($result)) {
-            throw new ViewModelRendererException('Prefix type must be an object');
+            throw new ViewModelRendererException(
+                'Prefix type must be an object',
+                ViewModelRendererException::WrongTypeForPrefix
+            );
         }
 
         $this->prefixModels[$prefix] = $result;
@@ -139,7 +151,10 @@ final class ViewModelRenderer {
             $model               = $this->modelForPrefix($prefix);
 
             if ($model === null) {
-                throw new ViewModelRendererException(sprintf('Cannot resolve resource request for "%s" using prefix "%s"', $resource, $prefix));
+                throw new ViewModelRendererException(
+                    sprintf('Cannot resolve resource request for "%s" using prefix "%s"', $resource, $prefix),
+                    ViewModelRendererException::ResourceResolvingWithPrefixFailed
+                );
             }
         }
 
@@ -153,11 +168,17 @@ final class ViewModelRenderer {
             property_exists($model, $resource) => $model->{$resource},
             method_exists($model, '__get')     => $model->{$resource},
 
-            default => throw new ViewModelRendererException(sprintf('Cannot resolve resource request for "%s"', $resource))
+            default => throw new ViewModelRendererException(
+                sprintf('Cannot resolve resource request for "%s"', $resource),
+                ViewModelRendererException::ResourceResolvingFailed
+            )
         };
 
         if (!is_object($result)) {
-            throw new ViewModelRendererException('Resouce type must be a object');
+            throw new ViewModelRendererException(
+                'Resouce type must be a object',
+                ViewModelRendererException::WrongTypeForResource
+            );
         }
 
         return $result;
@@ -165,7 +186,10 @@ final class ViewModelRenderer {
 
     private function modelForPrefix(string $prefix): ?object {
         if (!array_key_exists($prefix, $this->prefixModels)) {
-            throw new ViewModelRendererException('No modell set for prefix');
+            throw new ViewModelRendererException(
+                'No model set for prefix',
+                ViewModelRendererException::NoModelForPrefix
+            );
         }
 
         return $this->prefixModels[$prefix];
@@ -186,7 +210,10 @@ final class ViewModelRenderer {
         };
 
         if (!is_string($modelVocab)) {
-            throw new ViewModelRendererException('Result of vocab query must be of type string');
+            throw new ViewModelRendererException(
+                'Result of vocab query must be of type string',
+                ViewModelRendererException::WrongTypeForVocab
+            );
         }
 
         $this->supported = $modelVocab === $requiredVocab;
@@ -230,12 +257,18 @@ final class ViewModelRenderer {
             property_exists($model, $property) => $model->{$property},
             method_exists($model, '__get')     => $model->{$property},
 
-            default => throw new ViewModelRendererException(sprintf('Cannot resolve property request for "%s"', $property))
+            default => throw new ViewModelRendererException(
+                sprintf('Cannot resolve property request for "%s"', $property),
+                ViewModelRendererException::ResolvingPropertyFailed
+            )
         };
 
         if ($context->hasAttribute('typeof')) {
             if (!is_iterable($result) && !is_object($result)) {
-                throw new ViewModelRendererException('TypeOf handling requires object / list of objects');
+                throw new ViewModelRendererException(
+                    'TypeOf handling requires object / list of objects',
+                    ViewModelRendererException::WrongTypeForTypeOf
+                );
             }
 
             $this->conditionalApply($context, $result);
@@ -272,7 +305,10 @@ final class ViewModelRenderer {
             return $result;
         }
 
-        throw new ViewModelRendererException('Unsupported type');
+        throw new ViewModelRendererException(
+            'Unsupported type',
+            ViewModelRendererException::UnsupportedTypeForProperty
+        );
     }
 
     private function conditionalApply(DOMElement $context, object|iterable $model): void {
@@ -287,11 +323,17 @@ final class ViewModelRenderer {
 
         foreach ($model as $current) {
             if (!is_object($current)) {
-                throw new ViewModelRendererException('Model must be an object when used for type of checks');
+                throw new ViewModelRendererException(
+                    'Model must be an object when used for type of checks',
+                    ViewModelRendererException::WrongTypeForTypeOf
+                );
             }
 
             if (!method_exists($current, 'typeOf')) {
-                throw new ViewModelRendererException('Model must provide method typeOf for type of checks');
+                throw new ViewModelRendererException(
+                    'Model must provide method typeOf for type of checks',
+                    ViewModelRendererException::TypeOfMethodRequired
+                );
             }
 
             $matches = $this->xp->query(
@@ -304,7 +346,10 @@ final class ViewModelRenderer {
             );
 
             if ($matches->count() === 0) {
-                throw new ViewModelRendererException('No matching types found');
+                throw new ViewModelRendererException(
+                    'No matching types found',
+                    ViewModelRendererException::NoMatch
+                );
             }
 
             $clone = $matches->item(0)->cloneNode(true);
@@ -344,7 +389,10 @@ final class ViewModelRenderer {
         assert($ownerDocument instanceof DOMDocument);
 
         if ($context->isSameNode($ownerDocument->documentElement)) {
-            throw new ViewModelRendererException('Cannot apply multiple on root element');
+            throw new ViewModelRendererException(
+                'Cannot apply multiple on root element',
+                ViewModelRendererException::MultipleRootElements
+            );
         }
 
         $parent = $context->parentNode;
@@ -381,7 +429,10 @@ final class ViewModelRenderer {
                 continue;
             }
 
-            throw new ViewModelRendererException('Unsupported type of model in list');
+            throw new ViewModelRendererException(
+                'Unsupported type of model in list',
+                ViewModelRendererException::UnsupportedTypeForProperty
+            );
         }
 
         $list = StaticNodeList::fromNodeList($this->xp->query(
@@ -410,7 +461,10 @@ final class ViewModelRenderer {
             $textContent        = $model->asString($context->textContent);
 
             if (!is_string($textContent)) {
-                throw new ViewModelRendererException('Cannot use non string type for text content');
+                throw new ViewModelRendererException(
+                    'Cannot use non string type for text content',
+                    ViewModelRendererException::StringRequired
+                );
             }
 
             $context->textContent = $textContent;
@@ -460,7 +514,10 @@ final class ViewModelRenderer {
                 continue;
             }
 
-            throw new ViewModelRendererException(\sprintf('Unsupported type "%s" for attribute', gettype($result)));
+            throw new ViewModelRendererException(
+                \sprintf('Unsupported type "%s" for attribute', gettype($result)),
+                ViewModelRendererException::WrongTypeForAttribute
+            );
         }
     }
 
