@@ -425,11 +425,11 @@ class ViewModelRendererTest extends TestCase {
                         public function getTwo() {
                             return new class {
                                 public function typeOf() {
-                                    return 'B.3';
+                                    return 'B.2';
                                 }
 
                                 public function asString() {
-                                    return 'new text two-B.3';
+                                    return 'new text two-B.2';
                                 }
                             };
                         }
