@@ -29,6 +29,19 @@ class XPathSelectorTest extends TestCase {
         }
     }
 
+    public function testLibxmlErrorHandlingGetsResetToPreviousState(): void {
+            $dom = new DOMDocument();
+            $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
+
+            $org = libxml_use_internal_errors(false);
+
+            $selector  = new XPathSelector('//child');
+            $selector->select($dom->documentElement);
+
+            $reset = \libxml_use_internal_errors($org);
+
+            $this->assertFalse($reset);
+    }
     public function testSelectReturnsExceptedNodeWhenDomDocuemtnIsUsed(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
@@ -106,8 +119,16 @@ class XPathSelectorTest extends TestCase {
 
         $selector = new XPathSelector($queryString);
 
-        $this->expectException(XPathSelectorException::class);
-        $selector->select($dom->documentElement);
+        try {
+            $selector->select($dom->documentElement);
+        } catch (XPathSelectorException $e) {
+            $this->assertMatchesRegularExpression('/.*[a-zA-Z ]:.*/', $e->getMessage());
+            $this->assertEmpty(\libxml_get_errors());
+
+            return;
+        }
+
+        $this->fail('XPathSelectorException not thrown but expected');
     }
 
     public static function invalidXPathQueryStringsProvider(): array {

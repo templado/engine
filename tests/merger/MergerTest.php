@@ -124,6 +124,30 @@ class MergerTest extends TestCase {
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 
+    public function testOnlyChildOfReplacedNodeGetsSkipped(): void {
+        $merger = new Merger();
+
+        $dom = new DOMDocument();
+        $dom->loadXML('<?xml version="1.0" ?><root><node id="test"><child id="test" /></node><other id="other" /></root>');
+
+        $replace = new DOMDocument();
+        $replace->loadXML('<?xml version="1.0" ?><replace id="test" />');
+
+        $list = new MergeList();
+        $list->add(new Id('test'), $replace);
+
+        $replace2 = new DOMDocument();
+        $replace2->loadXML('<?xml version="1.0" ?><replace id="other" />');
+        $list->add(new Id('other'), $replace2);
+
+        $merger->merge($dom, $list);
+
+        $expected = new DOMDocument();
+        $expected->loadXML('<?xml version="1.0" ?><root><replace id="test" /><replace id="other" /></root>');
+
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
+
     public function testDuplicateUseOfIdThrowsException(): void {
         $merger = new Merger();
 
