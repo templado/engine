@@ -97,7 +97,7 @@ final class ViewModelRenderer {
     }
 
     private function registerPrefix(string $prefixString): void {
-        $parts = explode(': ', $prefixString, 2);
+        $parts = explode(': ', $prefixString);
 
         if (count($parts) !== 2) {
             throw new ViewModelRendererException('Invalid prefix definition');
