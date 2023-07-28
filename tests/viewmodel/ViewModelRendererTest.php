@@ -1193,26 +1193,33 @@ class ViewModelRendererTest extends TestCase {
     }
 
     public function testIterableWalksTheTree(): void {
-        $markup = '<r><a property="start" x="def"><b property="child" /></a></r>';
+        $markup = '<r><a property="start" x="def"><b property="child" /><b property="child" /><c property="c" /></a></r>';
         $document = Document::fromString($markup);
 
         $document->applyViewModel(new class {
             public function start(): array {
                 return [
                     new class {
-                        public function child(): string {
-                            return 'text #1';
+                        public function child(): array {
+                            return ['text #1'];
                         }
                         public function x(): string {
                             return 'y';
+                        }
+
+                        public function c(): string {
+                            return 'text-c';
                         }
                     },
                     new class {
-                        public function child(): string {
-                            return 'text #2';
+                        public function child(): array {
+                            return ['text #2'];
                         }
                         public function x(): string {
                             return 'y';
+                        }
+                        public function c(): string {
+                            return 'text-c';
                         }
                     }
                 ];
@@ -1220,9 +1227,44 @@ class ViewModelRendererTest extends TestCase {
         });
 
         $exp = new DOMDocument();
-        $expMarkup = '<r><a property="start" x="y" ><b property="child">text #1</b></a><a x="y" property="start"><b property="child">text #2</b></a></r>';
+        $expMarkup = '<r><a property="start" x="y" ><b property="child">text #1</b><c property="c">text-c</c></a><a x="y" property="start"><b property="child">text #2</b><c property="c">text-c</c></a></r>';
         $exp->loadXML($expMarkup);
 
         $this->assertResultMatches($exp->documentElement, $document->asDomDocument()->documentElement);
+    }
+
+    public function testConditionalApplyWalksSkippingUnlinkedNodes(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<r property="r" typeof="a"><a property="a" /><a property="a" /><b property="b" /></r>');
+
+        $exp = new DOMDocument();
+        $exp->loadXML('<r property="r" typeof="a"><a property="a">text</a><b property="b">b-text</b></r>');
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+
+                public function r() {
+                    return new class {
+                        public function typeOf(): string {
+                            return 'a';
+                        }
+                        public function a(): array {
+                            return [
+                                'text'
+                            ];
+                        }
+
+                        public function b(): string {
+                            return 'b-text';
+                        }
+                    };
+                }
+            }
+        );
+
+        $this->assertResultMatches($exp->documentElement, $dom->documentElement);
+
     }
 }
