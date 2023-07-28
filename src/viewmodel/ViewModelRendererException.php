@@ -24,7 +24,7 @@ final class ViewModelRendererException extends Exception {
     public const UnsupportedTypeForProperty        = 12;
     public const TypeOfMethodRequired              = 13;
     public const NoMatch                           = 14;
-    public const MultipleRootElements              = 15;
+    public const IterableForRootElement            = 15;
     public const StringRequired                    = 16;
     public const WrongTypeForAttribute             = 17;
 }

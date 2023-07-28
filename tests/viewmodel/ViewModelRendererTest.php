@@ -47,6 +47,7 @@ class ViewModelRendererTest extends TestCase {
 
     public function testUsingContextElementWithOwnerDocumentThrowsException(): void {
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::NotInDocument);
         (new ViewModelRenderer())->render(
             new DOMElement('foo'),
             new class {}
@@ -176,6 +177,8 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::ResolvingPropertyFailed);
+        $this->expectExceptionMessageMatches('/.*::test: No accessor for property \(root > test\)/');
         $renderer->render($dom->documentElement, new class {
         });
     }
@@ -193,6 +196,8 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::UnsupportedTypeForProperty);
+        $this->expectExceptionMessageMatches('/.*::test: Unsupported type "integer" \(root > test\)/');
         $renderer->render($dom->documentElement, $model);
     }
 
@@ -223,6 +228,8 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::TypeOfMethodRequired);
+        $this->expectExceptionMessage('Model must provide method typeOf for type of checks (root > test)');
         $renderer->render($dom->documentElement, new class {
             public function getTest() {
                 return new class {
@@ -255,6 +262,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::NoMatch);
         $renderer->render($dom->documentElement, new class {
             public function getTest() {
                 return new class {
@@ -273,6 +281,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::IterableForRootElement);
         $renderer->render($dom->documentElement, new class {
             public function getTest() {
                 return ['a', 'b'];
@@ -287,6 +296,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::IterableForRootElement);
         $renderer->render($dom->documentElement, new class {
             public function getTest() {
                 return [];
@@ -486,6 +496,8 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::ResourceResolvingFailed);
+        $this->expectExceptionMessage('stdClass::foo: Cannot resolve resource request (root > foo)');
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
@@ -496,6 +508,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForResource);
         $renderer->render($dom->documentElement, new class { public function foo(): string { return 'crash'; }});
     }
 
@@ -548,6 +561,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::PrefixResolvingFailed);
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
@@ -558,6 +572,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForPrefix);
         $renderer->render($dom->documentElement, new class { public function foo(): string { return 'crash'; }});
     }
 
@@ -568,6 +583,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::NoModelForPrefix);
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
@@ -578,6 +594,8 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::InvalidPrefixDefinition);
+
         $renderer->render($dom->documentElement, new \stdClass());
     }
 
@@ -611,6 +629,8 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::ResolvingPropertyFailed);
+        $this->expectExceptionMessageMatches('/.*.::foo: No accessor for property \(root > test > foo\)/');
         $renderer->render($dom->documentElement, $class);
     }
 
@@ -673,6 +693,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::StringRequired);
         $renderer->render($dom->documentElement, $class);
     }
 
@@ -689,6 +710,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForTypeOf);
         $renderer->render($dom->documentElement, $class);
     }
 
@@ -709,6 +731,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::NoMatch);
         $renderer->render($dom->documentElement, $class);
     }
 
@@ -773,6 +796,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForVocab);
         $renderer->render(
             $dom->documentElement,
             new class {
@@ -792,6 +816,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForTypeOf);
         $renderer->render(
             $dom->documentElement,
             new class {
@@ -811,6 +836,8 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::UnsupportedTypeForProperty);
+        $this->expectExceptionMessage('Unsupported type "boolean" in list (root > foo[0])');
         $renderer->render(
             $dom->documentElement,
             new class {
@@ -882,6 +909,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::ResourceResolvingWithPrefixFailed);
         $renderer->render(
             $dom->documentElement,
             new class {}
@@ -1111,5 +1139,25 @@ class ViewModelRendererTest extends TestCase {
                 'default'
             ]
         ];
+    }
+
+    public function testErrorOnSecondSiblingShowsInTraceLine(): void {
+        $document = Document::fromString('<root><p property="p"><h1><span property="s" /></h1></p></root>');
+
+        $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::UnsupportedTypeForProperty);
+        $this->expectExceptionMessageMatches('/.*Unsupported type "resource" \(root > p\[2\] > s\)/');
+        $document->applyViewModel(new class {
+            public function p(): array {
+                return [
+                    'a','b',
+                    new class {
+                        public function s() {
+                            return STDIN;
+                        }
+                    }
+                ];
+            }
+        });
     }
 }
