@@ -1091,7 +1091,7 @@ class ViewModelRendererTest extends TestCase {
     #[DataProvider('attributeViewModelProvider')]
     public function testAttributesGetAppliedFromViewModelProperties(object $model, string $value): void {
         $dom = new DOMDocument();
-        $dom->loadXML('<root property="document" attr="default" data-attr="default" />');
+        $dom->loadXML('<root property="document" attr="default" ignore="stays" data-attr="default"  />');
 
         $renderer = new ViewModelRenderer();
         $renderer->render(
@@ -1100,7 +1100,7 @@ class ViewModelRendererTest extends TestCase {
         );
 
         $expected = new DOMDocument();
-        $expected->loadXML('<root property="document" attr="'.$value.'" data-attr="'.$value.'" />');
+        $expected->loadXML('<root property="document" attr="'.$value.'" ignore="stays" data-attr="'.$value.'" />');
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
@@ -1113,6 +1113,8 @@ class ViewModelRendererTest extends TestCase {
                         return new class {
                             public string $attr='changed';
                             public string $dataAttr = 'changed';
+
+                            public bool $ignore = true;
                         };
                     }
                 },
