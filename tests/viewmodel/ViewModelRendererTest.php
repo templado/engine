@@ -1091,7 +1091,7 @@ class ViewModelRendererTest extends TestCase {
     #[DataProvider('attributeViewModelProvider')]
     public function testAttributesGetAppliedFromViewModelProperties(object $model, string $value): void {
         $dom = new DOMDocument();
-        $dom->loadXML('<root property="document" attr="default" />');
+        $dom->loadXML('<root property="document" attr="default" data-attr="default" />');
 
         $renderer = new ViewModelRenderer();
         $renderer->render(
@@ -1100,7 +1100,7 @@ class ViewModelRendererTest extends TestCase {
         );
 
         $expected = new DOMDocument();
-        $expected->loadXML('<root property="document" attr="'.$value.'" />');
+        $expected->loadXML('<root property="document" attr="'.$value.'" data-attr="'.$value.'" />');
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
@@ -1112,6 +1112,7 @@ class ViewModelRendererTest extends TestCase {
                     public function document(): object {
                         return new class {
                             public string $attr='changed';
+                            public string $dataAttr = 'changed';
                         };
                     }
                 },
@@ -1122,7 +1123,7 @@ class ViewModelRendererTest extends TestCase {
                     public function document(): object {
                         return new class {
                             public function __get(string $key): string|true {
-                                return $key === 'attr' ? 'changed' : true;
+                                return in_array($key, ['attr', 'dataAttr']) ? 'changed' : true;
                             }
                         };
                     }
@@ -1159,5 +1160,67 @@ class ViewModelRendererTest extends TestCase {
                 ];
             }
         });
+    }
+
+    public function testSupportedRDFaAttributesGetIgnoredWhenIteratingOverAttributes(): void {
+        $markup = '<root property="p" prefix="f: urn:external" resource="r" typeof="t" />';
+        $document = Document::fromString($markup);
+
+        $document->applyViewModel(new class {
+            public function r(): object {
+                return new class {
+                    public function p() {
+                        return $this;
+                    }
+
+                    public function typeof(): string {
+                        return 't';
+                    }
+
+                    public function __get($key): string {
+                        return 'replaced';
+                    }
+                };
+            }
+        });
+
+        $exp = new DOMDocument();
+        $exp->loadXML($markup);
+
+        $this->assertResultMatches($exp->documentElement, $document->asDomDocument()->documentElement);
+    }
+
+    public function testIterableWalksTheTree(): void {
+        $markup = '<r><a property="start" x="def"><b property="child" /></a></r>';
+        $document = Document::fromString($markup);
+
+        $document->applyViewModel(new class {
+            public function start(): array {
+                return [
+                    new class {
+                        public function child(): string {
+                            return 'text #1';
+                        }
+                        public function x(): string {
+                            return 'y';
+                        }
+                    },
+                    new class {
+                        public function child(): string {
+                            return 'text #2';
+                        }
+                        public function x(): string {
+                            return 'y';
+                        }
+                    }
+                ];
+            }
+        });
+
+        $exp = new DOMDocument();
+        $expMarkup = '<r><a property="start" x="y" ><b property="child">text #1</b></a><a x="y" property="start"><b property="child">text #2</b></a></r>';
+        $exp->loadXML($expMarkup);
+
+        $this->assertResultMatches($exp->documentElement, $document->asDomDocument()->documentElement);
     }
 }
