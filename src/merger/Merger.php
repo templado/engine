@@ -17,7 +17,7 @@ final class Merger {
     /**  @psalm-suppress PropertyNotSetInConstructor */
     private MergeList $documents;
 
-    /** @var array<string, Id> */
+    /** @var array<string, bool> */
     private array $seen = [];
 
     public function merge(DOMDocument $target, MergeList $toMerge): void {
@@ -62,7 +62,7 @@ final class Merger {
                     MergerException::DuplicateId
                 );
             }
-            $this->seen[$id->asString()] = $id;
+            $this->seen[$id->asString()] = true;
 
             foreach ($this->documents->get($id) as $childDocument) {
                 assert($childDocument instanceof DOMDocument);

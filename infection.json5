@@ -13,6 +13,11 @@
     },
     "mutators": {
         "@default": true,
-        "InstanceOf_": false
+        "InstanceOf_": false,
+        "TrueValue": {
+            "ignore": [
+                "Templado\\Engine\\Merger::processContext"
+            ]
+        }
     }
 }
