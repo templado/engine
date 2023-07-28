@@ -611,7 +611,7 @@ final class ViewModelRenderer {
     private function getModelPath(DOMElement $context): string {
         $list = [$context->getAttribute('property')];
 
-        while ($context = $context->parentNode and !$context instanceof DOMDocument) {
+        while (($context = $context->parentNode) && (!$context instanceof DOMDocument)) {
             assert($context instanceof DOMElement);
 
             if (!$context->hasAttribute('property')) {
