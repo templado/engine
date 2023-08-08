@@ -29,7 +29,7 @@ spl_autoload_register(
                 'templado\\engine\\remove' => '/viewmodel/Remove.php',
                 'templado\\engine\\selection' => '/selectors/Selection.php',
                 'templado\\engine\\selector' => '/selectors/Selector.php',
-                'templado\\engine\\serializer' => '/Serializer.php',
+                'templado\\engine\\serializer' => '/serializer/Serializer.php',
                 'templado\\engine\\signal' => '/viewmodel/Signal.php',
                 'templado\\engine\\staticnodelist' => '/StaticNodeList.php',
                 'templado\\engine\\striprdfaattributestransformation' => '/transformation/StripRDFaAttributesTransformation.php',
