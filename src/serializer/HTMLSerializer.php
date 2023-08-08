@@ -12,10 +12,10 @@ namespace Templado\Engine;
 use DOMDocument;
 
 class HTMLSerializer implements Serializer {
-    private $stripRDFaFlag         = false;
-    private $keepXMLHeaderFlag     = false;
-    private $namespaceCleaningFlag = true;
-    private $withDoctypeFlag       = true;
+    private bool $stripRDFaFlag         = false;
+    private bool $keepXMLHeaderFlag     = false;
+    private bool $namespaceCleaningFlag = true;
+    private bool $withDoctypeFlag       = true;
 
     private array $filters = [];
 
@@ -45,7 +45,7 @@ class HTMLSerializer implements Serializer {
         return $this;
     }
 
-    public function addTransformation(Transformation $transformation) {
+    public function addTransformation(Transformation $transformation): self {
         $this->transformations[] = $transformation;
 
         return $this;

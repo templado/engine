@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use DOMAttr;
+use DOMDocument;
 use DOMElement;
 use DOMNode;
 
@@ -29,11 +31,13 @@ class NamespaceCleaningTransformation implements Transformation {
             $context = $this->enforceProperNamespace($context);
         }
 
-        if ($context->isSameNode($context->ownerDocument->documentElement)) {
+        if ($context->isSameNode($context->ownerDocument?->documentElement)) {
             $context->setAttribute('xmlns', self::HTMLNS);
         }
     }
     private function enforceProperNamespace(DOMElement $context): DOMElement {
+        assert($context->ownerDocument instanceof DOMDocument);
+
         $replacement = $context->ownerDocument->createElementNS(
             self::HTMLNS,
             $context->localName
@@ -41,6 +45,8 @@ class NamespaceCleaningTransformation implements Transformation {
 
         if ($context->hasAttributes()) {
             foreach (StaticNodeList::fromNamedNodeMap($context->attributes) as $attribute) {
+                assert($attribute instanceof DOMAttr);
+
                 if ($attribute->localName === 'xmlns') {
                     continue;
                 }
@@ -52,6 +58,7 @@ class NamespaceCleaningTransformation implements Transformation {
             $replacement->append(...$context->childNodes);
         }
 
+        assert($context->parentNode instanceof DOMNode);
         $context->parentNode->replaceChild($replacement, $context);
 
         return $replacement;
