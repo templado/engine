@@ -13,16 +13,18 @@ use DOMElement;
 use DOMNode;
 
 final class TransformationProcessor {
-    public function process(DOMElement $context, Transformation $transformation): void {
-        $selection = $transformation->selector()->select($context);
+    public function process(DOMElement $context, Transformation ...$transformations): void {
+        foreach ($transformations as $transformation) {
+            $selection = $transformation->selector()->select($context);
 
-        if ($selection->isEmpty()) {
-            return;
-        }
+            if ($selection->isEmpty()) {
+                return;
+            }
 
-        foreach ($selection as $node) {
-            assert($node instanceof DOMNode);
-            $transformation->apply($node);
+            foreach ($selection as $node) {
+                assert($node instanceof DOMNode);
+                $transformation->apply($node);
+            }
         }
     }
 }
