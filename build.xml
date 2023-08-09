@@ -77,6 +77,11 @@
         </exec>
     </target>
 
+    <target name="infection">
+        <exec executable="/usr/bin/php" failonerror="true">
+            <arg line="-d opcache.optimizations_level=0 ./tools/infection -jmax" />
+        </exec>
+    </target>
 
     <target name="setup" depends="clean,tools,composer,phpab" />
 
