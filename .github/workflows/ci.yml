@@ -62,7 +62,7 @@ jobs:
         with:
           coverage: "pcov"
           extensions: "${{ env.extensions }}"
-          ini-values: "display_errors=On, error_reporting=-1, memory_limit=2G"
+          ini-values: "display_errors=On, error_reporting=-1, memory_limit=2G, assert.exception=1"
           php-version: "${{ matrix.php-versions }}"
           tools: "phive"
 
