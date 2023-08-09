@@ -94,8 +94,7 @@ class HTMLSerializer implements Serializer {
     }
 
     private function enforceHTML5DocType(DOMDocument $document): DOMDocument {
-        $tmp                     = new DOMDocument();
-        $tmp->preserveWhiteSpace = false;
+        $tmp = new DOMDocument();
         $tmp->loadXML('<?xml version="1.0" ?><!DOCTYPE html><html />');
         $tmp->replaceChild(
             $tmp->importNode($document->documentElement, true),

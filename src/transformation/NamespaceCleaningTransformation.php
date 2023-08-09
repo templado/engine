@@ -28,14 +28,10 @@ class NamespaceCleaningTransformation implements Transformation {
             $this->isPrefixedHTML($context) ||
             $this->isChildWithHtmlXMLNS($context)
         ) {
-            $context = $this->enforceProperNamespace($context);
-        }
-
-        if ($context->isSameNode($context->ownerDocument?->documentElement)) {
-            $context->setAttribute('xmlns', self::HTMLNS);
+            $this->enforceProperNamespace($context);
         }
     }
-    private function enforceProperNamespace(DOMElement $context): DOMElement {
+    private function enforceProperNamespace(DOMElement $context): void {
         assert($context->ownerDocument instanceof DOMDocument);
 
         $replacement = $context->ownerDocument->createElementNS(
@@ -47,9 +43,6 @@ class NamespaceCleaningTransformation implements Transformation {
             foreach (StaticNodeList::fromNamedNodeMap($context->attributes) as $attribute) {
                 assert($attribute instanceof DOMAttr);
 
-                if ($attribute->localName === 'xmlns') {
-                    continue;
-                }
                 $replacement->setAttributeNodeNS($attribute);
             }
         }
@@ -60,8 +53,6 @@ class NamespaceCleaningTransformation implements Transformation {
 
         assert($context->parentNode instanceof DOMNode);
         $context->parentNode->replaceChild($replacement, $context);
-
-        return $replacement;
     }
 
     private function hasEmptyNamespace(DOMElement $context): bool {

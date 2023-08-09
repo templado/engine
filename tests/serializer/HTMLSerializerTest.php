@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 namespace Templado\Engine;
 
+use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
