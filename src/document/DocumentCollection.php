@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use function array_push;
+use function count;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;

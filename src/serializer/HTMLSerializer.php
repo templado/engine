@@ -12,10 +12,13 @@ namespace Templado\Engine;
 use DOMDocument;
 
 class HTMLSerializer implements Serializer {
-    private bool $stripRDFaFlag         = false;
-    private bool $keepXMLHeaderFlag     = false;
+    private bool $stripRDFaFlag = false;
+
+    private bool $keepXMLHeaderFlag = false;
+
     private bool $namespaceCleaningFlag = true;
-    private bool $withDoctypeFlag       = true;
+
+    private bool $withDoctypeFlag = true;
 
     private array $filters = [];
 

@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use function preg_replace;
+
 class XMLHeaderFilter implements Filter {
     public function apply(string $content): string {
         return preg_replace('#^(<\?xml.*\?>\s{0,})#', '', $content);

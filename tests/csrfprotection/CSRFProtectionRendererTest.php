@@ -3,11 +3,12 @@ namespace Templado\Engine;
 
 use DOMDocument;
 use DOMElement;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Templado\Engine\CSRFProtectionRenderer
- */
+#[CoversClass(CSRFProtectionRenderer::class)]
+#[UsesClass(CSRFProtection::class)]
 class CSRFProtectionRendererTest extends TestCase {
     use DomDocumentsEqualTrait;
 
@@ -21,11 +22,7 @@ class CSRFProtectionRendererTest extends TestCase {
     private $expected;
 
     protected function setUp(): void {
-        $protection = $this->createMock(CSRFProtection::class);
-        $protection->method('fieldName')->willReturn('csrf');
-        $protection->method('tokenValue')->willReturn('secure');
-
-        $this->protection = $protection;
+        $this->protection = new CSRFProtection('csrf', 'secure');
         $this->renderer   = new CSRFProtectionRenderer();
 
         $this->expected = new DOMDocument();
@@ -39,7 +36,7 @@ class CSRFProtectionRendererTest extends TestCase {
         $this->expectException(CSRFProtectionRendererException::class);
         (new CSRFProtectionRenderer())->render(
             new DOMElement('dummmy'),
-            $this->createMock(CSRFProtection::class)
+            $this->protection
         );
     }
 

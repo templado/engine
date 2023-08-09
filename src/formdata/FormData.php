@@ -17,7 +17,6 @@ use function sprintf;
 
 class FormData {
     private readonly string $identifier;
-
     private readonly array $values;
 
     /**

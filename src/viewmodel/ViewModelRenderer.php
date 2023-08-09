@@ -11,13 +11,17 @@ namespace Templado\Engine;
 
 use function array_key_exists;
 use function array_reverse;
+use function assert;
+use function explode;
 use function gettype;
+use function implode;
 use function is_iterable;
 use function is_object;
 use function is_string;
 use function lcfirst;
 use function method_exists;
 use function property_exists;
+use function sprintf;
 use function str_contains;
 use DOMDocument;
 use DOMElement;
@@ -27,12 +31,16 @@ use DOMXPath;
 final class ViewModelRenderer {
     /**  @psalm-suppress PropertyNotSetInConstructor */
     private object $rootModel;
+
     /**  @psalm-suppress PropertyNotSetInConstructor */
     private DOMNode $pointer;
+
     /**  @psalm-suppress PropertyNotSetInConstructor */
     private bool $supported;
+
     /**  @psalm-suppress PropertyNotSetInConstructor */
     private DOMXPath $xp;
+
     private array $prefixModels = [];
 
     public function render(DOMNode $context, object $model): void {
@@ -581,7 +589,7 @@ final class ViewModelRenderer {
                     $context,
                     $model,
                     $name,
-                    \sprintf('Unsupported type "%s" for attribute', gettype($result)),
+                    sprintf('Unsupported type "%s" for attribute', gettype($result)),
                 ),
                 ViewModelRendererException::WrongTypeForAttribute
             );
@@ -643,7 +651,7 @@ final class ViewModelRenderer {
     }
 
     private function buildExceptionMessage(?DOMElement $context, object $model, string $method, string $message): string {
-        return \sprintf(
+        return sprintf(
             '%s: %s (%s)',
             $model::class . '::' . $method,
             $message,

@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use function count;
+use function sprintf;
 use ArrayIterator;
 use DOMDocument;
 

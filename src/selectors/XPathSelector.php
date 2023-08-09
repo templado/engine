@@ -20,14 +20,12 @@ use DOMNodeList;
 use DOMXPath;
 
 class XPathSelector implements Selector {
-    /** @var string */
-    private $queryString;
+    /** @psalm-var array<string, string> */
+    private array $prefixMap = [];
 
-    /** @var array<string, string> */
-    private $prefixMap = [];
-
-    public function __construct(string $query) {
-        $this->queryString = $query;
+    public function __construct(
+        private string $queryString
+    ) {
     }
 
     public function registerPrefix(string $prefix, string $uri): void {

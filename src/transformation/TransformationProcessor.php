@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use function assert;
 use DOMElement;
 use DOMNode;
 

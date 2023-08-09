@@ -34,6 +34,7 @@ use Templado\Engine\Example\ViewModel;
 #[UsesClass(Signal::class)]
 #[UsesClass(StaticNodeList::class)]
 #[UsesClass(TransformationProcessor::class)]
+#[UsesClass(CSRFProtection::class)]
 #[Small]
 class DocumentTest extends TestCase {
     use DomDocumentsEqualTrait;
@@ -222,9 +223,7 @@ class DocumentTest extends TestCase {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html><body><form></form></body></html>');
 
-        $protection = $this->createMock(CSRFProtection::class);
-        $protection->method('fieldName')->willReturn('csrf');
-        $protection->method('tokenValue')->willReturn('secure');
+        $protection = new CSRFProtection('csrf', 'secure');
 
         $expected = new DOMDocument();
         $expected->loadXML(

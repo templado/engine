@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use function assert;
 use function sprintf;
 use DOMDocument;
 use DOMElement;
@@ -19,7 +20,8 @@ final class CSRFProtectionRenderer {
     private CSRFProtection $protection;
 
     private DOMDocument $dom;
-    private DOMXPath$xp;
+
+    private DOMXPath $xp;
 
     public function render(DOMElement $context, CSRFProtection $protection): void {
         $this->protection = $protection;

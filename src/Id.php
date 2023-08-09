@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use function implode;
+use function preg_match;
 use InvalidArgumentException;
 
 final readonly class Id {

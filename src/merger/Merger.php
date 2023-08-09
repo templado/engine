@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use function assert;
+use function sprintf;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -90,7 +92,7 @@ final class Merger {
         return false;
     }
 
-    private function mergeIn(DOMElement $contextChild, DOMElement $import): DOMElement {
+    private function mergeIn(DOMElement $contextChild, DOMElement $import): void {
         $workContext = [$import];
 
         if ($import->namespaceURI === Document::XMLNS) {
@@ -101,12 +103,10 @@ final class Merger {
             $contextChild->after(...$workContext);
             $contextChild->remove();
 
-            return $import;
+            return;
         }
 
         $contextChild->append(...$workContext);
-
-        return $import;
     }
 
     private function shouldReplaceCurrent(DOMElement $import, DOMElement $contextChild): bool {

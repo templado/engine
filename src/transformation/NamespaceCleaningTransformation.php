@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use function assert;
 use DOMAttr;
 use DOMDocument;
 use DOMElement;
@@ -31,6 +32,7 @@ class NamespaceCleaningTransformation implements Transformation {
             $this->enforceProperNamespace($context);
         }
     }
+
     private function enforceProperNamespace(DOMElement $context): void {
         assert($context->ownerDocument instanceof DOMDocument);
 
