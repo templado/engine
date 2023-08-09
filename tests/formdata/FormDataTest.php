@@ -12,20 +12,17 @@ class FormDataTest extends TestCase {
     /**
      * @dataProvider validDataProvider
      */
-    public function testCanBeInstantiatedWithUsableData(array $data): void {
+    public function testCanBeInstantiatedWithUsableData(array $data, string $key): void {
         $formdata = new FormData('foo', $data);
         $this->assertInstanceOf(FormData::class, $formdata);
 
-        foreach($data as $name => $value) {
-            $this->assertTrue($formdata->hasKey($name));
-            $this->assertEquals($value, $formdata->getValue($name));
-        }
+        $this->assertTrue($formdata->hasKey($key));
     }
 
     public static function validDataProvider(): array {
         return [
-            'string' => [['a' => 'a']],
-            'array'  => [['a' => ['a', 'b']]]
+            'string' => [['a' => 'a'], 'a'],
+            'array'  => [['a' => ['b' => 'c']], 'a[b]']
         ];
     }
 

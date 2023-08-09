@@ -105,19 +105,4 @@ class FormDataRendererTest extends TestCase {
         $renderer->render($contextDOM->documentElement, $formdata);
     }
 
-    public function testFormDataExceptionsGetsPassedOnAsFormDataRendererException(): void {
-        $contextDOM = new DOMDocument();
-        $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
-
-        /** @var FormData|PHPUnit_Framework_MockObject_MockObject $formData */
-        $formData = $this->createMock(FormData::class);
-        $formData->method('getIdentifier')->willReturn('test');
-        $formData->method('hasKey')->willReturn(true);
-        $formData->method('getValue')->willThrowException(new FormDataException);
-
-        $renderer = new FormDataRenderer();
-
-        $this->expectException(FormDataRendererException::class);
-        $renderer->render($contextDOM->documentElement, $formData);
-    }
 }

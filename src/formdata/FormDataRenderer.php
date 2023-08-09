@@ -19,17 +19,11 @@ final class FormDataRenderer {
      * @throws FormDataRendererException
      */
     public function render(DOMElement $context, FormData $form): void {
-        try {
-            $formElement = $this->findFormElement($context, $form->getIdentifier());
+        $formElement = $this->findFormElement($context, $form->getIdentifier());
 
-            $this->processInputElements($form, $formElement);
-            $this->processSelectElements($form, $formElement);
-            $this->processTextareaElement($form, $formElement);
-        } catch (FormDataException $e) {
-            throw new FormDataRendererException(
-                $e->getMessage()
-            );
-        }
+        $this->processInputElements($form, $formElement);
+        $this->processSelectElements($form, $formElement);
+        $this->processTextareaElement($form, $formElement);
     }
 
     private function setInputValue(DOMElement $input, string $value): void {

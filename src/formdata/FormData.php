@@ -11,20 +11,24 @@ namespace Templado\Engine;
 
 use function array_key_exists;
 use function gettype;
+use function implode;
 use function is_array;
 use function is_string;
+use function preg_split;
 use function sprintf;
+use const PREG_SPLIT_NO_EMPTY;
 
-class FormData {
+final class FormData {
     private readonly string $identifier;
-    private readonly array $values;
+
+    private array $values;
 
     /**
      * @throws FormDataException
      */
     public function __construct(string $identifier, array $values) {
         $this->identifier = $identifier;
-        $this->values     = $this->initValuesFromArray($values);
+        $this->flattenArray($values);
     }
 
     public function getIdentifier(): string {
@@ -32,46 +36,40 @@ class FormData {
     }
 
     public function hasKey(string $key): bool {
-        return array_key_exists($key, $this->values);
+        return array_key_exists($this->translateKey($key), $this->values);
     }
 
     /**
      * @throws FormDataException
      */
-    public function getValue(string $key): string|array {
-        if (!$this->hasKey($key)) {
+    public function getValue(string $key): string {
+        $lookupKey = $this->translateKey($key);
+        if (!$this->hasKey($lookupKey)) {
             throw new FormDataException(sprintf('No such key: %s', $key));
         }
 
-        /** @psalm-var string */
-        return $this->values[$key];
+        return $this->values[$lookupKey];
     }
 
-    /**
-     * @throws FormDataException
-     */
-    private function initValuesFromArray(array $values, bool $recursion = false): array {
-        $result = [];
-
-        /** @psalm-suppress MixedAssignment */
+    private function flattenArray(array $values, array $keyPrefixes = []): void {
         foreach ($values as $key => $value) {
             if (is_string($value)) {
-                $result[$key] = $value;
+                $this->values[ implode('|', [...$keyPrefixes, $key]) ] = $value;
 
                 continue;
             }
 
-            if ($recursion === false && is_array($value)) {
-                $result[$key] = $this->initValuesFromArray($value, true);
-
-                continue;
+            if (!is_array($value)) {
+                throw new FormDataException(
+                    sprintf('Data type "%s" in key "%s" not supported', gettype($value), $key)
+                );
             }
 
-            throw new FormDataException(
-                sprintf('Data type "%s" in key "%s" not supported', gettype($value), $key)
-            );
+            $this->flattenArray($value, [...$keyPrefixes, $key]);
         }
+    }
 
-        return $result;
+    private function translateKey(string $key): string {
+        return implode('|', preg_split('/\[|\]/', $key, flags:PREG_SPLIT_NO_EMPTY));
     }
 }
