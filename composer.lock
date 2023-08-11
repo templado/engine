@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2656dbd5be1dfc1fd290ace3e1b803a",
+    "content-hash": "668e283dc3dadfb407cb40fbcb4ee98d",
     "packages": [
         {
             "name": "theseer/css2xpath",
@@ -36,11 +36,15 @@
             "authors": [
                 {
                     "name": "Arne Blankerts",
-                    "role": "Developer",
-                    "email": "arne@blankerts.de"
+                    "email": "arne@blankerts.de",
+                    "role": "Developer"
                 }
             ],
             "description": "PHP Library to translate CSS selectors into XPath",
+            "support": {
+                "issues": "https://github.com/theseer/CSS2XPath/issues",
+                "source": "https://github.com/theseer/css2xpath/tree/2.0.0"
+            },
             "time": "2019-08-28T04:35:56+00:00"
         }
     ],
@@ -51,9 +55,10 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.2|^8.0",
+        "php": "^7.4|^8.0",
         "ext-dom": "*",
         "ext-libxml": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
