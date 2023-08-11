@@ -1,5 +1,5 @@
 # Templado
-A pragmatic approach to templating for PHP 7.x
+A pragmatic approach to templating for PHP >=7.4
 
 [![Integrate](https://github.com/templado/engine/workflows/Integrate/badge.svg)](https://github.com/templado/engine/actions)
 
