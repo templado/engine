@@ -461,6 +461,7 @@ final class ViewModelRenderer {
 
         $myPointer = $parent->insertBefore($this->pointer->cloneNode(), $context);
 
+        /** @psalm-suppress MixedAssignment */
         foreach ($list as $pos => $model) {
             $clone = $context->cloneNode(true);
             $parent->insertBefore($clone, $myPointer);
@@ -494,7 +495,7 @@ final class ViewModelRenderer {
                 sprintf(
                     'Unsupported type "%s" in list (%s)',
                     gettype($model),
-                    $this->getModelPath($context) . '[' . $pos . ']'
+                    $this->getModelPath($context) . '[' . (string)$pos . ']'
                 ),
                 ViewModelRendererException::UnsupportedTypeForProperty
             );
