@@ -48,8 +48,8 @@ final class FormDataRenderer {
             assert($element instanceof DOMElement);
 
             switch ($element->localName) {
-                case 'input': {
-                    $this->processInput($element);
+                case 'select': {
+                    $this->processSelect($element);
 
                     break;
                 }
@@ -59,10 +59,8 @@ final class FormDataRenderer {
                     break;
                 }
 
-                case 'select': {
-                    $this->processSelect($element);
-
-                    break;
+                default: {
+                    $this->processInput($element);
                 }
             }
         }
