@@ -20,8 +20,10 @@ class HTMLSerializer implements Serializer {
 
     private bool $withDoctypeFlag = true;
 
+    /** @psalm-var list<Filter> */
     private array $filters = [];
 
+    /** @psalm-var list<Transformation> */
     private array $transformations = [];
 
     public function stripRDFa(): self {

@@ -21,6 +21,7 @@ use function sprintf;
 final class FormData {
     private readonly string $identifier;
 
+    /** @psalm-var array<string,string> */
     private array $values = [];
 
     /**

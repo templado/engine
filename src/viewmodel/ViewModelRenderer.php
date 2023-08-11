@@ -386,6 +386,7 @@ final class ViewModelRenderer {
             }
 
             $typeOf = $current->typeOf();
+
             if (!is_string($typeOf)) {
                 throw new ViewModelRendererException(
                     sprintf('Value returned by typeOf() must be string (%s)', $this->getModelPath($context)),
@@ -408,7 +409,7 @@ final class ViewModelRenderer {
                         $context,
                         $current,
                         'typeOf',
-                        sprintf('No matching types for "%s" found', (string)$typeOf)
+                        sprintf('No matching types for "%s" found', $typeOf)
                     ),
                     ViewModelRendererException::NoMatch
                 );
