@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use DOMElement;
+use PHPUnit\Framework\Attributes\DataProvider;
 use function basename;
 use function glob;
 use DOMDocument;
@@ -21,6 +23,12 @@ use PHPUnit\Framework\TestCase;
 #[UsesClass(StaticNodeList::class)]
 class FormDataRendererTest extends TestCase {
     use DomDocumentsEqualTrait;
+
+    public function testThrowsExceptionWhenUsedWithDisconnectedElement(): void {
+        $this->expectException(FormDataRendererException::class);
+        (new FormDataRenderer())->render(new DOMElement('foo'), new FormData('foo', []));
+    }
+
 
     public static function formdataProvider(): array {
         $result = [];
@@ -43,9 +51,7 @@ class FormDataRendererTest extends TestCase {
         return $result;
     }
 
-    /**
-     * @dataProvider formdataProvider
-     */
+    #[DataProvider('formDataProvider')]
     public function testFormDataGetsRenderedAsExpected(FormData $formData, DOMDocument $contextDoc, DOMDocument $expectedDoc): void {
         $renderer = new FormDataRenderer();
         $renderer->render($contextDoc->documentElement, $formData);
