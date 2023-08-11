@@ -386,6 +386,12 @@ final class ViewModelRenderer {
             }
 
             $typeOf = $current->typeOf();
+            if (!is_string($typeOf)) {
+                throw new ViewModelRendererException(
+                    sprintf('Value returned by typeOf() must be string (%s)', $this->getModelPath($context)),
+                    ViewModelRendererException::WrongTypeForTypeOf
+                );
+            }
 
             $matches = $this->xp->query(
                 sprintf(
@@ -402,7 +408,7 @@ final class ViewModelRenderer {
                         $context,
                         $current,
                         'typeOf',
-                        sprintf('No matching types for "%s" found', $typeOf)
+                        sprintf('No matching types for "%s" found', (string)$typeOf)
                     ),
                     ViewModelRendererException::NoMatch
                 );
@@ -555,6 +561,7 @@ final class ViewModelRenderer {
                 continue;
             }
 
+            /** @psalm-suppress MixedAssignment */
             $result = match (true) {
                 // method variants
                 method_exists($model, $name)         => $model->{$name}($attribute->nodeValue),

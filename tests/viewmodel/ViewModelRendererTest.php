@@ -731,7 +731,7 @@ class ViewModelRendererTest extends TestCase {
         $renderer = new ViewModelRenderer();
 
         $this->expectException(ViewModelRendererException::class);
-        $this->expectExceptionCode(ViewModelRendererException::NoMatch);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForTypeOf);
         $renderer->render($dom->documentElement, $class);
     }
 
