@@ -16,7 +16,7 @@ class FormDataTest extends TestCase {
         $formdata = new FormData('foo', $data);
         $this->assertInstanceOf(FormData::class, $formdata);
 
-        $this->assertTrue($formdata->hasKey($key));
+        $this->assertTrue($formdata->has($key));
     }
 
     public static function validDataProvider(): array {
@@ -46,27 +46,27 @@ class FormDataTest extends TestCase {
 
     public function testIndentifierCanBeRetrieved(): void {
         $formdata = new FormData('test', ['a' => 'a']);
-        $this->assertEquals('test', $formdata->getIdentifier());
+        $this->assertEquals('test', $formdata->identifier());
     }
 
     public function testReturnsTrueOnExistingKey(): void {
         $formdata = new FormData('test', ['a' => 'a']);
-        $this->assertTrue($formdata->hasKey('a'));
+        $this->assertTrue($formdata->has('a'));
     }
 
     public function testReturnsFalseOnNonExistingKey(): void {
         $formdata = new FormData('test', ['a' => 'a']);
-        $this->assertFalse($formdata->hasKey('b'));
+        $this->assertFalse($formdata->has('b'));
     }
 
     public function testThrowsExcpetionWhenNotExistingKeyIsRequested(): void {
         $this->expectException(FormDataException::class);
         $formdata = new FormData('test', ['a' => 'a']);
-        $formdata->getValue('not-existing');
+        $formdata->value('not-existing');
     }
 
     public function testValueOfExisingKeyCanBeRetrieved(): void {
         $formdata = new FormData('test', ['a' => 'value']);
-        $this->assertEquals('value', $formdata->getValue('a'));
+        $this->assertEquals('value', $formdata->value('a'));
     }
 }

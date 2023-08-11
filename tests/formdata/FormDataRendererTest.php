@@ -1,17 +1,47 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
+/*
+ * This file is part of Templado\Engine.
+ *
+ * Copyright (c) Arne Blankerts <arne@blankerts.de> and contributors
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace Templado\Engine;
 
+use function basename;
+use function glob;
 use DOMDocument;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
 
-/**
- * @covers \Templado\Engine\FormDataRenderer
- *
- * @uses   \Templado\Engine\FormData
- */
+#[CoversClass(FormDataRenderer::class)]
+#[UsesClass(FormData::class)]
+#[UsesClass(StaticNodeList::class)]
 class FormDataRendererTest extends TestCase {
     use DomDocumentsEqualTrait;
+
+    public static function formdataProvider(): array {
+        $result = [];
+
+        foreach (glob(__DIR__ . '/../_data/formdata/*') as $entry) {
+            $data       = include $entry . '/formdata.php';
+            $contextDOM = new DOMDocument();
+            $contextDOM->load($entry . '/form.html');
+
+            $expectedDOM = new DOMDocument();
+            $expectedDOM->load($entry . '/expected.html');
+
+            $result[basename($entry)] = [
+                $data,
+                $contextDOM,
+                $expectedDOM
+            ];
+        }
+
+        return $result;
+    }
 
     /**
      * @dataProvider formdataProvider
@@ -23,27 +53,6 @@ class FormDataRendererTest extends TestCase {
             $contextDoc->documentElement,
             $expectedDoc->documentElement
         );
-    }
-
-    public static function formdataProvider(): array {
-        $result = [];
-
-        foreach (\glob(__DIR__ . '/../_data/formdata/*') as $entry) {
-            $data       = include $entry . '/formdata.php';
-            $contextDOM = new DOMDocument();
-            $contextDOM->load($entry . '/form.html');
-
-            $expectedDOM = new DOMDocument();
-            $expectedDOM->load($entry . '/expected.html');
-
-            $result[\basename($entry)] = [
-                $data,
-                $contextDOM,
-                $expectedDOM
-            ];
-        }
-
-        return $result;
     }
 
     public function testFormElementFoundOnRootElementById(): void {
@@ -90,19 +99,4 @@ class FormDataRendererTest extends TestCase {
         $this->expectException(FormDataRendererException::class);
         $renderer->render($contextDOM->documentElement, $formdata);
     }
-
-    public function testMultipleFormsByGivenNameThrowsException(): void {
-        $contextDOM = new DOMDocument();
-        $contextDOM->load(__DIR__ . '/../_data/formdata/text/form.html');
-
-        $form = $contextDOM->getElementsByTagName('form')->item(0);
-        $form->parentNode->insertBefore($form->cloneNode(true), $form);
-
-        $formdata = new FormData('test', []);
-        $renderer = new FormDataRenderer();
-
-        $this->expectException(FormDataRendererException::class);
-        $renderer->render($contextDOM->documentElement, $formdata);
-    }
-
 }

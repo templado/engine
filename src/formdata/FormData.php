@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use const PREG_SPLIT_NO_EMPTY;
 use function array_key_exists;
 use function gettype;
 use function implode;
@@ -16,12 +17,11 @@ use function is_array;
 use function is_string;
 use function preg_split;
 use function sprintf;
-use const PREG_SPLIT_NO_EMPTY;
 
 final class FormData {
     private readonly string $identifier;
 
-    private array $values;
+    private array $values = [];
 
     /**
      * @throws FormDataException
@@ -31,20 +31,21 @@ final class FormData {
         $this->flattenArray($values);
     }
 
-    public function getIdentifier(): string {
+    public function identifier(): string {
         return $this->identifier;
     }
 
-    public function hasKey(string $key): bool {
+    public function has(string $key): bool {
         return array_key_exists($this->translateKey($key), $this->values);
     }
 
     /**
      * @throws FormDataException
      */
-    public function getValue(string $key): string {
+    public function value(string $key): string {
         $lookupKey = $this->translateKey($key);
-        if (!$this->hasKey($lookupKey)) {
+
+        if (!$this->has($lookupKey)) {
             throw new FormDataException(sprintf('No such key: %s', $key));
         }
 
@@ -54,7 +55,7 @@ final class FormData {
     private function flattenArray(array $values, array $keyPrefixes = []): void {
         foreach ($values as $key => $value) {
             if (is_string($value)) {
-                $this->values[ implode('|', [...$keyPrefixes, $key]) ] = $value;
+                $this->values[implode('|', [...$keyPrefixes, $key])] = $value;
 
                 continue;
             }
@@ -70,6 +71,6 @@ final class FormData {
     }
 
     private function translateKey(string $key): string {
-        return implode('|', preg_split('/\[|\]/', $key, flags:PREG_SPLIT_NO_EMPTY));
+        return implode('|', preg_split('/\[|\]/', $key, flags: PREG_SPLIT_NO_EMPTY));
     }
 }

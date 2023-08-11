@@ -9,25 +9,74 @@
  */
 namespace Templado\Engine;
 
+use function array_shift;
+use function assert;
+use function explode;
+use function implode;
+use function in_array;
 use function sprintf;
+use function str_contains;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
 
 final class FormDataRenderer {
-    /**
-     * @throws FormDataRendererException
-     */
-    public function render(DOMElement $context, FormData $form): void {
-        $formElement = $this->findFormElement($context, $form->getIdentifier());
+    /**  @psalm-suppress PropertyNotSetInConstructor */
+    private DOMXPath $xp;
+    /**  @psalm-suppress PropertyNotSetInConstructor */
+    private FormData $form;
+    /**  @psalm-suppress PropertyNotSetInConstructor */
+    private DOMElement $originalContext;
+    private string $elementsXPath = 'local-name() = "input" or local-name() = "select" or local-name() = "textarea"';
 
-        $this->processInputElements($form, $formElement);
-        $this->processSelectElements($form, $formElement);
-        $this->processTextareaElement($form, $formElement);
+    public function render(DOMElement $context, FormData $form): void {
+        if (!$context->ownerDocument instanceof DOMDocument) {
+            throw new FormDataRendererException('Context must be connected to a DOMDocument');
+        }
+
+        $this->xp              = new DOMXPath($context->ownerDocument);
+        $this->form            = $form;
+        $this->originalContext = $context;
+
+        $this->processElements(
+            $this->findFormElements($context)
+        );
     }
 
-    private function setInputValue(DOMElement $input, string $value): void {
-        $type = $input->getAttribute('type');
+    private function processElements(StaticNodeList $elements): void {
+        foreach ($elements as $element) {
+            assert($element instanceof DOMElement);
+
+            switch ($element->localName) {
+                case 'input': {
+                    $this->processInput($element);
+
+                    break;
+                }
+                case 'textarea': {
+                    $this->processTextArea($element);
+
+                    break;
+                }
+
+                case 'select': {
+                    $this->processSelect($element);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    private function processInput(DOMElement $element): void {
+        $name = $this->nameToLookupKey($element);
+
+        if (!$this->form->has($name)) {
+            return;
+        }
+
+        $value = $this->form->value($name);
+        $type  = $element->getAttribute('type');
 
         switch ($type) {
             case 'file':
@@ -35,136 +84,119 @@ final class FormDataRenderer {
                 return;
             case 'radio':
             case 'checkbox':
-                $this->toggleInput($input, $value);
+                $required = $element->getAttribute('value');
+
+                if ($required === $value) {
+                    $element->setAttribute('checked', 'checked');
+
+                    return;
+                }
+
+                $element->removeAttribute('checked');
 
                 return;
 
             default:
-                $input->setAttribute('value', $value);
+                $element->setAttribute('value', $value);
         }
     }
 
-    private function toggleInput(DOMElement $input, string $value): void {
-        $actualValue = $input->getAttribute('value');
+    private function processTextArea(DOMElement $element): void {
+        $name = $this->nameToLookupKey($element);
 
-        if ($actualValue === $value) {
-            $input->setAttribute('checked', 'checked');
-
+        if (!$this->form->has($name)) {
             return;
         }
-        $input->removeAttribute('checked');
+
+        $value              = $this->form->value($name);
+        $element->nodeValue = '';
+        $element->appendChild(
+            $this->originalContext->ownerDocument->createTextNode($value)
+        );
     }
+    private function processSelect(DOMElement $element): void {
+        $name = $element->getAttribute('name');
 
-    private function setSelectValue(DOMElement $select, string $value): void {
-        foreach ($select->getElementsByTagName('option') as $option) {
-            if ($option->getAttribute('value') === $value) {
-                $option->setAttribute('selected', 'selected');
-
-                continue;
-            }
-            $option->removeAttribute('selected');
-        }
-    }
-
-    /**
-     * @throws FormDataRendererException
-     */
-    private function findFormElement(DOMElement $context, string $identifier): DOMElement {
-        if ($context->localName === 'form' &&
-            ($context->getAttribute('id') === $identifier ||
-             $context->getAttribute('name') === $identifier)) {
-            return $context;
-        }
-
-        $dom = $context->ownerDocument;
-        assert($dom instanceof DOMDocument);
-
-        $xp     = new DOMXPath($dom);
-        $result = $xp->query(
-            sprintf('.//*[local-name() = "form" and (@id = "%1$s" or @name = "%1$s")]', $identifier),
-            $context
+        $options = $this->xp->query(
+            sprintf(
+                './/*[local-name() = "select" and starts-with(@name, "%2$s") and (
+                        @form="%1$s" or ancestor::*[local-name()="form" and (@id = "%1$s" or @name = "%1$s")]
+                    )]//*[local-name() = "option"]',
+                $this->form->identifier(),
+                $name
+            ),
+            $this->originalContext
         );
 
-        switch ($result->length) {
-            case 1: {
-                $node = $result->item(0);
-                assert($node instanceof DOMElement);
+        $list      = StaticNodeList::fromNodeList($options);
+        $values    = [];
+        $fragments = explode('[]', $name);
+        $rootName  = array_shift($fragments);
 
-                return $node;
-            }
-            case 0: {
-                throw new FormDataRendererException(
-                    sprintf('No form with name or id "%s" found', $identifier)
-                );
+        foreach ($list as $pos => $option) {
+            assert($option instanceof DOMElement);
+
+            $option->removeAttribute('selected');
+
+            $name = count($fragments) > 0 ? $rootName . '[' . $pos . ']' . implode('[0]', $fragments) : $rootName;
+
+            if (!$this->form->has($name)) {
+                continue;
             }
 
-            default: {
-                throw new FormDataRendererException(
-                    sprintf('Multiple forms found with name or id "%s"', $identifier)
-                );
+            $values[] = $this->form->value($name);
+        }
+
+        foreach ($list as $option) {
+            assert($option instanceof DOMElement);
+
+            if (in_array($option->getAttribute('value'), $values, true)) {
+                $option->setAttribute('selected', 'selected');
             }
         }
     }
 
-    /**
-     * @throws FormDataException
-     */
-    private function processInputElements(FormData $form, DOMElement $formElement): void {
-        foreach ($formElement->getElementsByTagName('input') as $input) {
-            $name = $input->getAttribute('name');
+    private function findFormElements(DOMElement $context): StaticNodeList {
+        $xpath = './/*[(%2$s) and (@form="%1$s" or ancestor::*[local-name()="form" and (@id = "%1$s" or @name = "%1$s")])]';
 
-            if (!$form->hasKey($name)) {
-                continue;
-            }
-            $this->setInputValue(
-                $input,
-                $form->getValue(
-                    $name
-                )
-            );
+        $formIdentifier = $this->form->identifier();
+        $result         = $this->xp->query(sprintf($xpath, $formIdentifier, $this->elementsXPath), $context);
+
+        if ($result->count() === 0) {
+            throw new FormDataRendererException(sprintf('No form or elements for form "%s" found', $formIdentifier));
         }
+
+        return StaticNodeList::fromNodeList($result);
     }
 
-    /**
-     * @throws FormDataException
-     */
-    private function processSelectElements(FormData $form, DOMElement $formElement): void {
-        foreach ($formElement->getElementsByTagName('select') as $select) {
-            $name = $select->getAttribute('name');
+    private function nameToLookupKey(DOMElement $element): string {
+        $name = $element->getAttribute('name');
 
-            if (!$form->hasKey($name)) {
-                continue;
-            }
-            $this->setSelectValue(
-                $select,
-                $form->getValue(
-                    $select->getAttribute('name')
-                )
-            );
+        if (!str_contains($name, '[]')) {
+            return $name;
         }
-    }
+        $fragments = explode('[]', $name);
 
-    /**
-     * @throws FormDataException
-     */
-    private function processTextareaElement(FormData $form, DOMElement $formElement): void {
-        $owner = $formElement->ownerDocument;
-        assert($owner instanceof DOMDocument);
+        $xpath = sprintf(
+            './/*[(%2$s) and starts-with(@name,"%3$s") and (@form="%1$s" or ancestor::*[local-name()="form" and (@id = "%1$s" or @name = "%1$s")])]',
+            $this->form->identifier(),
+            $this->elementsXPath,
+            $fragments[0] . '[]'
+        );
 
-        foreach ($formElement->getElementsByTagName('textarea') as $textarea) {
-            $name = $textarea->getAttribute('name');
+        $count = 0;
 
-            if (!$form->hasKey($name)) {
-                continue;
+        foreach ($this->xp->query($xpath, $this->originalContext) as $pos => $match) {
+            assert($match instanceof DOMElement);
+
+            if ($match->isSameNode($element)) {
+                $count = $pos;
+
+                break;
             }
-            $textarea->nodeValue = '';
-            $textarea->appendChild(
-                $owner->createTextNode(
-                    $form->getValue(
-                        $textarea->getAttribute('name')
-                    )
-                )
-            );
         }
+        $name = array_shift($fragments) . '[' . $count . ']';
+
+        return $name . implode('[0]', $fragments);
     }
 }
