@@ -176,6 +176,43 @@ class FormDataRendererTest extends TestCase {
           </form>');
 
         $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
 
+    public function testNameToLookupConversionSelectsCorrectAncestors(): void {
+        $dom = new DOMDocument;
+        $dom->loadXML('<form id="test">
+            <input type="text" name="a1" />
+            <input type="text" name="a2" />
+            <input type="text" name="a[]" />
+            <input type="text" name="a[]" />
+        </form>');
+
+        (new FormDataRenderer)->render($dom->documentElement, new FormData('test', [ 'a' => ['a-value-1', 'a-value-2']]));
+
+        $expected = new DOMDocument;
+        $expected->loadXML('<form id="test">
+            <input type="text" name="a1" />
+            <input type="text" name="a2" />
+            <input type="text" name="a[]" value="a-value-1" />
+            <input type="text" name="a[]" value="a-value-2" />
+        </form>');
+
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
+    }
+
+    public function testNameToLookupConversionUsesIndexZeroByDefault(): void {
+        $dom = new DOMDocument;
+        $dom->loadXML('<form id="test">
+            <input type="text" name="a[]" />
+        </form>');
+
+        (new FormDataRenderer)->render($dom->documentElement, new FormData('test', [ 'a' => ['a-value-1']]));
+
+        $expected = new DOMDocument;
+        $expected->loadXML('<form id="test">
+            <input type="text" name="a[]" value="a-value-1" />
+        </form>');
+
+        $this->assertResultMatches($expected->documentElement, $dom->documentElement);
     }
 }
