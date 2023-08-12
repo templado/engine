@@ -183,15 +183,14 @@ final class FormDataRenderer {
         );
 
         $count = 0;
-
-        foreach ($this->xp->query($xpath, $this->originalContext) as $pos => $match) {
+        foreach ($this->xp->query($xpath, $this->originalContext) as $match) {
             assert($match instanceof DOMElement);
 
             if ($match->isSameNode($element)) {
-                $count = $pos;
-
                 break;
             }
+
+            $count++;
         }
         $name = array_shift($fragments) . '[' . $count . ']';
 
