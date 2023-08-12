@@ -183,6 +183,7 @@ final class FormDataRenderer {
         );
 
         $count = 0;
+
         foreach ($this->xp->query($xpath, $this->originalContext) as $match) {
             assert($match instanceof DOMElement);
 
