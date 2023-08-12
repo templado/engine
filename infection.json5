@@ -18,6 +18,16 @@
             "ignore": [
                 "Templado\\Engine\\Merger::processContext"
             ]
+        },
+        "DecrementInteger": {
+            "ignore": [
+                "Templado\\Engine\\FormDataRenderer::nameToLookupKey"
+            ]
+        },
+        "Break_": {
+            "ignore": [
+                "Templado\\Engine\\FormDataRenderer::nameToLookupKey"
+            ]
         }
     }
 }
