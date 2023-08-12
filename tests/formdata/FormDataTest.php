@@ -1,17 +1,15 @@
 <?php declare(strict_types = 1);
 namespace Templado\Engine;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-/**
- * @covers \Templado\Engine\FormData
- */
+#[CoversClass(FormData::class)]
 class FormDataTest extends TestCase {
 
-    /**
-     * @dataProvider validDataProvider
-     */
+    #[DataProvider('validDataProvider')]
     public function testCanBeInstantiatedWithUsableData(array $data, string $key): void {
         $formdata = new FormData('foo', $data);
         $this->assertInstanceOf(FormData::class, $formdata);
@@ -69,4 +67,37 @@ class FormDataTest extends TestCase {
         $formdata = new FormData('test', ['a' => 'value']);
         $this->assertEquals('value', $formdata->value('a'));
     }
+
+    public function testHandlesMixedNestedArrayTypes(): void {
+        $formdata = new FormData('test', ['a' => 'a', 'b' => ['c','d'], 'e' => ['f' => ['g' => 'h']]]);
+        $this->assertEquals('a', $formdata->value('a'));
+        $this->assertEquals('c', $formdata->value('b[0]'));
+        $this->assertEquals('d', $formdata->value('b[1]'));
+        $this->assertEquals('h', $formdata->value('e[f][g]'));
+    }
+
+    #[DataProvider('invalidNameProvider')]
+    public function testThrowsExceptionOnInvalidNameSyntax(string $input): void {
+        $this->expectException(FormDataException::class);
+        (new FormData('foo', []))->has($input);
+    }
+
+    public static function invalidNameProvider(): array {
+        return [
+            'foo[]0' => ['foo[]0'],
+            'foo[0]a' => ['foo[0]a'],
+            'foo[0]a[1]' => ['foo[0]a[1]'],
+            'foo[' => ['foo['],
+            'foo]' => ['foo]'],
+            'foo[a[]]' => ['foo[a[]]'],
+            '[]foo' => ['[]foo'],
+        ];
+    }
+
+    public function testAcceptsValidNames(): void {
+        $this->assertFalse(
+            (new FormData('foo', []))->has("😀")
+        );
+    }
+
 }

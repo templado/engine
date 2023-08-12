@@ -47,7 +47,7 @@ final class FormData {
         $lookupKey = $this->translateKey($key);
 
         if (!$this->has($lookupKey)) {
-            throw new FormDataException(sprintf('No such key: %s', $key));
+            throw new FormDataException(sprintf('No such key: %s (%s)', $key, $lookupKey));
         }
 
         return $this->values[$lookupKey];
@@ -72,6 +72,12 @@ final class FormData {
     }
 
     private function translateKey(string $key): string {
+        if (preg_match('/^[^\p{C}\[\]]+(?:\[[^\p{C}\[\]]*\])*$/u', $key) === 0) {
+            throw new FormDataException(
+                sprintf('Invalid key name syntax ("%s") - cannot translate', $key)
+            );
+        }
+
         return implode('|', preg_split('/\[|\]/', $key, flags: PREG_SPLIT_NO_EMPTY));
     }
 }
