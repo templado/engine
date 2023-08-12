@@ -500,9 +500,10 @@ final class ViewModelRenderer {
 
             throw new ViewModelRendererException(
                 sprintf(
-                    'Unsupported type "%s" in list (%s)',
+                    'Unsupported type "%s" in list (%s[%d])',
                     gettype($model),
-                    $this->getModelPath($context) . '[' . (string)$pos . ']'
+                    $this->getModelPath($context),
+                    $pos
                 ),
                 ViewModelRendererException::UnsupportedTypeForProperty
             );
