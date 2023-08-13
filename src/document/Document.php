@@ -18,6 +18,9 @@ use DOMDocument;
 final readonly class Document {
     public const XMLNS = 'https://templado.io/document/1.0';
 
+    /**
+     * @param literal-string $markup
+     */
     public static function fromString(string $markup, ?Id $id = null): self {
         libxml_use_internal_errors(true);
         libxml_clear_errors();
