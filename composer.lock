@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "534f9b5cf5357c9e6877a4cfe0124bbb",
+    "content-hash": "a8ee77ec00adc17fefacfcfa464f506a",
     "packages": [
         {
             "name": "theseer/css2xpath",
@@ -57,8 +57,7 @@
     "platform": {
         "php": "^8.2",
         "ext-dom": "*",
-        "ext-libxml": "*",
-        "ext-fileinfo": "*"
+        "ext-libxml": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
