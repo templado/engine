@@ -16,8 +16,9 @@ class EmptyElementsFilter implements Filter {
     public function apply(string $content): string {
         /** @psalm-var list<string> */
         static $tagList = [
-            'base', 'br', 'meta', 'link', 'img', 'input', 'button', 'hr', 'embed',
-            'param', 'source', 'track', 'area', 'keygen',
+            'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link',
+            'meta', 'source', 'track', 'wbr', 'basefont', 'bgsound', 'frame',
+            'keygen', 'param', 'button'
         ];
 
         foreach ($tagList as $tag) {
