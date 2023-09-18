@@ -66,6 +66,25 @@ class DocumentTest extends TestCase {
         );
     }
 
+    public function testHasIdReturnsFalseWhenNoneIsSet(): void {
+        $this->assertFalse(
+            (Document::fromString('<root />'))->hasId()
+        );
+    }
+
+    public function testHasIdReturnsTrueWhenSet(): void {
+        $this->assertTrue(
+            (Document::fromString('<root />', new Id('an-ID')))->hasId()
+        );
+    }
+
+    public function testAccesingNullIdThrowsException(): void {
+        $doc = Document::fromString('<root />');
+
+        $this->expectException(DocumentException::class);
+        $doc->id();
+    }
+
     public function testExistingLibxmlErrorStateGetsClearedOnConstruct(): void {
         libxml_use_internal_errors(true);
         $dummy = new DOMDocument();
