@@ -49,7 +49,15 @@ final readonly class Document {
     ) {
     }
 
-    public function id(): ?Id {
+    /** @psalm-assert-if-true Id $this->id */
+    public function hasId(): bool {
+        return $this->id !== null;
+    }
+    public function id(): Id {
+        if (!$this->hasId()) {
+            throw new DocumentException('No ID set');
+        }
+
         return $this->id;
     }
 
@@ -102,14 +110,13 @@ final readonly class Document {
 
         foreach ($toMerge as $item) {
             if ($item instanceof self) {
-                $id = $item->id();
 
-                if ($id === null) {
+                if (!$item->hasId()) {
                     throw new DocumentException('Document must have an ID to be merged.');
                 }
 
                 $mergeList->add(
-                    $id,
+                    $item->id,
                     $item->dom
                 );
 
@@ -117,13 +124,14 @@ final readonly class Document {
             }
 
             foreach ($item as $single) {
-                $id = $single->id();
+                assert($single instanceof self);
 
-                if ($id === null) {
+                if (!$single->hasId()) {
                     throw new DocumentException('All documents in collection must have an ID to be merged.');
                 }
+
                 $mergeList->add(
-                    $id,
+                    $single->id,
                     $single->dom
                 );
             }
