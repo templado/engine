@@ -9,13 +9,13 @@
  */
 namespace Templado\Engine;
 
-use DOMElement;
-use DOMNode;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_get_last_error;
 use function libxml_use_internal_errors;
 use DOMDocument;
+use DOMElement;
+use DOMNode;
 
 final readonly class Document {
     public const XMLNS = 'https://templado.io/document/1.0';

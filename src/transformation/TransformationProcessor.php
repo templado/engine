@@ -9,9 +9,7 @@
  */
 namespace Templado\Engine;
 
-use function assert;
 use DOMElement;
-use DOMNode;
 
 final class TransformationProcessor {
     public function process(DOMElement $context, Transformation ...$transformations): void {

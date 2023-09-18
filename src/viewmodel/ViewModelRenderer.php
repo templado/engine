@@ -510,7 +510,6 @@ final class ViewModelRenderer {
                 ),
                 ViewModelRendererException::UnsupportedTypeForProperty
             );
-
         }
 
         $list = StaticNodeList::fromNodeList($this->xp->query(

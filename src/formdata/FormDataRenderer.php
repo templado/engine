@@ -108,7 +108,7 @@ final class FormDataRenderer {
 
         $value              = $this->form->value($name);
         $element->nodeValue = '';
-        $ownerDocument = $this->originalContext->ownerDocument;
+        $ownerDocument      = $this->originalContext->ownerDocument;
         assert($ownerDocument instanceof DOMDocument);
 
         $element->appendChild(
