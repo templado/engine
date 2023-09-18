@@ -110,7 +110,6 @@ final readonly class Document {
 
         foreach ($toMerge as $item) {
             if ($item instanceof self) {
-
                 if (!$item->hasId()) {
                     throw new DocumentException('Document must have an ID to be merged.');
                 }
