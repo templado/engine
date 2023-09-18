@@ -36,6 +36,7 @@ final class MergeList {
         return isset($this->documents[$id->asString()]);
     }
 
+    /** @return ArrayIterator<int<0, max>, DOMDocument> */
     public function get(Id $id): ArrayIterator {
         if (!$this->has($id)) {
             throw new MergeListException(

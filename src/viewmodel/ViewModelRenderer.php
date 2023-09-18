@@ -41,6 +41,7 @@ final class ViewModelRenderer {
     /**  @psalm-suppress PropertyNotSetInConstructor */
     private DOMXPath $xp;
 
+    /** @psalm-var array<string,?object>  */
     private array $prefixModels = [];
 
     public function render(DOMNode $context, object $model): void {
@@ -225,6 +226,7 @@ final class ViewModelRenderer {
     }
 
     private function modelSupportsVocab(object $model, string $requiredVocab): void {
+        /** @psalm-suppress MixedMethodCall */
         $modelVocab = match (true) {
             // method variants
             method_exists($model, 'vocab')    => $model->vocab($requiredVocab),
@@ -498,15 +500,17 @@ final class ViewModelRenderer {
                 continue;
             }
 
+            /** @psalm-suppress MixedArgument */
             throw new ViewModelRendererException(
                 sprintf(
-                    'Unsupported type "%s" in list (%s[%d])',
+                    'Unsupported type "%s" in list (%s[%s])',
                     gettype($model),
                     $this->getModelPath($context),
                     $pos
                 ),
                 ViewModelRendererException::UnsupportedTypeForProperty
             );
+
         }
 
         $list = StaticNodeList::fromNodeList($this->xp->query(

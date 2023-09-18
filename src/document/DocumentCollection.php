@@ -17,7 +17,7 @@ use IteratorAggregate;
 
 /** @template-implements IteratorAggregate<int,Document> */
 final class DocumentCollection implements Countable, IteratorAggregate {
-    /** @psalm-type list<int,Document> */
+    /** @psalm-var array<int<0,max>,Document> */
     private array $documents;
 
     public function __construct(Document ...$documents) {
@@ -31,6 +31,8 @@ final class DocumentCollection implements Countable, IteratorAggregate {
     public function add(Document ...$documents): void {
         array_push($this->documents, ...$documents);
     }
+
+    /** @return ArrayIterator<int<0,max>, Document> */
     public function getIterator(): ArrayIterator {
         return new ArrayIterator($this->documents);
     }

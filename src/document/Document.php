@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use DOMElement;
+use DOMNode;
 use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_get_last_error;
@@ -74,9 +76,12 @@ final readonly class Document {
         }
 
         if (count($selection) === 1) {
+            $currentNode = $selection->getIterator()->current();
+            assert($currentNode instanceof DOMNode);
+
             $exportDom->appendChild(
                 $exportDom->importNode(
-                    $selection->getIterator()->current(),
+                    $currentNode,
                     true
                 )
             );
@@ -123,8 +128,6 @@ final readonly class Document {
             }
 
             foreach ($item as $single) {
-                assert($single instanceof self);
-
                 if (!$single->hasId()) {
                     throw new DocumentException('All documents in collection must have an ID to be merged.');
                 }
@@ -159,6 +162,7 @@ final readonly class Document {
         $processor = new TransformationProcessor();
 
         foreach ($selection as $ctx) {
+            assert($ctx instanceof DOMElement);
             $processor->process($ctx, $transformation);
         }
 

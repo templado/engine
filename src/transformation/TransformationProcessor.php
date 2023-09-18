@@ -23,7 +23,6 @@ final class TransformationProcessor {
             }
 
             foreach ($selection as $node) {
-                assert($node instanceof DOMNode);
                 $transformation->apply($node);
             }
         }

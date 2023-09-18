@@ -108,8 +108,11 @@ final class FormDataRenderer {
 
         $value              = $this->form->value($name);
         $element->nodeValue = '';
+        $ownerDocument = $this->originalContext->ownerDocument;
+        assert($ownerDocument instanceof DOMDocument);
+
         $element->appendChild(
-            $this->originalContext->ownerDocument->createTextNode($value)
+            $ownerDocument->createTextNode($value)
         );
     }
     private function processSelect(DOMElement $element): void {

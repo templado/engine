@@ -18,7 +18,7 @@ use IteratorAggregate;
 
 /** @template-implements IteratorAggregate<int,DOMNode> */
 class Selection implements Countable, IteratorAggregate {
-    /** @var DOMNode[] */
+    /** @psalm-var array<int, DOMNode> */
     private array $list = [];
 
     public function __construct(DOMNodeList $nodeList) {
@@ -35,6 +35,7 @@ class Selection implements Countable, IteratorAggregate {
         return count($this->list) === 0;
     }
 
+    /** @return ArrayIterator<int, DOMNode> */
     public function getIterator(): ArrayIterator {
         return new ArrayIterator($this->list);
     }

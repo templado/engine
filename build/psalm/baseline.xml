@@ -1,8 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.14.1@b9d355e0829c397b9b3b47d0c0ed042a8a70284d">
-  <file src="src/formdata/FormDataRenderer.php">
-    <PossiblyNullReference>
-      <code>createTextNode</code>
-    </PossiblyNullReference>
-  </file>
-</files>
+<files psalm-version="5.14.1@b9d355e0829c397b9b3b47d0c0ed042a8a70284d"/>
