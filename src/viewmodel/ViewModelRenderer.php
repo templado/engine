@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use SplFileInfo;
 use function array_key_exists;
 use function array_reverse;
 use function assert;
@@ -137,15 +138,7 @@ final class ViewModelRenderer {
             property_exists($this->rootModel, $method) => $this->rootModel->{$method},
             method_exists($this->rootModel, '__get')   => $this->rootModel->{$method},
 
-            default => throw new ViewModelRendererException(
-                $this->buildExceptionMessage(
-                    null,
-                    $this->rootModel,
-                    $method,
-                    sprintf('Cannot resolve prefix request for "%s"', $method)
-                ),
-                ViewModelRendererException::PrefixResolvingFailed
-            )
+            default => Signal::notDefined()
         };
 
         if (!is_object($result)) {
@@ -155,6 +148,30 @@ final class ViewModelRenderer {
                     $this->rootModel,
                     $method,
                     'Prefix type must be an object'
+                ),
+                ViewModelRendererException::WrongTypeForPrefix
+            );
+        }
+
+        if ($result instanceof NotDefined) {
+            throw new ViewModelRendererException(
+                $this->buildExceptionMessage(
+                    null,
+                    $this->rootModel,
+                    $method,
+                    sprintf('Cannot resolve prefix request for "%s"', $method)
+                ),
+                ViewModelRendererException::PrefixResolvingFailed
+            );
+        }
+
+        if ($result instanceof Signal) {
+            throw new ViewModelRendererException(
+                $this->buildExceptionMessage(
+                    null,
+                    $this->rootModel,
+                    $method,
+                    sprintf('Prefix "%s" must not resolve to a Signal', $method)
                 ),
                 ViewModelRendererException::WrongTypeForPrefix
             );
@@ -188,15 +205,7 @@ final class ViewModelRenderer {
             property_exists($model, $resource) => $model->{$resource},
             method_exists($model, '__get')     => $model->{$resource},
 
-            default => throw new ViewModelRendererException(
-                $this->buildExceptionMessage(
-                    null,
-                    $this->rootModel,
-                    $resource,
-                    'Cannot resolve resource request'
-                ),
-                ViewModelRendererException::ResourceResolvingFailed
-            )
+            default => Signal::notDefined()
         };
 
         if (!is_object($result)) {
@@ -206,6 +215,30 @@ final class ViewModelRenderer {
                     $this->rootModel,
                     $resource,
                     sprintf('Resouce type "%s" not supported - must be a object', gettype($result))
+                ),
+                ViewModelRendererException::WrongTypeForResource
+            );
+        }
+
+        if ($result instanceof NotDefined) {
+            throw new ViewModelRendererException(
+                $this->buildExceptionMessage(
+                    null,
+                    $this->rootModel,
+                    $resource,
+                    'Cannot resolve resource request'
+                ),
+                ViewModelRendererException::ResourceResolvingFailed
+            );
+        }
+
+        if ($result instanceof Signal) {
+            throw new ViewModelRendererException(
+                $this->buildExceptionMessage(
+                    null,
+                    $this->rootModel,
+                    $resource,
+                    sprintf('Resource for "%s" must not be a Signal', $resource)
                 ),
                 ViewModelRendererException::WrongTypeForResource
             );
@@ -239,6 +272,12 @@ final class ViewModelRenderer {
 
             default => $requiredVocab
         };
+
+        if ($modelVocab instanceof NotDefined) {
+            $this->supported = true;
+
+            return;
+        }
 
         if (!is_string($modelVocab)) {
             throw new ViewModelRendererException(
@@ -293,7 +332,11 @@ final class ViewModelRenderer {
             property_exists($model, $property) => $model->{$property},
             method_exists($model, '__get')     => $model->{$property},
 
-            default => throw new ViewModelRendererException(
+            default => Signal::notDefined()
+        };
+
+        if ($result instanceof NotDefined) {
+            throw new ViewModelRendererException(
                 $this->buildExceptionMessage(
                     $context,
                     $model,
@@ -301,8 +344,8 @@ final class ViewModelRenderer {
                     'No accessor for property'
                 ),
                 ViewModelRendererException::ResolvingPropertyFailed
-            )
-        };
+            );
+        }
 
         if ($context->hasAttribute('typeof')) {
             if (!is_iterable($result) && !is_object($result)) {
@@ -534,22 +577,25 @@ final class ViewModelRenderer {
         }
 
         if (method_exists($model, 'asString') || method_exists($model, '__call')) {
-            $context->nodeValue = '';
-            $textContent        = $model->asString($context->textContent);
+            $callResult        = $model->asString($context->textContent);
 
-            if (!is_string($textContent)) {
-                throw new ViewModelRendererException(
-                    $this->buildExceptionMessage(
-                        $context,
-                        $model,
-                        'asString',
-                        sprintf('Cannot use non string type (%s) for text content', gettype($textContent))
-                    ),
-                    ViewModelRendererException::StringRequired
-                );
+            if (!$callResult instanceof NotDefined) {
+                if (!is_string($callResult)) {
+                    throw new ViewModelRendererException(
+                        $this->buildExceptionMessage(
+                            $context,
+                            $model,
+                            'asString',
+                            sprintf('Cannot use non string type (%s) for text content', gettype($callResult))
+                        ),
+                        ViewModelRendererException::StringRequired
+                    );
+                }
+
+                $context->nodeValue = '';
+                $context->textContent = $callResult;
             }
 
-            $context->textContent = $textContent;
         } elseif (method_exists($model, '__toString')) {
             $context->nodeValue   = '';
             $context->textContent = (string)$model;
@@ -580,7 +626,9 @@ final class ViewModelRenderer {
                 default => Signal::ignore()
             };
 
-            if ($result instanceof Ignore || $result === true || $result === null) {
+            if ($result instanceof Ignore || $result instanceof NotDefined ||
+                $result === true ||
+                $result === null) {
                 continue;
             }
 

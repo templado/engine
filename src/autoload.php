@@ -30,6 +30,7 @@ spl_autoload_register(
                 'templado\\engine\\merger' => '/merger/Merger.php',
                 'templado\\engine\\mergerexception' => '/merger/MergerException.php',
                 'templado\\engine\\namespacecleaningtransformation' => '/transformation/NamespaceCleaningTransformation.php',
+                'templado\\engine\\notdefined' => '/viewmodel/NotDefined.php',
                 'templado\\engine\\parsingexception' => '/document/ParsingException.php',
                 'templado\\engine\\remove' => '/viewmodel/Remove.php',
                 'templado\\engine\\selection' => '/selectors/Selection.php',

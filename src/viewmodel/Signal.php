@@ -18,11 +18,19 @@ abstract readonly class Signal {
         return new Remove;
     }
 
+    public static function notDefined(): NotDefined {
+        return new NotDefined;
+    }
+
     public function isIgnore(): bool {
         return false;
     }
 
     public function isRemove(): bool {
+        return false;
+    }
+
+    public function isNotDefined(): bool {
         return false;
     }
 }
