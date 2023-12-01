@@ -9,7 +9,6 @@
  */
 namespace Templado\Engine;
 
-use SplFileInfo;
 use function array_key_exists;
 use function array_reverse;
 use function assert;
@@ -577,7 +576,7 @@ final class ViewModelRenderer {
         }
 
         if (method_exists($model, 'asString') || method_exists($model, '__call')) {
-            $callResult        = $model->asString($context->textContent);
+            $callResult = $model->asString($context->textContent);
 
             if (!$callResult instanceof NotDefined) {
                 if (!is_string($callResult)) {
@@ -592,10 +591,9 @@ final class ViewModelRenderer {
                     );
                 }
 
-                $context->nodeValue = '';
+                $context->nodeValue   = '';
                 $context->textContent = $callResult;
             }
-
         } elseif (method_exists($model, '__toString')) {
             $context->nodeValue   = '';
             $context->textContent = (string)$model;

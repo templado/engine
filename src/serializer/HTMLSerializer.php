@@ -9,6 +9,8 @@
  */
 namespace Templado\Engine;
 
+use const LIBXML_NOEMPTYTAG;
+use function assert;
 use DOMAttr;
 use DOMDocument;
 use DOMElement;
@@ -16,11 +18,9 @@ use DOMNameSpaceNode;
 use DOMNode;
 use DOMXPath;
 use XMLWriter;
-use function assert;
-use const LIBXML_NOEMPTYTAG;
-use const LIBXML_NOXMLDECL;
 
 class HTMLSerializer implements Serializer {
+    private const HTMLNS        = 'http://www.w3.org/1999/xhtml';
     private bool $stripRDFaFlag = false;
 
     private bool $keepXMLHeaderFlag = false;
@@ -28,8 +28,6 @@ class HTMLSerializer implements Serializer {
     private bool $namespaceCleaningFlag = true;
 
     private bool $withDoctypeFlag = true;
-
-    private const HTMLNS = 'http://www.w3.org/1999/xhtml';
 
     private bool $isFirst;
 
@@ -76,7 +74,6 @@ class HTMLSerializer implements Serializer {
     }
 
     public function serialize(DOMDocument $document): string {
-
         if (!empty($this->transformations)) {
             (new TransformationProcessor())->process(
                 $document->documentElement,
@@ -122,7 +119,7 @@ class HTMLSerializer implements Serializer {
         return $writer->outputMemory();
     }
 
-    private function walk(XMLWriter $writer, DOMNode $node, array $knownPrefixes):void {
+    private function walk(XMLWriter $writer, DOMNode $node, array $knownPrefixes): void {
         assert($node->ownerDocument instanceof DOMDocument);
 
         if (!$node instanceof DOMElement) {
@@ -135,12 +132,14 @@ class HTMLSerializer implements Serializer {
 
         if ($node->namespaceURI === self::HTMLNS || empty($node->namespaceURI)) {
             $writer->startElement($node->localName);
+
             if ($this->isFirst) {
                 $writer->writeAttribute('xmlns', self::HTMLNS);
                 $this->isFirst = false;
             }
         } else {
             $writer->startElement($node->nodeName);
+
             if (empty($node->prefix)) {
                 $writer->writeAttribute('xmlns', $node->namespaceURI);
             } elseif (!isset($knownPrefixes[$node->prefix])) {
@@ -149,15 +148,16 @@ class HTMLSerializer implements Serializer {
             }
         }
 
-        foreach($node->attributes as $attribute) {
+        foreach ($node->attributes as $attribute) {
             assert($attribute instanceof DOMAttr);
 
-            if ($this->stripRDFaFlag && in_array($attribute->name, ['property', 'resource', 'prefix', 'typeof', 'vocab'])) {
+            if ($this->stripRDFaFlag && in_array($attribute->name, ['property', 'resource', 'prefix', 'typeof', 'vocab'], true)) {
                 continue;
             }
 
             if (empty($attribute->prefix)) {
                 $writer->writeAttribute($attribute->name, $attribute->value);
+
                 continue;
             }
 
@@ -172,7 +172,7 @@ class HTMLSerializer implements Serializer {
             );
         }
 
-        foreach((new DOMXPath($node->ownerDocument))->query('./namespace::*', $node) as $nsNode) {
+        foreach ((new DOMXPath($node->ownerDocument))->query('./namespace::*', $node) as $nsNode) {
             assert($nsNode instanceof DOMNameSpaceNode);
 
             if (empty($nsNode->prefix) || $nsNode->prefix === 'xml') {
@@ -190,11 +190,10 @@ class HTMLSerializer implements Serializer {
             assert($nsNode->nodeValue !== null);
             $writer->writeAttribute('xmlns:' . $nsNode->prefix, $nsNode->nodeValue);
             $knownPrefixes[$nsNode->prefix] = $nsNode->nodeValue;
-
         }
 
         if ($node->hasChildNodes()) {
-            foreach($node->childNodes as $childNode) {
+            foreach ($node->childNodes as $childNode) {
                 $this->walk($writer, $childNode, $knownPrefixes);
             }
         }
@@ -204,7 +203,7 @@ class HTMLSerializer implements Serializer {
 
     private function serializeToBasicString(DOMDocument $document): string {
         $document->formatOutput = true;
-        $xmlString = $document->saveXML($document->documentElement, options: LIBXML_NOEMPTYTAG);
+        $xmlString              = $document->saveXML($document->documentElement, options: LIBXML_NOEMPTYTAG);
 
         if ($this->withDoctypeFlag) {
             $xmlString = "<!DOCTYPE html>\n" . $xmlString;
@@ -219,5 +218,4 @@ class HTMLSerializer implements Serializer {
 
         return $xmlString . "\n";
     }
-
 }
