@@ -9,7 +9,16 @@
  */
 namespace Templado\Engine;
 
+use DOMAttr;
 use DOMDocument;
+use DOMElement;
+use DOMNameSpaceNode;
+use DOMNode;
+use DOMXPath;
+use XMLWriter;
+use function assert;
+use const LIBXML_NOEMPTYTAG;
+use const LIBXML_NOXMLDECL;
 
 class HTMLSerializer implements Serializer {
     private bool $stripRDFaFlag = false;
@@ -19,6 +28,10 @@ class HTMLSerializer implements Serializer {
     private bool $namespaceCleaningFlag = true;
 
     private bool $withDoctypeFlag = true;
+
+    private const HTMLNS = 'http://www.w3.org/1999/xhtml';
+
+    private bool $isFirst;
 
     /** @psalm-var list<Filter> */
     private array $filters = [];
@@ -63,13 +76,6 @@ class HTMLSerializer implements Serializer {
     }
 
     public function serialize(DOMDocument $document): string {
-        if ($this->namespaceCleaningFlag) {
-            $this->transformations[] = new NamespaceCleaningTransformation();
-        }
-
-        if ($this->stripRDFaFlag) {
-            $this->transformations[] = new StripRDFaAttributesTransformation;
-        }
 
         if (!empty($this->transformations)) {
             (new TransformationProcessor())->process(
@@ -78,18 +84,11 @@ class HTMLSerializer implements Serializer {
             );
         }
 
-        if ($this->withDoctypeFlag) {
-            $document = $this->enforceHTML5DocType($document);
-        }
-
-        $document->formatOutput = true;
-        $xmlString              = $document->saveXML(options: LIBXML_NOEMPTYTAG);
+        $xmlString = $this->namespaceCleaningFlag ?
+            $this->serializeToCleanedString($document) :
+            $this->serializeToBasicString($document);
 
         $this->filters[] = new EmptyElementsFilter();
-
-        if (!$this->keepXMLHeaderFlag) {
-            $this->filters[] = new XMLHeaderFilter();
-        }
 
         foreach ($this->filters as $filter) {
             $xmlString = $filter->apply($xmlString);
@@ -98,14 +97,127 @@ class HTMLSerializer implements Serializer {
         return $xmlString;
     }
 
-    private function enforceHTML5DocType(DOMDocument $document): DOMDocument {
-        $tmp = new DOMDocument();
-        $tmp->loadXML('<?xml version="1.0" ?><!DOCTYPE html><html />');
-        $tmp->replaceChild(
-            $tmp->importNode($document->documentElement, true),
-            $tmp->documentElement
-        );
+    private function serializeToCleanedString(DOMDocument $document): string {
+        $writer = new XMLWriter();
+        $writer->openMemory();
+        $writer->setIndent(true);
+        $writer->setIndentString('  ');
 
-        return $tmp;
+        if ($this->keepXMLHeaderFlag) {
+            $writer->startDocument();
+        }
+
+        if ($this->withDoctypeFlag) {
+            $writer->writeDtd('html');
+        }
+
+        $this->isFirst = true;
+
+        $this->walk($writer, $document->documentElement, []);
+
+        if ($this->keepXMLHeaderFlag) {
+            $writer->endDocument();
+        }
+
+        return $writer->outputMemory();
     }
+
+    private function walk(XMLWriter $writer, DOMNode $node, array $knownPrefixes):void {
+        assert($node->ownerDocument instanceof DOMDocument);
+
+        if (!$node instanceof DOMElement) {
+            $writer->writeRaw(
+                $node->ownerDocument->saveXML($node)
+            );
+
+            return;
+        }
+
+        if ($node->namespaceURI === self::HTMLNS || empty($node->namespaceURI)) {
+            $writer->startElement($node->localName);
+            if ($this->isFirst) {
+                $writer->writeAttribute('xmlns', self::HTMLNS);
+                $this->isFirst = false;
+            }
+        } else {
+            $writer->startElement($node->nodeName);
+            if (empty($node->prefix)) {
+                $writer->writeAttribute('xmlns', $node->namespaceURI);
+            } elseif (!isset($knownPrefixes[$node->prefix])) {
+                $writer->writeAttribute('xmlns:' . $node->prefix, $node->namespaceURI);
+                $knownPrefixes[$node->prefix] = $node->namespaceURI;
+            }
+        }
+
+        foreach($node->attributes as $attribute) {
+            assert($attribute instanceof DOMAttr);
+
+            if ($this->stripRDFaFlag && in_array($attribute->name, ['property', 'resource', 'prefix', 'typeof', 'vocab'])) {
+                continue;
+            }
+
+            if (empty($attribute->prefix)) {
+                $writer->writeAttribute($attribute->name, $attribute->value);
+                continue;
+            }
+
+            if (!isset($knownPrefixes[$attribute->prefix])) {
+                $knownPrefixes[$attribute->prefix] = $node->lookupNamespaceURI($attribute->prefix);
+                $writer->writeAttribute('xmlns:' . $attribute->prefix, $node->lookupNamespaceURI($attribute->prefix));
+            }
+
+            $writer->writeAttribute(
+                $attribute->nodeName,
+                $attribute->value
+            );
+        }
+
+        foreach((new DOMXPath($node->ownerDocument))->query('./namespace::*', $node) as $nsNode) {
+            assert($nsNode instanceof DOMNameSpaceNode);
+
+            if (empty($nsNode->prefix) || $nsNode->prefix === 'xml') {
+                continue;
+            }
+
+            if ($nsNode->nodeValue === self::HTMLNS) {
+                continue;
+            }
+
+            if (isset($knownPrefixes[$nsNode->prefix])) {
+                continue;
+            }
+
+            assert($nsNode->nodeValue !== null);
+            $writer->writeAttribute('xmlns:' . $nsNode->prefix, $nsNode->nodeValue);
+            $knownPrefixes[$nsNode->prefix] = $nsNode->nodeValue;
+
+        }
+
+        if ($node->hasChildNodes()) {
+            foreach($node->childNodes as $childNode) {
+                $this->walk($writer, $childNode, $knownPrefixes);
+            }
+        }
+
+        $writer->fullEndElement();
+    }
+
+    private function serializeToBasicString(DOMDocument $document): string {
+        $document->formatOutput = true;
+        $xmlString = $document->saveXML($document->documentElement, options: LIBXML_NOEMPTYTAG);
+
+        if ($this->withDoctypeFlag) {
+            $xmlString = "<!DOCTYPE html>\n" . $xmlString;
+        }
+
+        if ($this->keepXMLHeaderFlag) {
+            $xmlString = sprintf(
+                '<?xml version="1.0" encoding="%s" ?>',
+                $document->encoding ?? 'utf-8'
+            ) . "\n" . $xmlString;
+        }
+
+        return $xmlString . "\n";
+    }
+
 }
