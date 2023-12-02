@@ -101,7 +101,7 @@ class HTMLSerializer implements Serializer {
         $writer->setIndentString('  ');
 
         if ($this->keepXMLHeaderFlag) {
-            $writer->startDocument(encoding: $document->encoding );
+            $writer->startDocument(encoding: $document->encoding);
         }
 
         if ($this->withDoctypeFlag) {
