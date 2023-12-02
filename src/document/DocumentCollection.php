@@ -10,6 +10,7 @@
 namespace Templado\Engine;
 
 use function array_push;
+use function array_values;
 use function count;
 use ArrayIterator;
 use Countable;
@@ -21,7 +22,7 @@ final class DocumentCollection implements Countable, IteratorAggregate {
     private array $documents;
 
     public function __construct(Document ...$documents) {
-        $this->documents = $documents;
+        $this->documents = array_values($documents);
     }
 
     public function count(): int {
@@ -29,7 +30,7 @@ final class DocumentCollection implements Countable, IteratorAggregate {
     }
 
     public function add(Document ...$documents): void {
-        array_push($this->documents, ...$documents);
+        array_push($this->documents, ...array_values($documents));
     }
 
     /** @return ArrayIterator<int<0,max>, Document> */

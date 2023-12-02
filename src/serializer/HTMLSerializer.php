@@ -29,7 +29,7 @@ class HTMLSerializer implements Serializer {
 
     private bool $withDoctypeFlag = true;
 
-    private bool $isFirst;
+    private bool $isFirst = true;
 
     /** @psalm-var list<Filter> */
     private array $filters = [];
@@ -120,11 +120,12 @@ class HTMLSerializer implements Serializer {
     }
 
     private function walk(XMLWriter $writer, DOMNode $node, array $knownPrefixes): void {
-        assert($node->ownerDocument instanceof DOMDocument);
+        $dom = $node->ownerDocument;
+        assert($dom instanceof DOMDocument);
 
         if (!$node instanceof DOMElement) {
             $writer->writeRaw(
-                $node->ownerDocument->saveXML($node)
+                $dom->saveXML($node)
             );
 
             return;
@@ -149,21 +150,24 @@ class HTMLSerializer implements Serializer {
         }
 
         foreach ($node->attributes as $attribute) {
-            assert($attribute instanceof DOMAttr);
-
             if ($this->stripRDFaFlag && in_array($attribute->name, ['property', 'resource', 'prefix', 'typeof', 'vocab'], true)) {
                 continue;
             }
 
-            if (empty($attribute->prefix)) {
+            $prefix = $attribute->prefix;
+
+            if (empty($prefix)) {
                 $writer->writeAttribute($attribute->name, $attribute->value);
 
                 continue;
             }
 
-            if (!isset($knownPrefixes[$attribute->prefix])) {
-                $knownPrefixes[$attribute->prefix] = $node->lookupNamespaceURI($attribute->prefix);
-                $writer->writeAttribute('xmlns:' . $attribute->prefix, $node->lookupNamespaceURI($attribute->prefix));
+            if (!isset($knownPrefixes[$prefix])) {
+                $nsUri = $node->lookupNamespaceURI($prefix);
+                assert($nsUri !== null);
+
+                $knownPrefixes[$prefix] = $nsUri;
+                $writer->writeAttribute('xmlns:' . $prefix, $nsUri);
             }
 
             $writer->writeAttribute(
@@ -172,7 +176,8 @@ class HTMLSerializer implements Serializer {
             );
         }
 
-        foreach ((new DOMXPath($node->ownerDocument))->query('./namespace::*', $node) as $nsNode) {
+        foreach ((new DOMXPath($dom))->query('./namespace::*', $node) as $nsNode) {
+            /** @psalm-suppress DocblockTypeContradiction */
             assert($nsNode instanceof DOMNameSpaceNode);
 
             if (empty($nsNode->prefix) || $nsNode->prefix === 'xml') {
