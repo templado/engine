@@ -11,7 +11,6 @@ namespace Templado\Engine;
 
 use const LIBXML_NOEMPTYTAG;
 use function assert;
-use DOMAttr;
 use DOMDocument;
 use DOMElement;
 use DOMNameSpaceNode;
