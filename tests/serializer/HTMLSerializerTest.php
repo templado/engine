@@ -5,6 +5,7 @@ use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use function file_get_contents;
 use function implode;
 use const LIBXML_NOEMPTYTAG;
 
@@ -47,6 +48,23 @@ class HTMLSerializerTest extends TestCase {
             $this->createInputDocument()->asString((new HTMLSerializer())->stripRDFa())
         );
     }
+
+    public function testStrippingRDFaKeepsFollowingAttributes() {
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->loadXML('<?xml version="1.0" encoding="ISO-8859-1" ?><html xmlns="http://www.w3.org/1999/xhtml" property="a" some="attr" />');
+
+        $expected = implode("\n", [
+            '<?xml version="1.0" encoding="ISO-8859-1"?>',
+            '<html xmlns="http://www.w3.org/1999/xhtml" some="attr"></html>' . "\n"
+        ]);
+
+        $this->assertSame(
+            $expected,
+            (new HTMLSerializer())->keepXMLHeader()->noHtml5Doctype()->stripRDFa()->serialize($dom)
+        );
+    }
+
 
     public function testSerializesDocumentWithoutCleaningIfRequested() {
         $this->assertSame(
@@ -143,6 +161,7 @@ class HTMLSerializerTest extends TestCase {
             (new HTMLSerializer())->keepXMLHeader()->noHtml5Doctype()->disableNamespaceCleaning()->serialize($dom),
             'Using DOM SaveXML'
         );
+
     }
 
 
