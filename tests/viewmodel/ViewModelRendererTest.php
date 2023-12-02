@@ -1265,6 +1265,64 @@ class ViewModelRendererTest extends TestCase {
         );
 
         $this->assertResultMatches($exp->documentElement, $dom->documentElement);
-
     }
+
+    public function testReturningSignalAsPrefixModelThrowsException(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<html prefix="a: a" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForPrefix);
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function a(): Signal {
+                    return Signal::remove();
+                }
+            }
+        );
+    }
+
+    public function testReturningSignalAsResourceModelThrowsException(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<html resource="a" property="b" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForResource);
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function a(): Signal {
+                    return Signal::remove();
+                }
+            }
+        );
+    }
+
+    public function testReturningNotDefinedSignalAsVocabConsideredSupported(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<html vocab="a" property="b" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+                public function vocab(): Signal {
+                    return Signal::notDefined();
+                }
+
+                public function b(): string {
+                    return 'b';
+                }
+            }
+        );
+
+        $this->assertEquals('b', $dom->documentElement->textContent);
+    }
+
 }
