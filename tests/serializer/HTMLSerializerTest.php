@@ -5,6 +5,7 @@ use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use function implode;
 use const LIBXML_NOEMPTYTAG;
 
 #[CoversClass(HTMLSerializer::class)]
@@ -116,6 +117,33 @@ class HTMLSerializerTest extends TestCase {
         );
     }
 
+    public function testEncodingGetSerializedCorrectly() {
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->loadXML('<?xml version="1.0" encoding="ISO-8859-1" ?><html xmlns="http://www.w3.org/1999/xhtml" />');
+
+        $expected = implode("\n", [
+            '<?xml version="1.0" encoding="ISO-8859-1"?>',
+            '<html xmlns="http://www.w3.org/1999/xhtml"></html>' . "\n"
+        ]);
+
+        $this->assertSame(
+            $expected,
+            (new HTMLSerializer())->keepXMLHeader()->noHtml5Doctype()->serialize($dom),
+            'Using XMLWriter'
+        );
+
+        $expected = implode("\n", [
+            '<?xml version="1.0" encoding="ISO-8859-1" ?>',
+            '<html xmlns="http://www.w3.org/1999/xhtml"></html>' . "\n"
+        ]);
+
+        $this->assertSame(
+            $expected,
+            (new HTMLSerializer())->keepXMLHeader()->noHtml5Doctype()->disableNamespaceCleaning()->serialize($dom),
+            'Using DOM SaveXML'
+        );
+    }
 
 
     private function createInputDocument(): Document {
