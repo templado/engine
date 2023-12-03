@@ -164,6 +164,59 @@ class HTMLSerializerTest extends TestCase {
 
     }
 
+    public function testNoRedundantNamespaceDeclarationsAreCreated(): void {
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->loadXML('<html xmlns="http://www.w3.org/1999/xhtml" xmlns:a="urn:a" xmlns:c="urn:c">
+            <p xmlns="http://www.w3.org/1999/xhtml" xmlns:a="urn:a" a:attr="value" xmlns:b="urn:b">
+                <a:a />
+                <b:b />
+            </p>
+            <h:p xmlns:h="http://www.w3.org/1999/xhtml" xmlns:c="urn:c" c:attr="value">
+                <a:a />
+            </h:p>
+            </html>
+        ');
+
+        $expected = implode("\n", [
+            '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:c="urn:c" xmlns:a="urn:a">',
+            '  <p a:attr="value" xmlns:b="urn:b">',
+            '    <a:a></a:a>',
+            '    <b:b></b:b>',
+            '  </p>',
+            '  <p c:attr="value">',
+            '    <a:a></a:a>',
+            '  </p>',
+            '</html>' . "\n"
+        ]);
+
+        $this->assertSame(
+            $expected,
+            (new HTMLSerializer())->noHtml5Doctype()->serialize($dom)
+        );
+    }
+
+    public function testNoRedundantNamespacesAreCreated(): void {
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->loadXML(
+            '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:a="a:a" xmlns:b="http://www.w3.org/1999/xhtml" xmlns:c="c:c">
+                <b:p xmlns:a="a:a" xmlns:b="http://www.w3.org/1999/xhtml" xmlns:c="c:c"/>
+            </html>
+        ');
+
+        $expected = implode("\n", [
+            '<html xmlns="http://www.w3.org/1999/xhtml" xmlns:c="c:c" xmlns:a="a:a">',
+            '  <p></p>',
+            '</html>' . "\n"
+        ]);
+
+        $this->assertSame(
+            $expected,
+            (new HTMLSerializer())->noHtml5Doctype()->serialize($dom)
+        );
+    }
+
 
     private function createInputDocument(): Document {
         return Document::fromString(file_get_contents(__DIR__ . '/../_data/serializer/input.xml'));
