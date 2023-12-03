@@ -111,10 +111,6 @@ class HTMLSerializer implements Serializer {
 
         $this->walk($writer, $document->documentElement, []);
 
-        if ($this->keepXMLHeaderFlag) {
-            $writer->endDocument();
-        }
-
         return $writer->outputMemory();
     }
 
