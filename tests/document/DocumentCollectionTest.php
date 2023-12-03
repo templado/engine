@@ -1,6 +1,7 @@
 <?php declare(strict_types = 1);
 namespace Templado\Engine;
 
+use DOMDocument;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -43,6 +44,29 @@ class DocumentCollectionTest extends TestCase {
 
         $this->assertContains($document, $collection);
         $this->assertCount(2, $collection);
+    }
+
+    public function testAssocArrayLoosesKeyCorrectly(): void {
+
+        $data = [ 'assocKey' => Document::fromString('<root />')];
+        $collection = new DocumentCollection(...$data);
+
+        foreach($collection as $key => $value) {
+            $this->assertEquals(0, $key);
+            $this->assertInstanceOf(Document::class, $value);
+        }
+    }
+
+    public function testAddingAssocArrayLosesKeydCorrectly(): void {
+
+        $data = [ 'assocKey' => Document::fromString('<root />')];
+        $collection = new DocumentCollection();
+        $collection->add(...$data);
+
+        foreach($collection as $key => $value) {
+            $this->assertEquals(0, $key);
+            $this->assertInstanceOf(Document::class, $value);
+        }
     }
 
 }
