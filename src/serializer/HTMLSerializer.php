@@ -126,7 +126,7 @@ class HTMLSerializer implements Serializer {
             return;
         }
 
-        if ($node->namespaceURI === self::HTMLNS || empty($node->namespaceURI)) {
+        if ($node->namespaceURI === self::HTMLNS || $node->namespaceURI === '' || $node->namespaceURI === null) {
             $writer->startElement($node->localName);
 
             if ($this->isFirst) {
