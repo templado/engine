@@ -1,2 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.14.1@b9d355e0829c397b9b3b47d0c0ed042a8a70284d"/>
+<files psalm-version="5.20.0@3f284e96c9d9be6fe6b15c79416e1d1903dcfef4">
+  <file src="src/formdata/FormDataRenderer.php">
+    <InvalidArgument>
+      <code>$options</code>
+      <code>$result</code>
+    </InvalidArgument>
+  </file>
+  <file src="src/merger/Merger.php">
+    <InvalidArgument>
+      <code><![CDATA[(new DOMXPath($owner))->query('.//*[@id]', $context)]]></code>
+    </InvalidArgument>
+  </file>
+  <file src="src/viewmodel/ViewModelRenderer.php">
+    <InvalidArgument>
+      <code><![CDATA[$this->xp->query(
+            sprintf('following-sibling::*[@property="%s"]', $context->getAttribute('property')),
+            $myPointer
+        )]]></code>
+      <code><![CDATA[$this->xp->query(
+            sprintf('following-sibling::*[@property="%s"]', $context->getAttribute('property')),
+            $myPointer
+        )]]></code>
+    </InvalidArgument>
+    <PossiblyUndefinedMethod>
+      <code>cloneNode</code>
+    </PossiblyUndefinedMethod>
+  </file>
+</files>
