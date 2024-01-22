@@ -13,12 +13,16 @@ use function libxml_clear_errors;
 use function libxml_get_errors;
 use function libxml_get_last_error;
 use function libxml_use_internal_errors;
+use function sprintf;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
 
-final readonly class Document {
+final class Document {
     public const XMLNS = 'https://templado.io/document/1.0';
+
+    /** @var DOMNode[] */
+    private array $snapshots = [];
 
     public static function fromString(string $markup, ?Id $id = null): self {
         libxml_use_internal_errors(true);
@@ -49,6 +53,36 @@ final readonly class Document {
         private DOMDocument $dom,
         private ?Id $id
     ) {
+    }
+
+    public function snapshot(?string $label = null): void {
+        $this->snapshots[$this->toSnapshotLabel($label)] = $this->dom->documentElement->cloneNode(true);
+    }
+
+    public function hasSnapshot(?string $label = null): bool {
+        return isset($this->snapshots[$this->toSnapshotLabel($label)]);
+    }
+
+    public function restore(?string $label = null): void {
+        if (!$this->hasSnapshot($label)) {
+            throw new DocumentException('Snapshot not available');
+        }
+
+        $this->dom->documentElement->replaceWith(
+            $this->snapshots[$this->toSnapshotLabel($label)]
+        );
+    }
+
+    public function clearSnapshots(): void {
+        $this->snapshots = [];
+    }
+
+    public function clearSnapshot(?string $label = null): void {
+        if (!$this->hasSnapshot($label)) {
+            throw new DocumentException('Snapshot not available');
+        }
+
+        unset($this->snapshots[$this->toSnapshotLabel($label)]);
     }
 
     /** @psalm-assert-if-true Id $this->id */
@@ -185,5 +219,11 @@ final readonly class Document {
         );
 
         return $this;
+    }
+
+    private function toSnapshotLabel(?string $label): string {
+        return $label !== null ?
+            sprintf('u:%s', $label) :
+            'default';
     }
 }

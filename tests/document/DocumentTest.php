@@ -9,15 +9,18 @@
  */
 namespace Templado\Engine;
 
-use DOMNode;
-use PHPUnit\Framework\Attributes\Small;
+use function implode;
 use function libxml_get_errors;
 use ArrayIterator;
 use DOMDocument;
+use DOMElement;
+use DOMNode;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
+use Throwable;
 
 #[CoversClass(Document::class)]
 #[UsesClass(Id::class)]
@@ -116,9 +119,10 @@ class DocumentTest extends TestCase {
 
     public function testTryingToParseInvalidMarkupStringThrowsException(): void {
         $caught = null;
+
         try {
             Document::fromString('<?xml version="1.0" ?><root>');
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $caught = $t;
         }
 
@@ -144,6 +148,7 @@ class DocumentTest extends TestCase {
             public function serialize(DOMDocument $document): string {
                 $this->testCase->assertEquals('child', $document->documentElement->nodeName);
                 $this->testCase->assertTrue($document->documentElement->hasChildNodes());
+
                 return '';
             }
         });
@@ -304,7 +309,7 @@ class DocumentTest extends TestCase {
 
     public function testBlankWhitespaceGetsRemoved(): void {
         $document = Document::fromString(
-            implode("\n",[
+            implode("\n", [
                 '<?xml version="1.0" ?>',
                 '<root>',
                 '    <p>text</p>',
@@ -319,6 +324,7 @@ class DocumentTest extends TestCase {
             }
             public function serialize(DOMDocument $document): string {
                 $this->testCase->assertCount(1, $document->documentElement->childNodes);
+
                 return '';
             }
         });
@@ -327,13 +333,13 @@ class DocumentTest extends TestCase {
     public function testNonFatalWarningsFromParsingAreCaught(): void {
         $this->expectException(ParsingException::class);
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'
-        .'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
-        .'<body>&nbsp;</body>';
+        . '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+        . '<body>&nbsp;</body>';
         (Document::fromString($xml));
     }
 
     public function testAsStringResultIsFormattedAsException(): void {
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 <?xml version="1.0"?>
 <root>
   <child1/>
@@ -358,7 +364,6 @@ EOF;
             new XPathSelector('//child[@property="handle"]')
         );
 
-
         $dom = new DomDocument();
         $dom->loadXML('<root><child property="handle">text body</child><child property="ignore" /></root>');
 
@@ -370,16 +375,15 @@ EOF;
 
         $target->applyTransformation(
             new class implements Transformation {
-                public function selector() : Selector{
+                public function selector(): Selector {
                     return new XPathSelector('self::*');
                 }
-                public function apply(DOMNode $context) : void{
+                public function apply(DOMNode $context): void {
                     $context->setAttribute('transformation', 'done');
                 }
             },
             new XPathSelector('//child[@property="handle"]')
         );
-
 
         $dom = new DomDocument();
         $dom->loadXML('<root><child transformation="done" property="handle" /><child property="ignore" /></root>');
@@ -387,4 +391,203 @@ EOF;
         $this->assertResultMatches($dom->documentElement, $target->asDomDocument()->documentElement);
     }
 
+    public function testCheckingSnapshotAvailabilityReturnsFalseWhenNoneHasBeenMadeYet(): void {
+        $this->assertFalse(
+            (Document::fromString('<root/>'))->hasSnapshot()
+        );
+    }
+
+    public function testCheckingNamedSnapshotAvailabilityReturnsFalseWhenNoneHasBeenMadeYet(): void {
+        $this->assertFalse(
+            (Document::fromString('<root/>'))->hasSnapshot('some-label')
+        );
+    }
+
+    public function testSnapshotCanBeCreated(): void {
+        $doc = Document::fromString('<root/>');
+        $doc->snapshot();
+
+        $this->assertTrue(
+            $doc->hasSnapshot()
+        );
+    }
+
+    public function testNamedSnapshotCanBeCreated(): void {
+        $doc = Document::fromString('<root/>');
+        $doc->snapshot('label');
+
+        $this->assertTrue(
+            $doc->hasSnapshot('label')
+        );
+    }
+
+    public function testSnapshotCanBeCleared(): void {
+        $doc = Document::fromString('<root/>');
+        $doc->snapshot();
+
+        $this->assertTrue(
+            $doc->hasSnapshot()
+        );
+
+        $doc->clearSnapshot();
+        $this->assertFalse(
+            $doc->hasSnapshot()
+        );
+    }
+
+    public function testNamedSnapshotCanBeCleared(): void {
+        $doc = Document::fromString('<root/>');
+        $doc->snapshot('label');
+
+        $this->assertTrue(
+            $doc->hasSnapshot('label')
+        );
+
+        $doc->clearSnapshot('label');
+        $this->assertFalse(
+            $doc->hasSnapshot('label')
+        );
+    }
+
+    public function testClearSnapshotsRemovesAll(): void {
+        $doc = Document::fromString('<root/>');
+        $doc->snapshot('label-1');
+        $doc->snapshot('label-2');
+
+        $this->assertTrue(
+            $doc->hasSnapshot('label-1')
+        );
+        $this->assertTrue(
+            $doc->hasSnapshot('label-2')
+        );
+
+        $doc->clearSnapshots();
+
+        $this->assertFalse(
+            $doc->hasSnapshot('label-1')
+        );
+        $this->assertFalse(
+            $doc->hasSnapshot('label-2')
+        );
+    }
+
+    public function testAttemptToClearNonExistingSnapshotThrowsException(): void {
+        $this->expectException(DocumentException::class);
+        (Document::fromString('<root/>'))->clearSnapshot();
+    }
+
+    public function testAttemptToClearNonExistingNamedSnapshotThrowsException(): void {
+        $this->expectException(DocumentException::class);
+        (Document::fromString('<root/>'))->clearSnapshot('label');
+    }
+
+    public function testCanRestoreToSnapshot(): void {
+        $doc = Document::fromString('<root><child /></root>');
+        $doc->snapshot();
+
+        $doc->applyTransformation(new class implements Transformation {
+            public function selector(): Selector {
+                return new XPathSelector('/*');
+            }
+
+            public function apply(DOMNode $context): void {
+                assert($context instanceof DOMElement);
+                $context->setAttribute('test', 'true');
+            }
+        });
+
+        $this->assertEquals(
+            implode("\n", [
+                '<?xml version="1.0"?>',
+                '<root test="true"><child/></root>',
+                ''
+            ]),
+            $doc->asDomDocument()->saveXML()
+        );
+
+        $doc->restore();
+
+        $this->assertEquals(
+            implode("\n", [
+                '<?xml version="1.0"?>',
+                '<root><child/></root>',
+                ''
+            ]),
+            $doc->asDomDocument()->saveXML()
+        );
+    }
+
+    public function testTryingToRestoreNonExistingSnapshotThrowsException(): void {
+        $this->expectException(DocumentException::class);
+        (Document::fromString('<root/>'))->restore('non-exisiting');
+    }
+
+    public function testClearingNamedSnapshotUsingInternalNameDoesNotConflict(): void {
+        $doc = Document::fromString('<root/>');
+        $doc->snapshot();
+        $doc->snapshot('default');
+        $doc->clearSnapshot('default');
+
+        $this->assertTrue(
+            $doc->hasSnapshot()
+        );
+
+        $this->assertFalse(
+            $doc->hasSnapshot('default')
+        );
+    }
+
+    public function testClearingUnnamedSnapshotWhileKeepingNamedSnapshotWithInternalNameWorks(): void {
+        $doc = Document::fromString('<root/>');
+        $doc->snapshot();
+        $doc->snapshot('default');
+        $doc->clearSnapshot();
+
+        $this->assertTrue(
+            $doc->hasSnapshot('default')
+        );
+
+        $this->assertFalse(
+            $doc->hasSnapshot()
+        );
+    }
+
+    public function testUsingMultipleNamedSnapshots(): void {
+        $doc = Document::fromString('<root><child /></root>');
+        $doc->snapshot('a');
+
+        $doc->applyTransformation(new class implements Transformation {
+            public function selector(): Selector {
+                return new XPathSelector('/*');
+            }
+
+            public function apply(DOMNode $context): void {
+                assert($context instanceof DOMElement);
+                $context->setAttribute('test', 'true');
+            }
+        });
+
+        $doc->snapshot('b');
+
+        $doc->restore('a');
+
+        $this->assertEquals(
+            implode("\n", [
+                '<?xml version="1.0"?>',
+                '<root><child/></root>',
+                ''
+            ]),
+            $doc->asDomDocument()->saveXML()
+        );
+
+        $doc->restore('b');
+        $this->assertEquals(
+            implode("\n", [
+                '<?xml version="1.0"?>',
+                '<root test="true"><child/></root>',
+                ''
+            ]),
+            $doc->asDomDocument()->saveXML()
+        );
+    }
 }
