@@ -1,0 +1,13 @@
+/tests export-ignore
+/tools export-ignore
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.php_cs.dist export-ignore
+/build.xml export-ignore
+/phive.xml export-ignore
+/phpstorm.xml export-ignore
+/phpunit.xml export-ignore
+/plan.php export-ignore
+/psalm.baseline export-ignore
+/psalm.xml export-ignore
