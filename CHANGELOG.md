@@ -5,7 +5,7 @@ All notable changes to Templado are documented in this file using the [Keep a CH
 ## [4.2.4] - 2023-07-07
 
 This release is the last scheduled feature release in the 4.x branch. New features will
-be implemented in Templad 5.x only. Updates to 4.x are going to be made to ensure compatibility
+be implemented in Templado 5.x only. Updates to 4.x are going to be made to ensure compatibility
 with upcoming PHP versions as long as possible. For Bugfixes, please just open a ticket.
 
 ### Changed
