@@ -2,6 +2,12 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.2.5] - 2024-MM-DD
+
+### Changed
+
+* Configured directories and files that should not be added to archives
+
 ## [4.2.4] - 2023-07-07
 
 This release is the last scheduled feature release in the 4.x branch. New features will
@@ -295,6 +301,7 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
+[4.2.5]: https://github.com/templado/engine/compare/4.2.4...4.x
 [4.2.4]: https://github.com/templado/engine/compare/4.2.3...4.2.4
 [4.2.3]: https://github.com/templado/engine/compare/4.2.2...4.2.3
 [4.2.2]: https://github.com/templado/engine/compare/4.2.1...4.2.2
