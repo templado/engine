@@ -2,7 +2,7 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## [4.2.5] - 2024-MM-DD
+## [4.2.5] - 2024-02-14
 
 ### Changed
 
