@@ -8,6 +8,7 @@
     "phpUnit": {
         "customPath": "./tools/phpunit"
     },
+    "initialTestsPhpOptions": "-d xdebug.mode=coverage",
     "logs": {
         "html": "./build/infection/report.html"
     },
