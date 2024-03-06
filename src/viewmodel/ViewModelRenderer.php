@@ -631,7 +631,7 @@ final class ViewModelRenderer {
             }
 
             if ($result instanceof Remove || $result === false) {
-                $context->removeChild($attribute);
+                $context->removeAttributeNode($attribute);
 
                 continue;
             }

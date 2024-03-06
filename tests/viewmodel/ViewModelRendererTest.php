@@ -1325,4 +1325,28 @@ class ViewModelRendererTest extends TestCase {
         $this->assertEquals('b', $dom->documentElement->textContent);
     }
 
+    public function testAttributeGetsRemovedWhenRemoveSignalIsGiven(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="root" attr="foo" />');
+
+        $renderer = new ViewModelRenderer();
+
+        $renderer->render(
+            $dom->documentElement,
+            new class {
+
+                public function root(): self {
+                    return $this;
+                }
+                public function attr(): Signal {
+                    return Signal::remove();
+                }
+            }
+        );
+
+        $this->assertFalse(
+            $dom->documentElement->hasAttribute('attr')
+        );
+
+    }
 }
