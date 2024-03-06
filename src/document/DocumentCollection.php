@@ -25,6 +25,10 @@ final class DocumentCollection implements Countable, IteratorAggregate {
         $this->documents = array_values($documents);
     }
 
+    public function isEmpty(): bool {
+        return $this->count() === 0;
+    }
+
     public function count(): int {
         return count($this->documents);
     }
