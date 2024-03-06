@@ -69,7 +69,7 @@ final class FormDataRenderer {
     private function processInput(DOMElement $element): void {
         $name = $this->nameToLookupKey($element);
 
-        if (!$this->form->has($name)) {
+        if ($name === '' || !$this->form->has($name)) {
             return;
         }
 
@@ -102,7 +102,7 @@ final class FormDataRenderer {
     private function processTextArea(DOMElement $element): void {
         $name = $this->nameToLookupKey($element);
 
-        if (!$this->form->has($name)) {
+        if ($name === '' || !$this->form->has($name)) {
             return;
         }
 
