@@ -493,7 +493,6 @@ final class ViewModelRenderer {
 
     private function iterableApply(DOMElement $context, iterable $list): void {
         $ownerDocument = $context->ownerDocument;
-        assert($ownerDocument instanceof DOMDocument);
 
         if ($context->isSameNode($ownerDocument->documentElement)) {
             throw new ViewModelRendererException(
@@ -659,7 +658,6 @@ final class ViewModelRenderer {
         $context->nodeValue = '';
 
         $ownerDocument = $context->ownerDocument;
-        assert($ownerDocument instanceof DOMDocument);
 
         $document = $model->asDomDocument();
         $nodes    = [$document->documentElement];

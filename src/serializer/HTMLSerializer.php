@@ -116,7 +116,6 @@ class HTMLSerializer implements Serializer {
 
     private function walk(XMLWriter $writer, DOMNode $node, array $knownPrefixes): void {
         $dom = $node->ownerDocument;
-        assert($dom instanceof DOMDocument);
 
         if (!$node instanceof DOMElement) {
             $writer->writeRaw(
