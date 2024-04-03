@@ -217,6 +217,32 @@ class HTMLSerializerTest extends TestCase {
         );
     }
 
+    public function testRedundantWhitespaceOnTextNodesGetsTrimmed(): void {
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = true;
+        $dom->loadXML(
+            '<html xmlns="http://www.w3.org/1999/xhtml">
+                
+                
+                <p />
+                
+                                
+            </html>
+        ');
+
+        $expected = implode("\n", [
+            '<html xmlns="http://www.w3.org/1999/xhtml">',
+            '  <p></p>',
+            '</html>' . "\n"
+        ]);
+
+        $this->assertSame(
+            $expected,
+            (new HTMLSerializer())->noHtml5Doctype()->serialize($dom)
+        );
+
+    }
+
 
     private function createInputDocument(): Document {
         return Document::fromString(file_get_contents(__DIR__ . '/../_data/serializer/input.xml'));

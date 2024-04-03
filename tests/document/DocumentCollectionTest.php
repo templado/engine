@@ -13,6 +13,12 @@ use PHPUnit\Framework\TestCase;
 #[Small]
 class DocumentCollectionTest extends TestCase {
 
+    public function testIsInitiallyEmpty(): void {
+        $this->assertTrue(
+            (new DocumentCollection())->isEmpty()
+        );
+    }
+
     public function testIteratesOverDocuments(): void {
 
         $documents = [];
@@ -44,6 +50,7 @@ class DocumentCollectionTest extends TestCase {
 
         $this->assertContains($document, $collection);
         $this->assertCount(2, $collection);
+        $this->assertFalse($collection->isEmpty());
     }
 
     public function testAssocArrayLoosesKeyCorrectly(): void {
