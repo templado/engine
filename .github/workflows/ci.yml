@@ -56,10 +56,10 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v3.5.2"
+        uses: "actions/checkout@v4.1.1"
 
       - name: "Set up PHP"
-        uses: "shivammathur/setup-php@v2"
+        uses: "shivammathur/setup-php@v2.30.2 "
         env:
           COMPOSER_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
@@ -81,6 +81,6 @@ jobs:
         run: "tools/phpunit --no-coverage --coverage-clover build/logs/clover.xml"
 
       - name: "Send code coverage report to codecov.io"
-        uses: "codecov/codecov-action@v3.1.4"
+        uses: "codecov/codecov-action@v4.1.1"
         with:
           files: "build/logs/clover.xml"
