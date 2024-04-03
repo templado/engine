@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.20.0@3f284e96c9d9be6fe6b15c79416e1d1903dcfef4">
+<files psalm-version="5.23.1@8471a896ccea3526b26d082f4461eeea467f10a4">
+  <file src="src/csrfprotection/CSRFProtectionRenderer.php">
+    <TypeDoesNotContainNull>
+      <code><![CDATA[$context->ownerDocument === null]]></code>
+    </TypeDoesNotContainNull>
+  </file>
   <file src="src/formdata/FormDataRenderer.php">
     <InvalidArgument>
-      <code>$options</code>
-      <code>$result</code>
+      <code><![CDATA[$options]]></code>
+      <code><![CDATA[$result]]></code>
     </InvalidArgument>
+    <RedundantCondition>
+      <code><![CDATA[assert($ownerDocument instanceof DOMDocument)]]></code>
+    </RedundantCondition>
   </file>
   <file src="src/merger/Merger.php">
     <InvalidArgument>
       <code><![CDATA[(new DOMXPath($owner))->query('.//*[@id]', $context)]]></code>
     </InvalidArgument>
+    <RedundantCondition>
+      <code><![CDATA[assert($owner instanceof DOMDocument)]]></code>
+    </RedundantCondition>
+  </file>
+  <file src="src/selectors/XPathSelector.php">
+    <RedundantCondition>
+      <code><![CDATA[assert($dom instanceof DOMDocument)]]></code>
+    </RedundantCondition>
   </file>
   <file src="src/viewmodel/ViewModelRenderer.php">
     <InvalidArgument>
@@ -23,7 +39,10 @@
         )]]></code>
     </InvalidArgument>
     <PossiblyUndefinedMethod>
-      <code>cloneNode</code>
+      <code><![CDATA[cloneNode]]></code>
     </PossiblyUndefinedMethod>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[$document === null]]></code>
+    </TypeDoesNotContainNull>
   </file>
 </files>
