@@ -9,7 +9,6 @@
  */
 namespace Templado\Engine;
 
-use DOMAttr;
 use function array_key_exists;
 use function array_reverse;
 use function assert;
@@ -24,6 +23,7 @@ use function method_exists;
 use function property_exists;
 use function sprintf;
 use function str_contains;
+use DOMAttr;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
