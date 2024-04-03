@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use function trim;
 use const LIBXML_NOEMPTYTAG;
 use function assert;
 use DOMDocument;
@@ -19,7 +20,9 @@ use DOMXPath;
 use XMLWriter;
 
 class HTMLSerializer implements Serializer {
+
     private const HTMLNS        = 'http://www.w3.org/1999/xhtml';
+
     private bool $stripRDFaFlag = false;
 
     private bool $keepXMLHeaderFlag = false;
@@ -117,10 +120,14 @@ class HTMLSerializer implements Serializer {
     private function walk(XMLWriter $writer, DOMNode $node, array $knownPrefixes): void {
         $dom = $node->ownerDocument;
 
+
         if (!$node instanceof DOMElement) {
-            $writer->writeRaw(
-                $dom->saveXML($node)
-            );
+            $content = trim($dom->saveXML($node));
+            if ($content === '') {
+                return;
+            }
+            
+            $writer->writeRaw($content);
 
             return;
         }
