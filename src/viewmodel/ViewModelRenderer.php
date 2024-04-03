@@ -9,6 +9,7 @@
  */
 namespace Templado\Engine;
 
+use DOMAttr;
 use function array_key_exists;
 use function array_reverse;
 use function assert;
@@ -460,9 +461,9 @@ final class ViewModelRenderer {
             }
 
             $clone = $matches->item(0)->cloneNode(true);
-            $parent->insertBefore($clone, $myPointer);
-
             assert($clone instanceof DOMElement);
+
+            $parent->insertBefore($clone, $myPointer);
             $this->objectApply($clone, $current);
 
             if ($clone->hasChildNodes()) {
@@ -601,6 +602,8 @@ final class ViewModelRenderer {
         $attributes = StaticNodeList::fromNamedNodeMap($context->attributes);
 
         foreach ($attributes as $attribute) {
+            assert($attribute instanceof DOMAttr);
+
             $name = lcfirst(
                 str_replace(['-', ':'], '', ucwords($attribute->nodeName, '-:'))
             );
