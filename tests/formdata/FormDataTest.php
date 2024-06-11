@@ -24,9 +24,7 @@ class FormDataTest extends TestCase {
         ];
     }
 
-    /**
-     * @dataProvider invalidDataProvider
-     */
+     #[DataProvider('invalidDataProvider')]
     public function testCanNotBeInstantiatedWithUnusableDataTypes(array $data): void {
         $this->expectException(FormDataException::class);
         new FormData('foo', $data);

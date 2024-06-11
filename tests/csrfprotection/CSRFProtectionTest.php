@@ -1,11 +1,10 @@
 <?php declare(strict_types = 1);
 namespace Templado\Engine;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Templado\Engine\CSRFProtection
- */
+#[CoversClass(\Templado\Engine\CSRFProtection::class)]
 class CSRFProtectionTest extends TestCase {
 
     /** @var CSRFProtection */

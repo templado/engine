@@ -38,6 +38,7 @@ use Throwable;
 #[UsesClass(StaticNodeList::class)]
 #[UsesClass(TransformationProcessor::class)]
 #[UsesClass(CSRFProtection::class)]
+#[UsesClass(CSRFProtectionRenderer::class)]
 #[Small]
 class DocumentTest extends TestCase {
     use DomDocumentsEqualTrait;
@@ -199,9 +200,6 @@ class DocumentTest extends TestCase {
         );
     }
 
-    /**
-     * @uses \Templado\Engine\TransformationProcessor
-     */
     public function testTransformationCanBeApplied(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root><child /></root>');
@@ -240,9 +238,6 @@ class DocumentTest extends TestCase {
         );
     }
 
-    /**
-     * @uses \Templado\Engine\CSRFProtectionRenderer
-     */
     public function testCSRFProtectionCanBeApplied(): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><html><body><form></form></body></html>');

@@ -2,6 +2,7 @@
 namespace Templado\Engine;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\TestCase;
 
@@ -42,9 +43,7 @@ class CSSSelectorTest extends TestCase {
         }
     }
 
-    /**
-     * @dataProvider invalidXPathQueryStringsProvider
-     */
+    #[DataProvider('invalidXPathQueryStringsProvider')]
     public function testUsingInvalidXPathQueryThrowsException($queryString): void {
         $dom = new DOMDocument();
         $dom->loadXML('<?xml version="1.0" ?><root xmlns="foo:ns"><child /></root>');
