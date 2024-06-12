@@ -37,6 +37,7 @@ spl_autoload_register(
                 'templado\\engine\\serializer' => '/serializer/Serializer.php',
                 'templado\\engine\\signal' => '/viewmodel/Signal.php',
                 'templado\\engine\\staticnodelist' => '/StaticNodeList.php',
+                'templado\\engine\\stringcollection' => '/viewmodel/StringCollection.php',
                 'templado\\engine\\striprdfaattributestransformation' => '/transformation/StripRDFaAttributesTransformation.php',
                 'templado\\engine\\transformation' => '/transformation/Transformation.php',
                 'templado\\engine\\transformationprocessor' => '/transformation/TransformationProcessor.php',

@@ -27,7 +27,11 @@ use DOMAttr;
 use DOMDocument;
 use DOMElement;
 use DOMNode;
+use DOMText;
 use DOMXPath;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionParameter;
 
 final class ViewModelRenderer {
     /**  @psalm-suppress PropertyNotSetInConstructor */
@@ -324,8 +328,8 @@ final class ViewModelRenderer {
 
         $result = match (true) {
             // method variants
-            method_exists($model, $property)         => $model->{$property}($context->textContent),
-            method_exists($model, 'get' . $property) => $model->{'get' . $property}($context->textContent),
+            method_exists($model, $property)         => $this->performMethodCall($model, $property, $context),
+            method_exists($model, 'get' . $property) => $this->performMethodCall($model, 'get' . $property, $context),
             method_exists($model, '__call')          => $model->{$property}($context->textContent),
 
             // property variants
@@ -575,10 +579,20 @@ final class ViewModelRenderer {
             return;
         }
 
-        if (method_exists($model, 'asString') || method_exists($model, '__call')) {
-            $callResult = $model->asString($context->textContent);
+        if ($model instanceof StringCollection) {
+            $this->textCollectionApply($context, $model);
 
-            if (!$callResult instanceof NotDefined) {
+            return;
+        }
+
+        if (method_exists($model, 'asString') || method_exists($model, '__call')) {
+            $callResult = $this->performMethodCall($model, 'asString', $context);
+
+            if ($callResult instanceof StringCollection) {
+                $this->textCollectionApply($context, $callResult);
+            } elseif ($callResult instanceof Document) {
+                $this->documentApply($context, $callResult);
+            } elseif (!$callResult instanceof NotDefined) {
                 if (!is_string($callResult)) {
                     throw new ViewModelRendererException(
                         $this->buildExceptionMessage(
@@ -709,6 +723,14 @@ final class ViewModelRenderer {
 
         return implode(' > ', array_reverse($list));
     }
+    private function textCollectionApply(DOMElement $context, StringCollection $model): void {
+        $textNodes = $this->xp->query('text()', $context);
+
+        foreach ($textNodes as $pos => $textNode) {
+            assert($textNode instanceof DOMText);
+            $textNode->nodeValue = $model->itemAt($pos);
+        }
+    }
 
     private function buildExceptionMessage(?DOMElement $context, object $model, string $method, string $message): string {
         return sprintf(
@@ -716,6 +738,47 @@ final class ViewModelRenderer {
             $model::class . '::' . $method,
             $message,
             $context !== null ? $this->getModelPath($context) : 'root > ' . $method
+        );
+    }
+
+    private function performMethodCall(object $model, string $method, DOMElement $context): mixed {
+        try {
+            $reflectedMethod = new ReflectionMethod($model, $method);
+        } catch (ReflectionException $e) {
+            // no explicit method defined, must be __call wrapped then
+            return $model->{$method}($context->textContent);
+        }
+
+        if ($reflectedMethod->getNumberOfParameters() === 0) {
+            return $reflectedMethod->invoke($model);
+        }
+
+        $type = (string)(new ReflectionParameter([$model, $method], 0))->getType();
+
+        if ($type === '' || $type === 'string') {
+            return $reflectedMethod->invoke($model, $context->textContent);
+        }
+
+        if ($type === StringCollection::class) {
+            $text = [];
+
+            foreach ($context->childNodes as $child) {
+                if ($child instanceof DOMText) {
+                    $text[] = $child->nodeValue;
+                }
+            }
+
+            return $reflectedMethod->invoke($model, StringCollection::fromArray($text));
+        }
+
+        throw new ViewModelRendererException(
+            $this->buildExceptionMessage(
+                $context,
+                $model,
+                $method,
+                sprintf('Unsupported parameter type "%s"', $type),
+            ),
+            ViewModelRendererException::WrongTypeForParameter
         );
     }
 }

@@ -27,4 +27,5 @@ final class ViewModelRendererException extends Exception {
     public const IterableForRootElement            = 15;
     public const StringRequired                    = 16;
     public const WrongTypeForAttribute             = 17;
+    public const WrongTypeForParameter             = 18;
 }

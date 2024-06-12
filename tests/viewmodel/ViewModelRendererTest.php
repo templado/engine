@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Small;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Templado\Engine\Example\ViewModel;
 use Templado\Engine\PrefixModel\PrefixCallViewModel;
 use Templado\Engine\PrefixModel\PrefixPropertyGetViewModel;
@@ -18,11 +19,13 @@ use Templado\Engine\ResourceModel\ResourceCallViewModel;
 use Templado\Engine\ResourceModel\ResourcePropertyGetViewModel;
 use Templado\Engine\ResourceModel\ResourcePropertyViewModel;
 use Templado\Engine\ResourceModel\ResourceViewModel;
+use function trim;
 
 #[CoversClass(ViewModelRenderer::class)]
 #[UsesClass(Signal::class)]
 #[UsesClass(StaticNodeList::class)]
 #[UsesClass(Document::class)]
+#[UsesClass(StringCollection::class)]
 #[Small]
 class ViewModelRendererTest extends TestCase {
     use DomDocumentsEqualTrait;
@@ -1347,6 +1350,128 @@ class ViewModelRendererTest extends TestCase {
         $this->assertFalse(
             $dom->documentElement->hasAttribute('attr')
         );
+    }
+
+    public function testStringListGetsPassedInWhenSpecifiedAsParameterType(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="test">first<b>bar</b>second</root>');
+
+        $model = new class() {
+
+            public readonly StringCollection $strings;
+            public function test(StringCollection $strings): object {
+                $this->strings = $strings;
+                return Signal::ignore();
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $this->assertEquals(StringCollection::fromStrings('first', 'second'), $model->strings);
+    }
+
+    public function testPlainStringGetsPassedInWhenSpecifiedAsParameterType(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="test">first<b>bar</b>second</root>');
+
+        $model = new class() {
+
+            public readonly string $string;
+            public function test(string $string): object {
+                $this->string = $string;
+                return Signal::ignore();
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $this->assertEquals('firstbarsecond', $model->string);
+    }
+
+    public function testThrowsExceptionWhenUnsupportedParameterTypeIsSpecifiedOnMethod(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="test" />');
+
+        $model = new class() {
+            public function test(StdClass $invalid): object {
+                return Signal::ignore();
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+
+        $this->expectException(ViewModelRendererException::class);
+        $this->expectExceptionCode(ViewModelRendererException::WrongTypeForParameter);
+        $renderer->render($dom->documentElement, $model);
+    }
+
+    public function testWhenCallingAsStringReturnedStringCollectionGetsApppliedToIndividualTextNodes(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="test">first<b>bar</b>second</root>');
+
+        $model = new class() {
+            public function test(): object {
+                return new class {
+                    public function asString(): StringCollection {
+                        return StringCollection::fromStrings('a','b');
+                    }
+                };
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $exp = new DOMDocument();
+        $exp->loadXML('<root property="test">a<b>bar</b>b</root>');
+
+        $this->assertResultMatches($exp->documentElement, $dom->documentElement);
+    }
+
+    public function testReturnedStringCollectionGetsApppliedToIndividualTextNodes(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="test">first<b>bar</b>second</root>');
+
+        $model = new class() {
+            public function test(): StringCollection {
+                return StringCollection::fromStrings('a','b');
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $exp = new DOMDocument();
+        $exp->loadXML('<root property="test">a<b>bar</b>b</root>');
+
+        $this->assertResultMatches($exp->documentElement, $dom->documentElement);
+    }
+
+    public function testDocumentRetrunedFromAsStringCallIsRendered(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root property="test" />');
+
+        $model = new class() {
+
+            public function test(): object {
+                return new class() {
+                    public function asString(): Document {
+                        return Document::fromString('<div> sub document </div>');
+                    }
+                };
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $exp = new DOMDocument();
+        $exp->loadXML('<root property="test"><div> sub document </div></root>');
+
+        $this->assertResultMatches($exp->documentElement, $dom->documentElement);
 
     }
+
 }
