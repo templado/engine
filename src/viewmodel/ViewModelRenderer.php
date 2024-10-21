@@ -351,6 +351,16 @@ final class ViewModelRenderer {
             );
         }
 
+        if ($result instanceof Remove || $result === false) {
+            $context->remove();
+
+            return $model;
+        }
+
+        if ($result instanceof Ignore || $result === true || $result === null) {
+            return $model;
+        }
+
         if ($context->hasAttribute('typeof')) {
             if (!is_iterable($result) && !is_object($result)) {
                 throw new ViewModelRendererException(
@@ -379,16 +389,6 @@ final class ViewModelRenderer {
             $context->nodeValue   = '';
             $context->textContent = $result;
 
-            return $model;
-        }
-
-        if ($result instanceof Remove || $result === false) {
-            $context->remove();
-
-            return $model;
-        }
-
-        if ($result instanceof Ignore || $result === true || $result === null) {
             return $model;
         }
 

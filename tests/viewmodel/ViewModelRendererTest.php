@@ -1471,7 +1471,55 @@ class ViewModelRendererTest extends TestCase {
         $exp->loadXML('<root property="test"><div> sub document </div></root>');
 
         $this->assertResultMatches($exp->documentElement, $dom->documentElement);
+    }
 
+    public function testRemoveSignalIsProcessedBeforeTypeOfAttribute(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root><node property="test" typeof="foo" /></root>');
+
+        $model = new class() {
+            public function test(): Signal {
+                return Signal::remove();
+            }
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $exp = new DOMDocument();
+        $exp->loadXML('<root />');
+
+        $this->assertResultMatches($exp->documentElement, $dom->documentElement);
+    }
+
+    public function testIgnoreSignalIsProcessedBeforeTypeOfAttribute(): void {
+        $dom = new DOMDocument();
+        $dom->loadXML('<root><node property="test" typeof="foo"><child property="text" /></node></root>');
+
+        $model = new class() {
+            public function test(): Signal {
+                return Signal::ignore();
+            }
+
+            public function text():string {
+                return 'works';
+            }
+
+        };
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $renderer = new ViewModelRenderer();
+        $renderer->render($dom->documentElement, $model);
+
+        $exp = new DOMDocument();
+        $exp->loadXML('<root><node property="test" typeof="foo"><child property="text">works</child></node></root>');
+
+        $this->assertResultMatches($exp->documentElement, $dom->documentElement);
     }
 
 }
