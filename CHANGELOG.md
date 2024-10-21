@@ -21,6 +21,13 @@ Main changes from 4.x:
 - Enhanced trace output in case of errors
 - Snapshot support
 
+## [5.0.0-rc.5] - 2024-10-22
+
+### Changed
+
+- The `ViewModelRenderer` now processes Signal results (Remove / Ignore) before performing a conditional `typeOf` check. This allows for removing of elements that would otherwise require a matching type. 
+
+
 ## [5.0.0-rc.4] - 2024-04-03
 
 ### Fixed
