@@ -66,8 +66,8 @@
             <arg line="--no-progress" />
             <arg line="install" />
             <arg line="--trust-gpg-keys" />
-            <!-- phpunit -->     <!-- phpab -->   <!-- php-cs-fixer --> <!-- psalm -->
-            <arg value="4AA394086372C20A,2A8299CE842DD38C,E82B2FB314E9906E,12CE0F1D262429A5" />
+                        <!-- phpunit --> <!-- phpab -->   <!-- php-cs-fixer --> <!-- psalm --> <!-- infection -->
+            <arg value="4AA394086372C20A,2A8299CE842DD38C,E82B2FB314E9906E,12CE0F1D262429A5,C5095986493B4AA0" />
         </exec>
     </target>
 
