@@ -10,6 +10,8 @@
 namespace Templado\Engine;
 
 use LibXMLError;
+use function sprintf;
+use function trim;
 
 final class ParsingException extends DocumentException {
     /** @psalm-param list<LibXMLError> */
@@ -22,5 +24,22 @@ final class ParsingException extends DocumentException {
 
     public function errors(): array {
         return $this->errors;
+    }
+
+    public function __toString(): string {
+        $msg = $this->getMessage() . "\n";
+
+        foreach($this->errors as $error) {
+            $msg .= sprintf(
+                "[line: %d / column: %d] %s\n",
+                $error->line,
+                $error->column,
+                $error->message
+            );
+        }
+
+        $msg .= $this->getTraceAsString();
+
+        return $msg;
     }
 }
