@@ -21,6 +21,7 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\TestCase;
 use Templado\Engine\Example\ViewModel;
 use Throwable;
+use function libxml_use_internal_errors;
 
 #[CoversClass(Document::class)]
 #[UsesClass(Id::class)]
@@ -48,6 +49,14 @@ class DocumentTest extends TestCase {
             Document::class,
             Document::fromString('<?xml version="1.0" ?><root />')
         );
+    }
+
+    public function testUsageEnablesLibxmlInternalErrorHandler(): void {
+        libxml_use_internal_errors(false);
+
+        Document::fromString('<?xml version="1.0" ?><root />');
+
+        $this->assertTrue(libxml_use_internal_errors());
     }
 
     public function testCanBeConstructFromDomDocument(): void {
@@ -93,7 +102,6 @@ class DocumentTest extends TestCase {
         libxml_use_internal_errors(true);
         $dummy = new DOMDocument();
         $dummy->loadXML('parsing-this-will-cause-libxml-errors');
-        libxml_use_internal_errors(false);
 
         $this->assertInstanceOf(
             Document::class,
