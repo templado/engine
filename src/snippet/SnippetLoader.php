@@ -4,7 +4,7 @@ namespace Templado\Engine;
 use DOMDocument;
 
 class SnippetLoader {
-    public function load(FileName $fileName, string $id = null): Snippet {
+    public function load(FileName $fileName, ?string $id = null): Snippet {
         $this->ensureFileExists($fileName);
         $this->ensureIsReadableFile($fileName);
 
@@ -26,7 +26,7 @@ class SnippetLoader {
         );
     }
 
-    private function loadAsText(FileName $fileName, string $id = null): TextSnippet {
+    private function loadAsText(FileName $fileName, ?string $id = null): TextSnippet {
         return new TextSnippet(
             $id ?? $fileName->getName(),
             (new DOMDocument())->createTextNode(\file_get_contents($fileName->asString()))
@@ -36,7 +36,7 @@ class SnippetLoader {
     /**
      * @throws SnippetLoaderException
      */
-    private function loadAsSnippet(FileName $fileName, string $id = null): Snippet {
+    private function loadAsSnippet(FileName $fileName, ?string $id = null): Snippet {
         $dom = $this->loadFile($fileName);
 
         if ($this->isTempladoSnippetDocument($dom)) {
@@ -123,11 +123,11 @@ class SnippetLoader {
         }
     }
 
-    private function parseAsTempladoSnippet(DOMDocument $dom, string $id = null): TempladoSnippet {
+    private function parseAsTempladoSnippet(DOMDocument $dom, ?string $id = null): TempladoSnippet {
         return new TempladoSnippet($id ?? $dom->documentElement->getAttribute('id'), $dom);
     }
 
-    private function parseAsHTML(DOMDocument $dom, string $id = null): SimpleSnippet {
+    private function parseAsHTML(DOMDocument $dom, ?string $id = null): SimpleSnippet {
         $id = $id ?? $dom->documentElement->getAttribute('id');
 
         if ($id === '') {
