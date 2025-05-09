@@ -107,7 +107,7 @@ class Html {
         return $list;
     }
 
-    public function asString(Filter $filter = null): string {
+    public function asString(?Filter $filter = null): string {
         $content = $this->serializeDomDocument();
         $content = (new EmptyElementsFilter())->apply($content);
         $content = (new ClearRedundantHtmlNamespaceDefinitionsFilter($this->dom->documentElement->nodeName))->apply($content);
