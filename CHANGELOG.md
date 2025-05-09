@@ -2,6 +2,14 @@
 
 All notable changes to Templado are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+
+## [4.2.6] - 2024-05-09
+
+### Merged
+
+* [#36](https://github.com/templado/engine/pull/36): Fix implicit null deprecation warnings for PHP 8.4 (thanks @Matthew-H)
+
+
 ## [4.2.5] - 2024-02-14
 
 ### Changed
@@ -301,7 +309,8 @@ which never workd reliably due to DOMDocumentFragment issues.
 
 * Initial Release
 
-[4.2.5]: https://github.com/templado/engine/compare/4.2.4...4.x
+[4.2.6]: https://github.com/templado/engine/compare/4.2.5...4.2.6
+[4.2.5]: https://github.com/templado/engine/compare/4.2.4...4.2.5
 [4.2.4]: https://github.com/templado/engine/compare/4.2.3...4.2.4
 [4.2.3]: https://github.com/templado/engine/compare/4.2.2...4.2.3
 [4.2.2]: https://github.com/templado/engine/compare/4.2.1...4.2.2
